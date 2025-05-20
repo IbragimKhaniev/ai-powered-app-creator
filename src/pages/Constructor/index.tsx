@@ -111,13 +111,13 @@ const Constructor = () => {
                       handleSendMessage();
                     }
                   }}
-                  className="min-h-[80px] resize-none pr-16"
+                  className="min-h-[80px] resize-none pr-12"
                 />
                 <Button 
                   onClick={handleSendMessage} 
-                  className="absolute bottom-3 right-3 rounded-full w-10 h-10 p-0 flex items-center justify-center"
+                  className="absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center"
                 >
-                  <Send className="h-5 w-5" />
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
             </div>
