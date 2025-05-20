@@ -2,10 +2,16 @@
 import React, { useState } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Send } from "lucide-react";
+import { Send, RefreshCw, ExternalLink, Logs } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface Message {
   id: string;
@@ -94,18 +100,22 @@ const Constructor = () => {
             </ScrollArea>
             
             <div className="border-t p-4">
-              <div className="flex gap-2">
-                <Input
+              <div className="flex flex-col gap-2">
+                <Textarea
                   placeholder="Введите сообщение..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSendMessage();
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
                   }}
-                  className="flex-1"
+                  className="min-h-[80px] resize-none"
                 />
-                <Button onClick={handleSendMessage}>
-                  <Send className="h-4 w-4" />
+                <Button onClick={handleSendMessage} className="self-end">
+                  <Send className="h-4 w-4 mr-2" />
+                  Отправить
                 </Button>
               </div>
             </div>
@@ -117,9 +127,33 @@ const Constructor = () => {
         {/* Preview Panel */}
         <ResizablePanel defaultSize={60}>
           <div className="flex h-full flex-col">
-            <div className="border-b p-4">
-              <h2 className="text-xl font-bold">Превью</h2>
-              <p className="text-sm text-muted-foreground">Здесь будет отображаться разрабатываемое приложение</p>
+            <div className="border-b p-4 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold">Превью</h2>
+                <p className="text-sm text-muted-foreground">Здесь будет отображаться разрабатываемое приложение</p>
+              </div>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    Действия
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuItem>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Перезапустить сервер
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Открыть в новой вкладке
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Logs className="mr-2 h-4 w-4" />
+                    Прочитать логи
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             
             <div className="flex-1 overflow-auto p-6 bg-gray-50">
