@@ -32,13 +32,13 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false 
               handleSendMessage();
             }
           }}
-          className={`min-h-[80px] resize-none pr-12 rounded-xl border-gray-200 focus:border-blue-300 shadow-sm ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={`min-h-[80px] resize-none pr-12 rounded-xl border-gray-200 focus:border-primary shadow-sm ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
           disabled={isLoading}
         />
         <Button 
           onClick={handleSendMessage} 
           disabled={isLoading}
-          className={`absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center bg-blue-500 hover:bg-blue-600 ${isLoading ? 'opacity-70' : ''}`}
+          className={`absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center bg-brand-khaki hover:bg-brand-khaki-dark ${isLoading ? 'opacity-70' : ''}`}
         >
           {isLoading ? (
             <LoaderCircle className="h-4 w-4 animate-spin" />

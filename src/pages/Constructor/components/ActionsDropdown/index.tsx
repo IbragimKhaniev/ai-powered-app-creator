@@ -48,8 +48,8 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
           onClick={onToggleLogs}
           className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
         >
-          <Logs className={`mr-3 h-4 w-4 ${showLogs ? 'text-orange-500' : 'text-primary'}`} />
-          <span className={showLogs ? 'text-orange-500 font-medium' : ''}>
+          <Logs className={`mr-3 h-4 w-4 ${showLogs ? 'text-brand-khaki' : 'text-primary'}`} />
+          <span className={showLogs ? 'text-brand-khaki font-medium' : ''}>
             {showLogs ? CONSTRUCTOR_TEXT.HIDE_LOGS : CONSTRUCTOR_TEXT.SHOW_LOGS}
           </span>
         </DropdownMenuItem>
