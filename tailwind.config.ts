@@ -46,12 +46,9 @@ export default {
         'brand-red': '#ff5353',
         'brand-blue': '#3b82f6',
         'brand-purple': '#8b5cf6',
-        'brand-khaki': '#6b8e23', // Добавляем новый цвет хаки
-        'brand-khaki-dark': '#556b2f', // Тёмный хаки для hover эффектов
-        'brand-khaki-light': '#7c9b2d', // Светлый хаки для других элементов
       },
       backgroundImage: {
-        'hero-gradient': 'radial-gradient(circle at 50% 50%, rgba(226, 232, 214, 0.7) 0%, rgba(240, 244, 231, 0.5) 60%)',
+        'hero-gradient': 'radial-gradient(circle at 50% 50%, rgba(219, 234, 254, 0.7) 0%, rgba(239, 246, 255, 0.5) 60%)',
       },
       borderRadius: {
         lg: 'var(--radius)',
