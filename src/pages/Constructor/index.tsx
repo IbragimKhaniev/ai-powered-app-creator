@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { showErrorToast } from "@/components/ui/error-toast";
 
 interface Message {
   id: string;
@@ -46,7 +47,22 @@ const Constructor = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [showLogs, setShowLogs] = useState(false);
 
-  const handleSendMessage = () => {
+  // Демонстрация вызова toast при загрузке компонента
+  useEffect(() => {
+    // Для демонстрационных целей показываем ошибку через 2 секунды после загрузки
+    const timer = setTimeout(() => {
+      showErrorToast({
+        onTryFix: () => {
+          console.log("Attempting to fix errors");
+          // Здесь можно было бы добавить логику исправления ошибок
+        }
+      });
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSendMessage = useCallback(() => {
     if (inputMessage.trim() === '') return;
     
     // Add user message
@@ -57,7 +73,7 @@ const Constructor = () => {
       timestamp: new Date()
     };
     
-    setMessages([...messages, newMessage]);
+    setMessages(prev => [...prev, newMessage]);
     setInputMessage('');
     
     // Simulate AI response
@@ -70,15 +86,15 @@ const Constructor = () => {
       };
       setMessages(prev => [...prev, aiResponse]);
     }, 1000);
-  };
+  }, [inputMessage]);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const handleToggleLogs = () => {
+  const handleToggleLogs = useCallback(() => {
     setShowLogs(!showLogs);
-  };
+  }, [showLogs]);
 
   const renderLogLevel = (content: string) => {
     if (content.includes('[INFO]')) {
