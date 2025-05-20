@@ -22,6 +22,12 @@ interface Message {
   isError?: boolean;
 }
 
+interface LogEntry {
+  id: string;
+  content: string;
+  timestamp: Date;
+}
+
 // Моковые данные для логов
 const mockLogs = [
   { id: '1', content: '[INFO] Server started on port 3000', timestamp: new Date('2025-05-20T10:00:00') },
@@ -84,6 +90,23 @@ const Constructor = () => {
     
     setMessages(prev => [...prev, fixResponseMessage]);
   };
+  
+  const handleTryFixLog = (logContent: string) => {
+    console.log(`Attempting to fix: ${logContent}`);
+    
+    // Add a response message about fixing the specific log issue
+    const fixLogResponseMessage: Message = {
+      id: Date.now().toString(),
+      content: `Я пытаюсь исправить проблему: ${logContent.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '')}`,
+      isUser: false,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, fixLogResponseMessage]);
+    
+    // Optional: Switch back to chat view to show the response
+    setShowLogs(false);
+  };
 
   const handleSendMessage = useCallback(() => {
     if (inputMessage.trim() === '') return;
@@ -118,6 +141,10 @@ const Constructor = () => {
   const handleToggleLogs = useCallback(() => {
     setShowLogs(!showLogs);
   }, [showLogs]);
+
+  const isErrorOrWarning = (content: string) => {
+    return content.includes('[ERROR]') || content.includes('[WARNING]');
+  };
 
   const renderLogLevel = (content: string) => {
     if (content.includes('[INFO]')) {
@@ -258,14 +285,26 @@ const Constructor = () => {
                 <div className="space-y-2">
                   {mockLogs.map((log) => (
                     <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-md border">
-                      <div className="flex justify-between">
-                        <div>
-                          {renderLogLevel(log.content)} 
-                          <span className="ml-2">{log.content.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '')}</span>
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex justify-between">
+                          <div>
+                            {renderLogLevel(log.content)} 
+                            <span className="ml-2">{log.content.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '')}</span>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {formatTime(log.timestamp)}
+                          </div>
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {formatTime(log.timestamp)}
-                        </div>
+                        
+                        {isErrorOrWarning(log.content) && (
+                          <Button 
+                            onClick={() => handleTryFixLog(log.content)}
+                            className="bg-orange-500 hover:bg-orange-600 text-white mt-1 self-start"
+                            size="sm"
+                          >
+                            Попробовать исправить
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
