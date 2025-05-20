@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AppPreviewCard: React.FC = () => {
@@ -52,22 +51,6 @@ const AppPreviewCard: React.FC = () => {
           <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-6 w-40" />
-          </div>
-        </div>
-        
-        {/* Centered message overlay */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg max-w-md text-center border border-primary/10 animate-fade-in">
-            <h3 className="text-xl font-medium mb-3 text-primary">{CONSTRUCTOR_TEXT.CREATE_APP}</h3>
-            <p className="text-muted-foreground mb-4">
-              {CONSTRUCTOR_TEXT.CREATE_APP_DESCRIPTION}
-            </p>
-            <div className="flex justify-center items-center space-x-2 text-sm text-primary/70">
-              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="font-bold">1</span>
-              </div>
-              <span>Напишите сообщение в чат слева</span>
-            </div>
           </div>
         </div>
       </div>
