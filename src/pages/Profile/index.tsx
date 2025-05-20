@@ -4,12 +4,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail, Link, ExternalLink, Edit } from "lucide-react";
+import { Mail, Link, ExternalLink, Edit, LogOut } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link as RouterLink } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data - In a real app, this would come from an API or context
 const userData = {
@@ -56,10 +57,34 @@ const userApps = [
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    // In a real app, this would call an authentication service to log the user out
+    toast({
+      title: "Выход из системы",
+      description: "Вы успешно вышли из системы",
+    });
+    // Redirect to home page after logout
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 1500);
+  };
 
   return (
     <div className="container mx-auto py-20 px-4">
-      <h1 className="text-3xl font-bold mb-8">Мой профиль</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Мой профиль</h1>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4" />
+          Выйти
+        </Button>
+      </div>
       
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-8">
