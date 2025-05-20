@@ -27,7 +27,8 @@ export const PROFILE_STRINGS = {
     BUTTON: "Выйти",
     TOAST_TITLE: "Выход из системы",
     TOAST_DESCRIPTION: "Вы успешно вышли из системы",
-  }
+  },
+  CREATE_APP_BUTTON: "Создать новое приложение"
 };
 
 export const APP_STATUS = {
