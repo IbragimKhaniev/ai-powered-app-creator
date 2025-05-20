@@ -4,10 +4,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail, Link, ExternalLink } from "lucide-react";
+import { Mail, Link, ExternalLink, Edit } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Link as RouterLink } from "react-router-dom";
 
 // Mock data - In a real app, this would come from an API or context
 const userData = {
@@ -151,16 +153,30 @@ const Profile = () => {
                             </div>
                           </div>
                           
-                          <div>
-                            <h3 className="text-sm font-medium text-muted-foreground">Ссылка на приложение</h3>
-                            <a 
-                              href={app.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-primary hover:underline mt-1"
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h3 className="text-sm font-medium text-muted-foreground">Ссылка на приложение</h3>
+                              <a 
+                                href={app.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-primary hover:underline mt-1"
+                              >
+                                {app.url} <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </div>
+                            
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="gap-1"
                             >
-                              {app.url} <ExternalLink className="h-3 w-3" />
-                            </a>
+                              <RouterLink to={`/constructor?appId=${app.id}`}>
+                                <Edit className="h-4 w-4" />
+                                Редактировать
+                              </RouterLink>
+                            </Button>
                           </div>
                         </div>
                       </AccordionContent>
