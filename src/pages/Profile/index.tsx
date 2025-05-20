@@ -41,26 +41,26 @@ const Profile: React.FC = () => {
       <ProfileHeader title={PROFILE_STRINGS.TITLE} />
       
       <Tabs defaultValue="profile" value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <div className="flex justify-between items-center mb-8">
-          <TabsList>
-            <TabsTrigger value="profile">{PROFILE_STRINGS.TABS.PROFILE}</TabsTrigger>
-            <TabsTrigger value="apps">{PROFILE_STRINGS.TABS.APPS}</TabsTrigger>
-          </TabsList>
-          
-          <Button 
-            onClick={handleCreateApp}
-            className="bg-primary text-white flex items-center gap-2 rounded-full"
-          >
-            <Plus className="h-4 w-4" />
-            {PROFILE_STRINGS.CREATE_APP_BUTTON}
-          </Button>
-        </div>
+        <TabsList className="mb-8">
+          <TabsTrigger value="profile">{PROFILE_STRINGS.TABS.PROFILE}</TabsTrigger>
+          <TabsTrigger value="apps">{PROFILE_STRINGS.TABS.APPS}</TabsTrigger>
+        </TabsList>
         
         <TabsContent value="profile">
           <ProfileInfo userData={profileData} />
         </TabsContent>
         
         <TabsContent value="apps">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold">{PROFILE_STRINGS.APPS.TITLE}</h2>
+            <Button 
+              onClick={handleCreateApp}
+              className="bg-primary text-white flex items-center gap-2 rounded-full"
+            >
+              <Plus className="h-4 w-4" />
+              {PROFILE_STRINGS.CREATE_APP_BUTTON}
+            </Button>
+          </div>
           <AppsList apps={appsData} />
         </TabsContent>
       </Tabs>
