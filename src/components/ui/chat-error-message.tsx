@@ -23,7 +23,7 @@ const ChatErrorMessage = ({
           e.preventDefault();
           onTryFix();
         }}
-        className="bg-gray-500 hover:bg-gray-600 text-white w-full rounded-full"
+        className="bg-orange-500 hover:bg-orange-600 text-white w-full rounded-full"
         size="sm"
       >
         Попробовать исправить
