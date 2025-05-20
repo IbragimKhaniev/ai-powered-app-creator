@@ -56,10 +56,10 @@ const Constructor = () => {
   };
 
   return (
-    <div className="container mx-auto h-screen pt-16">
+    <div className="h-screen w-full">
       <ResizablePanelGroup
         direction="horizontal"
-        className="min-h-[calc(100vh-6rem)] rounded-lg border"
+        className="h-screen"
       >
         {/* Chat Panel */}
         <ResizablePanel defaultSize={40} minSize={30}>
