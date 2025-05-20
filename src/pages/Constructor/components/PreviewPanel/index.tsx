@@ -5,8 +5,9 @@ import ActionsDropdown from '../ActionsDropdown';
 import LoadingState from '../LoadingState';
 import AppCreationCard from '../AppCreationCard';
 import AppPreviewCard from '../AppPreviewCard';
-import ErrorDialog from '../ErrorDialog';
 import { CONSTRUCTOR_TEXT } from '../../constants';
+import ChatErrorMessage from '@/components/ui/chat-error-message';
+import { AlertTriangle } from 'lucide-react';
 
 interface PreviewPanelProps {
   isLoading: boolean;
@@ -27,21 +28,21 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
   onStartCreation,
   onTryFix = () => console.log("Try fix clicked")
 }) => {
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleShowErrors = () => {
-    setShowErrorDialog(true);
+    setShowErrors(true);
   };
 
-  const handleCloseErrorDialog = () => {
-    setShowErrorDialog(false);
+  const handleCloseErrors = () => {
+    setShowErrors(false);
   };
 
   const handleTryFix = () => {
     if (onTryFix) {
       onTryFix();
     }
-    setShowErrorDialog(false);
+    setShowErrors(false);
   };
 
   return (
@@ -69,7 +70,28 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
       </div>
       
       <div className="flex-1 overflow-auto p-6 bg-gray-50">
-        {isLoading ? (
+        {showErrors ? (
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 max-w-lg w-full">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+                <h2 className="text-lg font-medium text-destructive">Обнаружены ошибки</h2>
+              </div>
+              <p className="text-base mb-6">
+                В приложении обнаружены ошибки, которые могут повлиять на его работу.
+              </p>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={handleCloseErrors}
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none p-2 rounded-full hover:bg-gray-100 self-end"
+                >
+                  Вернуться к предпросмотру
+                </button>
+                <ChatErrorMessage onTryFix={handleTryFix} />
+              </div>
+            </div>
+          </div>
+        ) : isLoading ? (
           <LoadingState loadingProgress={loadingProgress} />
         ) : !isAppCreated ? (
           <AppCreationCard onStartCreation={onStartCreation} />
@@ -77,12 +99,6 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <AppPreviewCard />
         )}
       </div>
-
-      <ErrorDialog
-        isOpen={showErrorDialog}
-        onClose={handleCloseErrorDialog}
-        onTryFix={handleTryFix}
-      />
     </div>
   );
 };
