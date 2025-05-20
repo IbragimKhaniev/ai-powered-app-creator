@@ -18,6 +18,7 @@ const Constructor: React.FC = () => {
   ]);
   const [showLogs, setShowLogs] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isAppCreated, setIsAppCreated] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
@@ -79,13 +80,16 @@ const Constructor: React.FC = () => {
       return;
     }
     
-    // Simulate AI response
+    // Simulate AI response with loading state
+    setIsChatLoading(true);
+    
     setTimeout(() => {
       const aiResponse = createAiMessage(
         'Я получил ваше сообщение. Сейчас я работаю над вашим запросом...'
       );
       setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
+      setIsChatLoading(false);
+    }, 1500);
   }, [isAppCreated]);
 
   const handleConfirmSettings = (settings: AppSettings) => {
@@ -94,13 +98,16 @@ const Constructor: React.FC = () => {
     setIsAppCreated(true);
     setShowSettingsDialog(false);
     
-    // Send a confirmation message from AI
+    // Send a confirmation message from AI with loading state
+    setIsChatLoading(true);
+    
     setTimeout(() => {
       const aiResponse = createAiMessage(
         `Отлично! Я создал новое приложение "${settings.appName}". Теперь давайте начнем работу над вашим запросом.`
       );
       setMessages(prev => [...prev, aiResponse]);
-    }, 1000);
+      setIsChatLoading(false);
+    }, 1500);
   };
 
   const handleToggleLogs = useCallback(() => {
@@ -127,7 +134,8 @@ const Constructor: React.FC = () => {
           <ChatPanel 
             messages={messages} 
             onSendMessage={handleSendMessage} 
-            onTryFix={handleTryFix} 
+            onTryFix={handleTryFix}
+            isLoading={isChatLoading}
           />
         </ResizablePanel>
         

@@ -11,12 +11,14 @@ interface ChatPanelProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
   onTryFix: () => void;
+  isLoading?: boolean;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ 
   messages, 
   onSendMessage, 
-  onTryFix 
+  onTryFix,
+  isLoading = false
 }) => {
   return (
     <div className="flex h-full flex-col">
@@ -40,7 +42,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </ScrollArea>
       
-      <ChatInput onSendMessage={onSendMessage} />
+      <ChatInput onSendMessage={onSendMessage} isLoading={isLoading} />
     </div>
   );
 };
