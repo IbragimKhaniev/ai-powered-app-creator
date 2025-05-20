@@ -4,7 +4,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Send, RefreshCw, ExternalLink, Logs } from "lucide-react";
+import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
@@ -20,6 +20,20 @@ interface Message {
   timestamp: Date;
 }
 
+// Моковые данные для логов
+const mockLogs = [
+  { id: '1', content: '[INFO] Server started on port 3000', timestamp: new Date('2025-05-20T10:00:00') },
+  { id: '2', content: '[INFO] Application initialized successfully', timestamp: new Date('2025-05-20T10:00:05') },
+  { id: '3', content: '[INFO] User authentication successful', timestamp: new Date('2025-05-20T10:15:22') },
+  { id: '4', content: '[WARNING] Memory usage is high (85%)', timestamp: new Date('2025-05-20T10:30:15') },
+  { id: '5', content: '[ERROR] Failed to connect to database', timestamp: new Date('2025-05-20T10:45:30') },
+  { id: '6', content: '[INFO] Database connection reestablished', timestamp: new Date('2025-05-20T10:46:25') },
+  { id: '7', content: '[INFO] New user registered: user@example.com', timestamp: new Date('2025-05-20T11:00:00') },
+  { id: '8', content: '[DEBUG] Processing request: GET /api/users', timestamp: new Date('2025-05-20T11:15:10') },
+  { id: '9', content: '[INFO] Request completed in 120ms', timestamp: new Date('2025-05-20T11:15:11') },
+  { id: '10', content: '[INFO] Show more projects', timestamp: new Date('2025-05-20T19:49:26') }
+];
+
 const Constructor = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
@@ -30,6 +44,7 @@ const Constructor = () => {
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
+  const [showLogs, setShowLogs] = useState(false);
 
   const handleSendMessage = () => {
     if (inputMessage.trim() === '') return;
@@ -59,6 +74,23 @@ const Constructor = () => {
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleToggleLogs = () => {
+    setShowLogs(!showLogs);
+  };
+
+  const renderLogLevel = (content: string) => {
+    if (content.includes('[INFO]')) {
+      return <span className="text-blue-500 font-medium">[INFO]</span>;
+    } else if (content.includes('[WARNING]')) {
+      return <span className="text-yellow-500 font-medium">[WARNING]</span>;
+    } else if (content.includes('[ERROR]')) {
+      return <span className="text-red-500 font-medium">[ERROR]</span>;
+    } else if (content.includes('[DEBUG]')) {
+      return <span className="text-green-500 font-medium">[DEBUG]</span>;
+    }
+    return null;
   };
 
   return (
@@ -126,13 +158,30 @@ const Constructor = () => {
         
         <ResizableHandle withHandle />
         
-        {/* Preview Panel */}
+        {/* Preview/Logs Panel */}
         <ResizablePanel defaultSize={60}>
           <div className="flex h-full flex-col">
             <div className="border-b p-4 flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-bold">Превью</h2>
-                <p className="text-sm text-muted-foreground">Здесь будет отображаться разрабатываемое приложение</p>
+              <div className="flex items-center">
+                {showLogs && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={handleToggleLogs} 
+                    className="mr-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="sr-only">Назад</span>
+                  </Button>
+                )}
+                <div>
+                  <h2 className="text-xl font-bold">{showLogs ? "Логи" : "Превью"}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {showLogs 
+                      ? "Просмотр логов приложения" 
+                      : "Здесь будет отображаться разрабатываемое приложение"}
+                  </p>
+                </div>
               </div>
               
               <DropdownMenu>
@@ -150,27 +199,47 @@ const Constructor = () => {
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Открыть в новой вкладке
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleToggleLogs}>
                     <Logs className="mr-2 h-4 w-4" />
-                    Прочитать логи
+                    {showLogs ? "Скрыть логи" : "Прочитать логи"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             
-            <div className="flex-1 overflow-auto p-6 bg-gray-50">
-              <div className="h-full flex items-center justify-center">
-                <Card className="w-full max-w-md p-8 text-center">
-                  <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
-                  <p className="text-muted-foreground mb-6">
-                    По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
-                  </p>
-                  <div className="p-8 border border-dashed rounded-lg">
-                    <p className="text-muted-foreground">Область предпросмотра приложения</p>
-                  </div>
-                </Card>
+            {showLogs ? (
+              <ScrollArea className="flex-1 p-4 bg-gray-50">
+                <div className="space-y-2">
+                  {mockLogs.map((log) => (
+                    <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-md border">
+                      <div className="flex justify-between">
+                        <div>
+                          {renderLogLevel(log.content)} 
+                          <span className="ml-2">{log.content.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '')}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatTime(log.timestamp)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            ) : (
+              <div className="flex-1 overflow-auto p-6 bg-gray-50">
+                <div className="h-full flex items-center justify-center">
+                  <Card className="w-full max-w-md p-8 text-center">
+                    <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
+                    <p className="text-muted-foreground mb-6">
+                      По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
+                    </p>
+                    <div className="p-8 border border-dashed rounded-lg">
+                      <p className="text-muted-foreground">Область предпросмотра приложения</p>
+                    </div>
+                  </Card>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
