@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,12 +12,14 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { showErrorToast } from "@/components/ui/error-toast";
+import ChatErrorMessage from "@/components/ui/chat-error-message";
 
 interface Message {
   id: string;
   content: string;
   isUser: boolean;
   timestamp: Date;
+  isError?: boolean;
 }
 
 // Моковые данные для логов
@@ -42,6 +43,13 @@ const Constructor = () => {
       content: 'Привет! Я готов помочь вам с созданием вашего приложения. Опишите, что вы хотите создать.', 
       isUser: false, 
       timestamp: new Date() 
+    },
+    {
+      id: '2',
+      content: 'Приложение имеет ошибки',
+      isUser: false,
+      timestamp: new Date(),
+      isError: true
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
@@ -61,6 +69,21 @@ const Constructor = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleTryFix = () => {
+    console.log("Attempting to fix errors");
+    // Here you could add logic to fix errors
+    
+    // Add a response message
+    const fixResponseMessage: Message = {
+      id: Date.now().toString(),
+      content: 'Я пытаюсь исправить ошибки в приложении...',
+      isUser: false,
+      timestamp: new Date()
+    };
+    
+    setMessages(prev => [...prev, fixResponseMessage]);
+  };
 
   const handleSendMessage = useCallback(() => {
     if (inputMessage.trim() === '') return;
@@ -130,18 +153,25 @@ const Constructor = () => {
                     key={message.id}
                     className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div
-                      className={`max-w-[80%] rounded-lg p-4 ${
-                        message.isUser
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <div className="mb-1">{message.content}</div>
-                      <div className={`text-xs ${message.isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
-                        {formatTime(message.timestamp)}
+                    {message.isError ? (
+                      <ChatErrorMessage 
+                        message={message.content} 
+                        onTryFix={handleTryFix}
+                      />
+                    ) : (
+                      <div
+                        className={`max-w-[80%] rounded-lg p-4 ${
+                          message.isUser
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted'
+                        }`}
+                      >
+                        <div className="mb-1">{message.content}</div>
+                        <div className={`text-xs ${message.isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+                          {formatTime(message.timestamp)}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
