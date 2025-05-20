@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { showErrorToast } from "@/components/ui/error-toast";
 import ChatErrorMessage from "@/components/ui/chat-error-message";
+import { Link } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -168,9 +169,24 @@ const Constructor = () => {
         {/* Chat Panel */}
         <ResizablePanel defaultSize={40} minSize={30}>
           <div className="flex h-full flex-col">
-            <div className="border-b p-4">
-              <h2 className="text-xl font-bold">Чат с ИИ</h2>
-              <p className="text-sm text-muted-foreground">Опишите что вы хотите создать</p>
+            <div className="border-b p-4 flex justify-between items-center">
+              <div className="flex items-center">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="mr-2" 
+                  asChild
+                >
+                  <Link to="/profile">
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="sr-only">Назад к профилю</span>
+                  </Link>
+                </Button>
+                <div>
+                  <h2 className="text-xl font-bold">Чат с ИИ</h2>
+                  <p className="text-sm text-muted-foreground">Опишите что вы хотите создать</p>
+                </div>
+              </div>
             </div>
             
             <ScrollArea className="flex-1 p-4">
