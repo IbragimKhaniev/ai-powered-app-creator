@@ -10,8 +10,8 @@ interface CustomButtonProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-// Combine our custom props with Ant Design's props, but omit 'type' which we'll handle ourselves
-interface ButtonProps extends Omit<AntButtonProps, 'type'>, CustomButtonProps {}
+// Combine our custom props with Ant Design's props, but omit 'type' and 'size' to avoid conflicts
+interface ButtonProps extends Omit<AntButtonProps, 'type' | 'size'>, CustomButtonProps {}
 
 const Button: React.FC<ButtonProps> = React.memo(({
   children,
@@ -44,9 +44,19 @@ const Button: React.FC<ButtonProps> = React.memo(({
     }
   }, [size]);
 
+  // Map our custom size and variant to Ant Design compatible props
+  const antdSize = useMemo(() => {
+    switch (size) {
+      case 'sm': return 'small';
+      case 'lg': return 'large';
+      default: return 'middle';
+    }
+  }, [size]);
+
   return (
     <AntButton
       {...props}
+      size={antdSize}
       className={cn(
         'inline-flex items-center justify-center rounded-md font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
