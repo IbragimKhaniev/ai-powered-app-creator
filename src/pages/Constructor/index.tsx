@@ -1,9 +1,10 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft } from "lucide-react";
+import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft, Loader } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ import {
 import { showErrorToast } from "@/components/ui/error-toast";
 import ChatErrorMessage from "@/components/ui/chat-error-message";
 import { Link } from "react-router-dom";
+import { Progress } from "@/components/ui/progress";
 
 interface Message {
   id: string;
@@ -61,6 +63,27 @@ const Constructor = () => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [showLogs, setShowLogs] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  // Имитация загрузки приложения
+  useEffect(() => {
+    if (isLoading) {
+      const interval = setInterval(() => {
+        setLoadingProgress(prev => {
+          const newProgress = prev + 5;
+          if (newProgress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => setIsLoading(false), 500); // Небольшая задержка перед показом содержимого
+            return 100;
+          }
+          return newProgress;
+        });
+      }, 150);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   // Демонстрация вызова toast при загрузке компонента
   useEffect(() => {
@@ -328,17 +351,30 @@ const Constructor = () => {
               </ScrollArea>
             ) : (
               <div className="flex-1 overflow-auto p-6 bg-gray-50">
-                <div className="h-full flex items-center justify-center">
-                  <Card className="w-full max-w-md p-8 text-center">
-                    <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
-                    <p className="text-muted-foreground mb-6">
-                      По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
-                    </p>
-                    <div className="p-8 border border-dashed rounded-lg">
-                      <p className="text-muted-foreground">Область предпросмотра приложения</p>
-                    </div>
-                  </Card>
-                </div>
+                {isLoading ? (
+                  <div className="h-full flex flex-col items-center justify-center">
+                    <Card className="w-full max-w-md p-8 text-center">
+                      <h3 className="text-xl font-medium mb-4">Ваше приложение разворачивается</h3>
+                      <div className="flex justify-center mb-6">
+                        <Loader className="h-10 w-10 animate-spin text-primary" />
+                      </div>
+                      <Progress value={loadingProgress} className="h-2 mb-2" />
+                      <p className="text-sm text-muted-foreground">{loadingProgress}% завершено</p>
+                    </Card>
+                  </div>
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <Card className="w-full max-w-md p-8 text-center">
+                      <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
+                      <p className="text-muted-foreground mb-6">
+                        По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
+                      </p>
+                      <div className="p-8 border border-dashed rounded-lg">
+                        <p className="text-muted-foreground">Область предпросмотра приложения</p>
+                      </div>
+                    </Card>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -349,3 +385,4 @@ const Constructor = () => {
 };
 
 export default Constructor;
+
