@@ -50,7 +50,7 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
                 {isErrorOrWarning(log.content) && (
                   <Button 
                     onClick={() => onTryFixLog(log.content)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white mt-1 self-start rounded-full"
+                    className="bg-brand-purple hover:bg-purple-700 text-white mt-1 self-start rounded-full"
                     size="sm"
                   >
                     {CONSTRUCTOR_TEXT.TRY_TO_FIX}

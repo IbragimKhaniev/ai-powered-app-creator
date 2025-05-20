@@ -34,7 +34,7 @@ export const showErrorToast = ({
           onTryFix();
           toast.dismiss();
         }}
-        className="bg-orange-500 hover:bg-orange-600 text-white w-full"
+        className="bg-brand-purple hover:bg-purple-700 text-white w-full"
         size="sm"
       >
         Попробовать исправить
