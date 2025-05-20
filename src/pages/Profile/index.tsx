@@ -4,7 +4,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Mail } from "lucide-react";
+import { Mail, Link, ExternalLink } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 // Mock data - In a real app, this would come from an API or context
 const userData = {
@@ -15,11 +18,38 @@ const userData = {
   avatarUrl: ""
 };
 
-// Mock apps data
+// Extended mock apps data
 const userApps = [
-  { id: 1, name: "Blog App", createdAt: "2025-04-15", status: "Active" },
-  { id: 2, name: "E-commerce Store", createdAt: "2025-05-01", status: "Active" },
-  { id: 3, name: "Portfolio Site", createdAt: "2025-05-12", status: "In Progress" }
+  { 
+    id: 1, 
+    name: "Blog App", 
+    createdAt: "2025-04-15", 
+    status: "Active", 
+    aiModel: "GPT-4o", 
+    tokensUsed: 3200, 
+    tokensTotal: 5000,
+    url: "https://blog-app.example.com"
+  },
+  { 
+    id: 2, 
+    name: "E-commerce Store", 
+    createdAt: "2025-05-01", 
+    status: "Active", 
+    aiModel: "GPT-4o-mini", 
+    tokensUsed: 1500, 
+    tokensTotal: 5000,
+    url: "https://store.example.com"
+  },
+  { 
+    id: 3, 
+    name: "Portfolio Site", 
+    createdAt: "2025-05-12", 
+    status: "In Progress", 
+    aiModel: "GPT-4.5-preview", 
+    tokensUsed: 4800, 
+    tokensTotal: 5000,
+    url: "https://portfolio.example.com"
+  }
 ];
 
 const Profile = () => {
@@ -87,24 +117,56 @@ const Profile = () => {
             </CardHeader>
             <CardContent>
               {userApps.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Название</TableHead>
-                      <TableHead>Дата создания</TableHead>
-                      <TableHead>Статус</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {userApps.map((app) => (
-                      <TableRow key={app.id}>
-                        <TableCell className="font-medium">{app.name}</TableCell>
-                        <TableCell>{app.createdAt}</TableCell>
-                        <TableCell>{app.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <Accordion type="single" collapsible className="w-full">
+                  {userApps.map((app) => (
+                    <AccordionItem key={app.id} value={app.id.toString()}>
+                      <AccordionTrigger className="hover:no-underline">
+                        <div className="flex items-center justify-between w-full pr-4">
+                          <div className="font-medium">{app.name}</div>
+                          <Badge variant={app.status === "Active" ? "default" : "secondary"}>
+                            {app.status}
+                          </Badge>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4 pt-2">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <h3 className="text-sm font-medium text-muted-foreground">Дата создания</h3>
+                              <p>{app.createdAt}</p>
+                            </div>
+                            <div>
+                              <h3 className="text-sm font-medium text-muted-foreground">Модель ИИ</h3>
+                              <p>{app.aiModel}</p>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h3 className="text-sm font-medium text-muted-foreground">Использовано токенов</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Progress value={(app.tokensUsed / app.tokensTotal) * 100} className="h-2" />
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                {app.tokensUsed} / {app.tokensTotal}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h3 className="text-sm font-medium text-muted-foreground">Ссылка на приложение</h3>
+                            <a 
+                              href={app.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-primary hover:underline mt-1"
+                            >
+                              {app.url} <ExternalLink className="h-3 w-3" />
+                            </a>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               ) : (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">У вас пока нет созданных приложений</p>
