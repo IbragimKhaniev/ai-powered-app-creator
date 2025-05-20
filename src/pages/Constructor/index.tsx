@@ -15,6 +15,7 @@ import { showErrorToast } from "@/components/ui/error-toast";
 import ChatErrorMessage from "@/components/ui/chat-error-message";
 import { Link } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
+import AppSettingsDialog, { AppSettings } from '@/components/AppSettingsDialog';
 
 interface Message {
   id: string;
@@ -65,6 +66,8 @@ const Constructor = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isAppCreated, setIsAppCreated] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
 
   // Имитация загрузки приложения
   useEffect(() => {
@@ -146,9 +149,10 @@ const Constructor = () => {
     setMessages(prev => [...prev, newMessage]);
     setInputMessage('');
     
-    // Set app as created once user sends a message
+    // If app is not created, show settings dialog
     if (!isAppCreated) {
-      setIsAppCreated(true);
+      setShowSettingsDialog(true);
+      return;
     }
     
     // Simulate AI response
@@ -162,6 +166,24 @@ const Constructor = () => {
       setMessages(prev => [...prev, aiResponse]);
     }, 1000);
   }, [inputMessage, isAppCreated]);
+
+  const handleConfirmSettings = (settings: AppSettings) => {
+    console.log('App settings confirmed:', settings);
+    setAppSettings(settings);
+    setIsAppCreated(true);
+    setShowSettingsDialog(false);
+    
+    // Send a confirmation message from AI
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: Date.now().toString(),
+        content: `Отлично! Я создал новое приложение "${settings.appName}". Теперь давайте начнем работу над вашим запросом.`,
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    }, 1000);
+  };
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -190,6 +212,11 @@ const Constructor = () => {
 
   return (
     <div className="h-screen w-full bg-background">
+      <AppSettingsDialog 
+        isOpen={showSettingsDialog}
+        onClose={() => setShowSettingsDialog(false)}
+        onConfirm={handleConfirmSettings}
+      />
       <ResizablePanelGroup
         direction="horizontal"
         className="h-screen"
