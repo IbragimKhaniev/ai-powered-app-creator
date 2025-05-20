@@ -1,24 +1,17 @@
 
 import React from 'react';
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { CONSTRUCTOR_TEXT } from '../../constants';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AppPreviewCard: React.FC = () => {
   return (
-    <div className="h-full flex items-center justify-center">
-      <Card className="w-full max-w-lg p-6 text-center shadow-lg border border-primary/10 bg-white/95 backdrop-blur-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 to-transparent pointer-events-none" />
-        
-        <h3 className="text-xl font-medium mb-4 text-primary">{CONSTRUCTOR_TEXT.APP_PREVIEW_TITLE}</h3>
-        <p className="text-muted-foreground mb-6">
-          {CONSTRUCTOR_TEXT.APP_PREVIEW_DESCRIPTION}
-        </p>
-        
-        {/* App Skeleton UI */}
-        <div className="p-4 border rounded-lg border-gray-200 bg-gray-50/70 shadow-inner">
+    <div className="h-full flex flex-col">
+      {/* Skeleton UI wrapper - fills the entire preview window */}
+      <div className="flex-1 p-4 bg-gray-50/80 relative">
+        {/* App skeleton layout */}
+        <div className="h-full grid grid-rows-[auto_1fr_auto] gap-4">
           {/* Header skeleton */}
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
             <Skeleton className="h-8 w-32" />
             <div className="flex space-x-2">
               <Skeleton className="h-8 w-8 rounded-full" />
@@ -26,44 +19,58 @@ const AppPreviewCard: React.FC = () => {
             </div>
           </div>
           
-          {/* Content skeletons */}
-          <div className="space-y-4">
-            {/* Navigation */}
-            <div className="flex space-x-2 mb-3">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-16" />
+          {/* Main content area */}
+          <div className="grid grid-cols-4 gap-4">
+            {/* Sidebar */}
+            <div className="col-span-1 bg-white rounded-lg shadow-sm p-4 space-y-3">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-6 w-5/6" />
+              <Skeleton className="h-6 w-4/5" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-2/3" />
             </div>
             
-            {/* Main content area */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 space-y-3">
-                <Skeleton className="h-24 w-full" />
-                <div className="grid grid-cols-2 gap-3">
-                  <Skeleton className="h-28 w-full" />
-                  <Skeleton className="h-28 w-full" />
-                </div>
+            {/* Main content */}
+            <div className="col-span-3 bg-white rounded-lg shadow-sm p-4 space-y-4">
+              <Skeleton className="h-8 w-1/2" />
+              <Skeleton className="h-4 w-3/4" />
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-32 w-full" />
+                <Skeleton className="h-32 w-full" />
+              </div>
+              <Skeleton className="h-24 w-full" />
+              <div className="grid grid-cols-3 gap-3">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
                 <Skeleton className="h-16 w-full" />
               </div>
-              <div className="space-y-3">
-                <Skeleton className="h-32 w-full" />
-                <Skeleton className="h-32 w-full" />
-              </div>
             </div>
-            
-            {/* Footer area */}
-            <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-32" />
-            </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-6 w-40" />
           </div>
         </div>
         
-        {/* Small hint below the preview */}
-        <p className="text-xs text-muted-foreground mt-4 opacity-70">
-          {CONSTRUCTOR_TEXT.PREVIEW_AREA}
-        </p>
-      </Card>
+        {/* Centered message overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-lg max-w-md text-center border border-primary/10 animate-fade-in">
+            <h3 className="text-xl font-medium mb-3 text-primary">{CONSTRUCTOR_TEXT.CREATE_APP}</h3>
+            <p className="text-muted-foreground mb-4">
+              {CONSTRUCTOR_TEXT.CREATE_APP_DESCRIPTION}
+            </p>
+            <div className="flex justify-center items-center space-x-2 text-sm text-primary/70">
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="font-bold">1</span>
+              </div>
+              <span>Напишите сообщение в чат слева</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
