@@ -100,7 +100,7 @@ const Constructor = () => {
             </ScrollArea>
             
             <div className="border-t p-4">
-              <div className="flex flex-col gap-2">
+              <div className="relative">
                 <Textarea
                   placeholder="Введите сообщение..."
                   value={inputMessage}
@@ -111,11 +111,13 @@ const Constructor = () => {
                       handleSendMessage();
                     }
                   }}
-                  className="min-h-[80px] resize-none"
+                  className="min-h-[80px] resize-none pr-16"
                 />
-                <Button onClick={handleSendMessage} className="self-end">
-                  <Send className="h-4 w-4 mr-2" />
-                  Отправить
+                <Button 
+                  onClick={handleSendMessage} 
+                  className="absolute bottom-3 right-3 rounded-full w-10 h-10 p-0 flex items-center justify-center"
+                >
+                  <Send className="h-5 w-5" />
                 </Button>
               </div>
             </div>
