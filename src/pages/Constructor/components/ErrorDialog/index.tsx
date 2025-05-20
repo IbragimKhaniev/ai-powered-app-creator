@@ -39,7 +39,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
         <DialogFooter className="sm:justify-center mt-4">
           <Button 
             onClick={onTryFix}
-            className="bg-orange-500 hover:bg-orange-600 text-white w-full sm:w-auto rounded-full"
+            className="bg-gray-500 hover:bg-gray-600 text-white w-full sm:w-auto rounded-full"
           >
             Попробовать исправить
           </Button>
