@@ -26,7 +26,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
 }) => {
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b p-4 flex justify-between items-center bg-white">
+      <div className="border-b flex justify-between items-center bg-white p-4">
         <Header 
           title={CONSTRUCTOR_TEXT.PREVIEW}
           description={CONSTRUCTOR_TEXT.PREVIEW_DESCRIPTION}
