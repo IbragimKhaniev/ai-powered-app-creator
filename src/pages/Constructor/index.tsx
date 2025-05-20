@@ -4,7 +4,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft, Loader } from "lucide-react";
+import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft, Loader, MessageSquarePlus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
@@ -65,6 +65,7 @@ const Constructor = () => {
   const [showLogs, setShowLogs] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isAppCreated, setIsAppCreated] = useState(false);
 
   // Имитация загрузки приложения
   useEffect(() => {
@@ -146,6 +147,11 @@ const Constructor = () => {
     setMessages(prev => [...prev, newMessage]);
     setInputMessage('');
     
+    // Set app as created once user sends a message
+    if (!isAppCreated) {
+      setIsAppCreated(true);
+    }
+    
     // Simulate AI response
     setTimeout(() => {
       const aiResponse: Message = {
@@ -156,7 +162,7 @@ const Constructor = () => {
       };
       setMessages(prev => [...prev, aiResponse]);
     }, 1000);
-  }, [inputMessage]);
+  }, [inputMessage, isAppCreated]);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -360,6 +366,24 @@ const Constructor = () => {
                       </div>
                       <Progress value={loadingProgress} className="h-2 mb-2" />
                       <p className="text-sm text-muted-foreground">{loadingProgress}% завершено</p>
+                    </Card>
+                  </div>
+                ) : !isAppCreated ? (
+                  <div className="h-full flex items-center justify-center">
+                    <Card className="w-full max-w-md p-8 text-center">
+                      <h3 className="text-xl font-medium mb-4">Создайте свое приложение</h3>
+                      <div className="flex justify-center mb-6">
+                        <MessageSquarePlus className="h-16 w-16 text-muted-foreground" />
+                      </div>
+                      <p className="text-muted-foreground mb-6">
+                        Создайте свое приложение просто написав сообщение в чат
+                      </p>
+                      <Button 
+                        onClick={() => document.querySelector('textarea')?.focus()}
+                        className="w-full"
+                      >
+                        Начать создание
+                      </Button>
                     </Card>
                   </div>
                 ) : (
