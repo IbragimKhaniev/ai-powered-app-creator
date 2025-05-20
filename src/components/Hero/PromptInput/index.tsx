@@ -33,7 +33,7 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   }, [handleSubmit]);
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-md p-4">
+    <div className="w-full bg-white rounded-lg shadow-md p-5">
       <Input.TextArea
         value={prompt}
         onChange={handlePromptChange}
@@ -42,12 +42,12 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
         autoSize={{ minRows: 2, maxRows: 6 }}
         className="resize-none border-0 focus:shadow-none"
       />
-      <div className="flex justify-between items-center mt-4">
-        <button className="text-gray-500 flex items-center gap-1 text-sm">
+      <div className="flex justify-between items-center mt-5">
+        <button className="text-gray-500 flex items-center gap-2 text-sm hover:text-gray-700 transition-colors">
           <span className="i-lucide-paperclip h-4 w-4"></span>
           Attach
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="text-sm text-gray-500">Public</span>
           <Switch
             size="small"
