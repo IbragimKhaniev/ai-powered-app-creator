@@ -53,6 +53,13 @@ const AppPreviewCard: React.FC = () => {
             <Skeleton className="h-6 w-40" />
           </div>
         </div>
+        
+        {/* Text at the bottom of the skeleton */}
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+          <p className="text-primary/70 font-medium text-lg animate-pulse">
+            Ваше приложение разворачивается ...
+          </p>
+        </div>
       </div>
     </div>
   );
