@@ -4,10 +4,14 @@ import { Button as AntButton } from 'antd';
 import { ButtonProps as AntButtonProps } from 'antd/es/button';
 import { cn } from '@/lib/utils';
 
-interface ButtonProps extends AntButtonProps {
+// Define custom props separate from Ant Design's ButtonProps
+interface CustomButtonProps {
   variant?: 'default' | 'primary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
 }
+
+// Combine our custom props with Ant Design's props, but omit 'type' which we'll handle ourselves
+interface ButtonProps extends Omit<AntButtonProps, 'type'>, CustomButtonProps {}
 
 const Button: React.FC<ButtonProps> = React.memo(({
   children,
