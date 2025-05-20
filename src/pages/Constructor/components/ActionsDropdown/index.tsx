@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,17 +7,19 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, ExternalLink, Logs } from "lucide-react";
+import { RefreshCw, ExternalLink, Logs, AlertTriangle } from "lucide-react";
 import { CONSTRUCTOR_TEXT } from '../../constants';
 
 interface ActionsDropdownProps {
   showLogs: boolean;
   onToggleLogs: () => void;
+  onShowErrors?: () => void;
 }
 
 const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ 
   showLogs, 
-  onToggleLogs 
+  onToggleLogs,
+  onShowErrors
 }) => {
   return (
     <DropdownMenu>
@@ -53,6 +55,16 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
             {showLogs ? CONSTRUCTOR_TEXT.HIDE_LOGS : CONSTRUCTOR_TEXT.SHOW_LOGS}
           </span>
         </DropdownMenuItem>
+        
+        {onShowErrors && (
+          <DropdownMenuItem 
+            onClick={onShowErrors}
+            className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
+          >
+            <AlertTriangle className="mr-3 h-4 w-4 text-destructive" />
+            <span>Посмотреть ошибки</span>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

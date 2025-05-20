@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../Header';
 import ActionsDropdown from '../ActionsDropdown';
 import LoadingState from '../LoadingState';
 import AppCreationCard from '../AppCreationCard';
 import AppPreviewCard from '../AppPreviewCard';
+import ErrorDialog from '../ErrorDialog';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 
 interface PreviewPanelProps {
@@ -14,6 +15,7 @@ interface PreviewPanelProps {
   showLogs: boolean;
   onToggleLogs: () => void;
   onStartCreation: () => void;
+  onTryFix?: () => void;
 }
 
 const PreviewPanel: React.FC<PreviewPanelProps> = ({
@@ -22,8 +24,26 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
   isAppCreated,
   showLogs,
   onToggleLogs,
-  onStartCreation
+  onStartCreation,
+  onTryFix = () => console.log("Try fix clicked")
 }) => {
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+
+  const handleShowErrors = () => {
+    setShowErrorDialog(true);
+  };
+
+  const handleCloseErrorDialog = () => {
+    setShowErrorDialog(false);
+  };
+
+  const handleTryFix = () => {
+    if (onTryFix) {
+      onTryFix();
+    }
+    setShowErrorDialog(false);
+  };
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b flex justify-between items-center bg-white p-4">
@@ -41,7 +61,11 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             </div>
           )}
         </div>
-        <ActionsDropdown showLogs={showLogs} onToggleLogs={onToggleLogs} />
+        <ActionsDropdown 
+          showLogs={showLogs} 
+          onToggleLogs={onToggleLogs}
+          onShowErrors={handleShowErrors}
+        />
       </div>
       
       <div className="flex-1 overflow-auto p-6 bg-gray-50">
@@ -53,6 +77,12 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
           <AppPreviewCard />
         )}
       </div>
+
+      <ErrorDialog
+        isOpen={showErrorDialog}
+        onClose={handleCloseErrorDialog}
+        onTryFix={handleTryFix}
+      />
     </div>
   );
 };
