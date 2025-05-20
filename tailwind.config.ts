@@ -44,14 +44,20 @@ export default {
         card: 'hsl(var(--card))',
         'card-foreground': 'hsl(var(--card-foreground))',
         'brand-red': '#ff5353',
+        'brand-blue': '#3b82f6',
+        'brand-purple': '#8b5cf6',
       },
       backgroundImage: {
-        'hero-gradient': 'radial-gradient(circle at 50% 50%, rgba(173, 216, 255, 0.8) 0%, rgba(255, 119, 119, 0.5) 60%)',
+        'hero-gradient': 'radial-gradient(circle at 50% 50%, rgba(219, 234, 254, 0.7) 0%, rgba(239, 246, 255, 0.5) 60%)',
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: {
+        'soft': '0 4px 15px rgba(0, 0, 0, 0.05)',
+        'card': '0 2px 10px rgba(0, 0, 0, 0.08)',
       },
       keyframes: {
         'accordion-down': {

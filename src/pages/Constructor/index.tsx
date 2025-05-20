@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -190,7 +189,7 @@ const Constructor = () => {
   };
 
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-full bg-background">
       <ResizablePanelGroup
         direction="horizontal"
         className="h-screen"
@@ -198,7 +197,7 @@ const Constructor = () => {
         {/* Chat Panel */}
         <ResizablePanel defaultSize={40} minSize={30}>
           <div className="flex h-full flex-col">
-            <div className="border-b p-4 flex justify-between items-center">
+            <div className="border-b p-4 flex justify-between items-center bg-white">
               <div className="flex items-center">
                 <Button 
                   variant="ghost" 
@@ -218,7 +217,7 @@ const Constructor = () => {
               </div>
             </div>
             
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 p-4 bg-background">
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div
@@ -232,10 +231,10 @@ const Constructor = () => {
                       />
                     ) : (
                       <div
-                        className={`max-w-[80%] rounded-lg p-4 ${
+                        className={`max-w-[80%] rounded-xl p-4 ${
                           message.isUser
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-muted'
+                            ? 'bg-primary text-primary-foreground shadow-sm'
+                            : 'bg-white border border-gray-100 shadow-sm'
                         }`}
                       >
                         <div className="mb-1">{message.content}</div>
@@ -249,7 +248,7 @@ const Constructor = () => {
               </div>
             </ScrollArea>
             
-            <div className="border-t p-4">
+            <div className="border-t p-4 bg-white">
               <div className="relative">
                 <Textarea
                   placeholder="Введите сообщение..."
@@ -261,11 +260,11 @@ const Constructor = () => {
                       handleSendMessage();
                     }
                   }}
-                  className="min-h-[80px] resize-none pr-12"
+                  className="min-h-[80px] resize-none pr-12 rounded-xl border-gray-200 focus:border-blue-300 shadow-sm"
                 />
                 <Button 
                   onClick={handleSendMessage} 
-                  className="absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center"
+                  className="absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center bg-blue-500 hover:bg-blue-600"
                 >
                   <Send className="h-4 w-4" />
                 </Button>
@@ -279,7 +278,7 @@ const Constructor = () => {
         {/* Preview/Logs Panel */}
         <ResizablePanel defaultSize={60}>
           <div className="flex h-full flex-col">
-            <div className="border-b p-4 flex justify-between items-center">
+            <div className="border-b p-4 flex justify-between items-center bg-white">
               <div className="flex items-center">
                 {showLogs && (
                   <Button 
@@ -304,11 +303,11 @@ const Constructor = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="rounded-full">
                     Действия
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[200px]">
+                <DropdownMenuContent align="end" className="w-[200px] rounded-xl">
                   <DropdownMenuItem>
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Перезапустить сервер
@@ -329,7 +328,7 @@ const Constructor = () => {
               <ScrollArea className="flex-1 p-4 bg-gray-50">
                 <div className="space-y-2">
                   {mockLogs.map((log) => (
-                    <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-md border">
+                    <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
                       <div className="flex flex-col space-y-2">
                         <div className="flex justify-between">
                           <div>
@@ -344,7 +343,7 @@ const Constructor = () => {
                         {isErrorOrWarning(log.content) && (
                           <Button 
                             onClick={() => handleTryFixLog(log.content)}
-                            className="bg-orange-500 hover:bg-orange-600 text-white mt-1 self-start"
+                            className="bg-orange-500 hover:bg-orange-600 text-white mt-1 self-start rounded-full"
                             size="sm"
                           >
                             Попробовать исправить
@@ -359,10 +358,10 @@ const Constructor = () => {
               <div className="flex-1 overflow-auto p-6 bg-gray-50">
                 {isLoading ? (
                   <div className="h-full flex flex-col items-center justify-center">
-                    <Card className="w-full max-w-md p-8 text-center">
+                    <Card className="w-full max-w-md p-8 text-center shadow-card">
                       <h3 className="text-xl font-medium mb-4">Ваше приложение разворачивается</h3>
                       <div className="flex justify-center mb-6">
-                        <Loader className="h-10 w-10 animate-spin text-primary" />
+                        <Loader className="h-10 w-10 animate-spin text-blue-500" />
                       </div>
                       <Progress value={loadingProgress} className="h-2 mb-2" />
                       <p className="text-sm text-muted-foreground">{loadingProgress}% завершено</p>
@@ -370,17 +369,17 @@ const Constructor = () => {
                   </div>
                 ) : !isAppCreated ? (
                   <div className="h-full flex items-center justify-center">
-                    <Card className="w-full max-w-md p-8 text-center">
+                    <Card className="w-full max-w-md p-8 text-center shadow-card">
                       <h3 className="text-xl font-medium mb-4">Создайте свое приложение</h3>
                       <div className="flex justify-center mb-6">
-                        <MessageSquarePlus className="h-16 w-16 text-muted-foreground" />
+                        <MessageSquarePlus className="h-16 w-16 text-blue-200" />
                       </div>
                       <p className="text-muted-foreground mb-6">
                         Создайте свое приложение просто написав сообщение в чат
                       </p>
                       <Button 
                         onClick={() => document.querySelector('textarea')?.focus()}
-                        className="w-full"
+                        className="w-full rounded-full bg-blue-500 hover:bg-blue-600"
                       >
                         Начать создание
                       </Button>
@@ -388,12 +387,12 @@ const Constructor = () => {
                   </div>
                 ) : (
                   <div className="h-full flex items-center justify-center">
-                    <Card className="w-full max-w-md p-8 text-center">
+                    <Card className="w-full max-w-md p-8 text-center shadow-card">
                       <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
                       <p className="text-muted-foreground mb-6">
                         По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
                       </p>
-                      <div className="p-8 border border-dashed rounded-lg">
+                      <div className="p-8 border border-dashed rounded-lg border-gray-200">
                         <p className="text-muted-foreground">Область предпросмотра приложения</p>
                       </div>
                     </Card>
@@ -409,4 +408,3 @@ const Constructor = () => {
 };
 
 export default Constructor;
-

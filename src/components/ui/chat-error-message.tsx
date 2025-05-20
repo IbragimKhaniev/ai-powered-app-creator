@@ -13,7 +13,7 @@ const ChatErrorMessage = ({
   onTryFix = () => console.log("Try fix clicked") 
 }: ChatErrorMessageProps = {}) => {
   return (
-    <div className="flex flex-col gap-3 w-full max-w-[80%] rounded-lg p-4 bg-muted">
+    <div className="flex flex-col gap-3 w-full max-w-[80%] rounded-xl p-4 bg-white border border-red-100 shadow-sm">
       <div className="flex items-center gap-2">
         <AlertTriangle className="h-5 w-5 text-destructive" />
         <span className="font-medium text-base">{message}</span>
@@ -23,7 +23,7 @@ const ChatErrorMessage = ({
           e.preventDefault();
           onTryFix();
         }}
-        className="bg-orange-500 hover:bg-orange-600 text-white w-full"
+        className="bg-orange-500 hover:bg-orange-600 text-white w-full rounded-full"
         size="sm"
       >
         Попробовать исправить
