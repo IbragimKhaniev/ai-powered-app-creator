@@ -1,16 +1,40 @@
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { Message } from './types';
-import { createUserMessage, createAIMessage } from './utils';
-import { mockLogs } from './mockData';
-import ChatPanel from './components/ChatPanel';
-import PreviewPanel from './components/PreviewPanel';
-import { toast } from "@/components/ui/sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Send, RefreshCw, ExternalLink, Logs, ArrowLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
-const Constructor: React.FC = () => {
-  const location = useLocation();
+interface Message {
+  id: string;
+  content: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
+// Моковые данные для логов
+const mockLogs = [
+  { id: '1', content: '[INFO] Server started on port 3000', timestamp: new Date('2025-05-20T10:00:00') },
+  { id: '2', content: '[INFO] Application initialized successfully', timestamp: new Date('2025-05-20T10:00:05') },
+  { id: '3', content: '[INFO] User authentication successful', timestamp: new Date('2025-05-20T10:15:22') },
+  { id: '4', content: '[WARNING] Memory usage is high (85%)', timestamp: new Date('2025-05-20T10:30:15') },
+  { id: '5', content: '[ERROR] Failed to connect to database', timestamp: new Date('2025-05-20T10:45:30') },
+  { id: '6', content: '[INFO] Database connection reestablished', timestamp: new Date('2025-05-20T10:46:25') },
+  { id: '7', content: '[INFO] New user registered: user@example.com', timestamp: new Date('2025-05-20T11:00:00') },
+  { id: '8', content: '[DEBUG] Processing request: GET /api/users', timestamp: new Date('2025-05-20T11:15:10') },
+  { id: '9', content: '[INFO] Request completed in 120ms', timestamp: new Date('2025-05-20T11:15:11') },
+  { id: '10', content: '[INFO] Show more projects', timestamp: new Date('2025-05-20T19:49:26') }
+];
+
+const Constructor = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
       id: '1', 
@@ -19,39 +43,55 @@ const Constructor: React.FC = () => {
       timestamp: new Date() 
     }
   ]);
-  
+  const [inputMessage, setInputMessage] = useState('');
   const [showLogs, setShowLogs] = useState(false);
 
-  // Extract appId from URL if present
-  const appId = useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    return params.get('appId');
-  }, [location.search]);
-
-  // Effect to load app data when appId is present
-  useEffect(() => {
-    if (appId) {
-      toast.success(`Загружено приложение с ID: ${appId}`);
-      console.log(`Loading app with ID: ${appId}`);
-    }
-  }, [appId]);
-
-  const handleSendMessage = useCallback((content: string) => {
-    // Add user message
-    const userMessage = createUserMessage(content);
+  const handleSendMessage = () => {
+    if (inputMessage.trim() === '') return;
     
-    setMessages(prevMessages => [...prevMessages, userMessage]);
+    // Add user message
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      content: inputMessage,
+      isUser: true,
+      timestamp: new Date()
+    };
+    
+    setMessages([...messages, newMessage]);
+    setInputMessage('');
     
     // Simulate AI response
     setTimeout(() => {
-      const aiMessage = createAIMessage('Я получил ваше сообщение. Сейчас я работаю над вашим запросом...');
-      setMessages(prevMessages => [...prevMessages, aiMessage]);
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: 'Я получил ваше сообщение. Сейчас я работаю над вашим запросом...',
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiResponse]);
     }, 1000);
-  }, []);
+  };
 
-  const handleToggleLogs = useCallback(() => {
-    setShowLogs(prevState => !prevState);
-  }, []);
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleToggleLogs = () => {
+    setShowLogs(!showLogs);
+  };
+
+  const renderLogLevel = (content: string) => {
+    if (content.includes('[INFO]')) {
+      return <span className="text-blue-500 font-medium">[INFO]</span>;
+    } else if (content.includes('[WARNING]')) {
+      return <span className="text-yellow-500 font-medium">[WARNING]</span>;
+    } else if (content.includes('[ERROR]')) {
+      return <span className="text-red-500 font-medium">[ERROR]</span>;
+    } else if (content.includes('[DEBUG]')) {
+      return <span className="text-green-500 font-medium">[DEBUG]</span>;
+    }
+    return null;
+  };
 
   return (
     <div className="h-screen w-full">
@@ -61,21 +101,146 @@ const Constructor: React.FC = () => {
       >
         {/* Chat Panel */}
         <ResizablePanel defaultSize={40} minSize={30}>
-          <ChatPanel 
-            messages={messages} 
-            onSendMessage={handleSendMessage} 
-          />
+          <div className="flex h-full flex-col">
+            <div className="border-b p-4">
+              <h2 className="text-xl font-bold">Чат с ИИ</h2>
+              <p className="text-sm text-muted-foreground">Опишите что вы хотите создать</p>
+            </div>
+            
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-lg p-4 ${
+                        message.isUser
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <div className="mb-1">{message.content}</div>
+                      <div className={`text-xs ${message.isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+                        {formatTime(message.timestamp)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+            
+            <div className="border-t p-4">
+              <div className="relative">
+                <Textarea
+                  placeholder="Введите сообщение..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  className="min-h-[80px] resize-none pr-12"
+                />
+                <Button 
+                  onClick={handleSendMessage} 
+                  className="absolute bottom-3 right-3 rounded-full w-8 h-8 p-0 flex items-center justify-center"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </ResizablePanel>
         
         <ResizableHandle withHandle />
         
         {/* Preview/Logs Panel */}
         <ResizablePanel defaultSize={60}>
-          <PreviewPanel
-            showLogs={showLogs}
-            onToggleLogs={handleToggleLogs}
-            logs={mockLogs}
-          />
+          <div className="flex h-full flex-col">
+            <div className="border-b p-4 flex justify-between items-center">
+              <div className="flex items-center">
+                {showLogs && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={handleToggleLogs} 
+                    className="mr-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="sr-only">Назад</span>
+                  </Button>
+                )}
+                <div>
+                  <h2 className="text-xl font-bold">{showLogs ? "Логи" : "Превью"}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    {showLogs 
+                      ? "Просмотр логов приложения" 
+                      : "Здесь будет отображаться разрабатываемое приложение"}
+                  </p>
+                </div>
+              </div>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    Действия
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuItem>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Перезапустить сервер
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Открыть в новой вкладке
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleToggleLogs}>
+                    <Logs className="mr-2 h-4 w-4" />
+                    {showLogs ? "Скрыть логи" : "Прочитать логи"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            
+            {showLogs ? (
+              <ScrollArea className="flex-1 p-4 bg-gray-50">
+                <div className="space-y-2">
+                  {mockLogs.map((log) => (
+                    <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-md border">
+                      <div className="flex justify-between">
+                        <div>
+                          {renderLogLevel(log.content)} 
+                          <span className="ml-2">{log.content.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '')}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {formatTime(log.timestamp)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            ) : (
+              <div className="flex-1 overflow-auto p-6 bg-gray-50">
+                <div className="h-full flex items-center justify-center">
+                  <Card className="w-full max-w-md p-8 text-center">
+                    <h3 className="text-xl font-medium mb-4">Превью создаваемого приложения</h3>
+                    <p className="text-muted-foreground mb-6">
+                      По мере развития вашего диалога с ИИ, здесь будет отображаться интерфейс разрабатываемого приложения.
+                    </p>
+                    <div className="p-8 border border-dashed rounded-lg">
+                      <p className="text-muted-foreground">Область предпросмотра приложения</p>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            )}
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

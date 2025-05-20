@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link as RouterLink } from "react-router-dom";
-import { buildUrl } from "@/utils/url";
 
 // Mock data - In a real app, this would come from an API or context
 const userData = {
@@ -172,7 +172,7 @@ const Profile = () => {
                               asChild
                               className="gap-1"
                             >
-                              <RouterLink to={buildUrl("/constructor", { appId: app.id })}>
+                              <RouterLink to={`/constructor?appId=${app.id}`}>
                                 <Edit className="h-4 w-4" />
                                 Редактировать
                               </RouterLink>
