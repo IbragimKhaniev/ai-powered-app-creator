@@ -1,7 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { Button as AntButton } from 'antd';
-import type { ButtonProps as AntButtonProps } from 'antd/es/button';
+import { ButtonProps as AntButtonProps } from 'antd/es/button';
 import { cn } from '@/lib/utils';
 
 // Define custom props separate from Ant Design's ButtonProps
@@ -10,8 +10,8 @@ interface CustomButtonProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-// Combine our custom props with Ant Design's props, omitting the properties we'll handle ourselves
-type ButtonProps = Omit<AntButtonProps, 'type' | 'size'> & CustomButtonProps;
+// Combine our custom props with Ant Design's props, but omit 'type' which we'll handle ourselves
+interface ButtonProps extends Omit<AntButtonProps, 'type'>, CustomButtonProps {}
 
 const Button: React.FC<ButtonProps> = React.memo(({
   children,
@@ -44,30 +44,9 @@ const Button: React.FC<ButtonProps> = React.memo(({
     }
   }, [size]);
 
-  // Map our custom size to Ant Design compatible props
-  const antdSize = useMemo(() => {
-    switch (size) {
-      case 'sm': return 'small';
-      case 'lg': return 'large';
-      default: return 'middle';
-    }
-  }, [size]);
-
-  // Map our custom variant to Ant Design's type
-  const antdType = useMemo(() => {
-    switch (variant) {
-      case 'primary': return 'primary';
-      case 'outline': return 'default';
-      case 'ghost': return 'text';
-      default: return 'default';
-    }
-  }, [variant]);
-
   return (
     <AntButton
       {...props}
-      type={antdType}
-      size={antdSize}
       className={cn(
         'inline-flex items-center justify-center rounded-md font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',

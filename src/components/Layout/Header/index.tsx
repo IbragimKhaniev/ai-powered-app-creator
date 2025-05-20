@@ -3,9 +3,8 @@ import React, { useMemo } from 'react';
 import { useScrollPosition } from '@/utils/hooks';
 import { NAVIGATION } from '@/config/constants';
 import Logo from '@/components/Logo';
-import { Button } from '@/components/ui/button';
+import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
 
 const Header: React.FC = React.memo(() => {
   const scrollPosition = useScrollPosition();
@@ -22,15 +21,8 @@ const Header: React.FC = React.memo(() => {
     <header className={headerClasses}>
       <Logo />
       <div className="flex items-center gap-4">
-        <Link to="/auth">
-          <Button variant="ghost" size="sm">{NAVIGATION.LOG_IN}</Button>
-        </Link>
-        <Link to="/profile">
-          <Button variant="outline" size="sm">Профиль</Button>
-        </Link>
-        <Link to="/auth">
-          <Button variant="default" size="sm">{NAVIGATION.GET_STARTED}</Button>
-        </Link>
+        <Button variant="ghost" size="sm">{NAVIGATION.LOG_IN}</Button>
+        <Button variant="primary" size="sm">{NAVIGATION.GET_STARTED}</Button>
       </div>
     </header>
   );
