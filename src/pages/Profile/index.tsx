@@ -3,6 +3,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 import ProfileHeader from './components/ProfileHeader';
 import ProfileInfo from './components/ProfileInfo';
 import AppsList from './components/AppsList';
@@ -53,13 +54,14 @@ const Profile: React.FC = () => {
         <TabsContent value="apps">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">{PROFILE_STRINGS.APPS.TITLE}</h2>
-            <Button 
-              onClick={handleCreateApp}
-              className="bg-primary text-white flex items-center gap-2 rounded-full"
-            >
-              <Plus className="h-4 w-4" />
-              {PROFILE_STRINGS.CREATE_APP_BUTTON}
-            </Button>
+            <Link to="/constructor">
+              <Button 
+                className="bg-primary text-white flex items-center gap-2 rounded-full"
+              >
+                <Plus className="h-4 w-4" />
+                {PROFILE_STRINGS.CREATE_APP_BUTTON}
+              </Button>
+            </Link>
           </div>
           <AppsList apps={appsData} />
         </TabsContent>
