@@ -1,16 +1,9 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CONSTRUCTOR_TEXT } from '../../constants';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 interface HeaderProps {
   title?: string;
   description?: string;
@@ -18,46 +11,28 @@ interface HeaderProps {
   onBackClick?: () => void;
   compact?: boolean;
 }
-
-const Header: React.FC<HeaderProps> = ({ 
-  title = "", 
+const Header: React.FC<HeaderProps> = ({
+  title = "",
   description,
-  showBackButton = false, 
+  showBackButton = false,
   onBackClick,
   compact = false
 }) => {
-  return (
-    <div className="flex items-center justify-between w-full">
+  return <div className="flex items-center justify-between w-full">
       <div className="flex items-center">
-        {showBackButton && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="mr-2" 
-            onClick={onBackClick}
-            asChild={!onBackClick}
-          >
-            {onBackClick ? (
-              <span onClick={onBackClick}>
+        {showBackButton && <Button variant="ghost" size="icon" className="mr-2" onClick={onBackClick} asChild={!onBackClick}>
+            {onBackClick ? <span onClick={onBackClick}>
                 <ArrowLeft className="h-4 w-4" />
                 <span className="sr-only">{CONSTRUCTOR_TEXT.BACK_TO_PROFILE}</span>
-              </span>
-            ) : (
-              <Link to="/profile">
+              </span> : <Link to="/profile">
                 <ArrowLeft className="h-4 w-4" />
                 <span className="sr-only">{CONSTRUCTOR_TEXT.BACK_TO_PROFILE}</span>
-              </Link>
-            )}
-          </Button>
-        )}
-        {title && (
-          <span className={`${compact ? "text-xs text-muted-foreground" : "text-xl font-bold"}`}>
+              </Link>}
+          </Button>}
+        {title && <span className={`${compact ? "text-xs text-muted-foreground" : "text-xl font-bold"}`}>
             {title}
-          </span>
-        )}
-        {description && !compact && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+          </span>}
+        {description && !compact && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       
       <DropdownMenu>
@@ -73,8 +48,6 @@ const Header: React.FC<HeaderProps> = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
-  );
+    </div>;
 };
-
 export default Header;
