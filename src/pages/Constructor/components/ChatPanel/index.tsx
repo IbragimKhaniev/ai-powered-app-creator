@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Header from '../Header';
@@ -7,12 +8,14 @@ import { Message } from '../../types';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Microchip } from "lucide-react";
+
 interface ChatPanelProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
   onTryFix: () => void;
   isLoading?: boolean;
 }
+
 const AI_MODELS = [{
   id: 'gpt-4o',
   name: 'GPT-4o'
@@ -23,6 +26,7 @@ const AI_MODELS = [{
   id: 'gpt-4.5-preview',
   name: 'GPT-4.5 Preview'
 }];
+
 const ChatPanel: React.FC<ChatPanelProps> = ({
   messages,
   onSendMessage,
@@ -33,9 +37,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const handleModelChange = (value: string) => {
     setSelectedModel(value);
   };
+
   return <div className="flex h-full flex-col">
-      <div className="border-b flex justify-between items-center bg-white p-4">
-        <Header title={CONSTRUCTOR_TEXT.CHAT_WITH_AI} description={CONSTRUCTOR_TEXT.DESCRIBE_APP} showBackButton={true} />
+      <div className="border-b flex justify-between items-center py-3 px-4">
+        <Header 
+          title="Конструктор AI" 
+          showBackButton={true} 
+          compact={true} 
+        />
       </div>
       
       <ScrollArea className="flex-1 p-4 bg-background">
@@ -62,4 +71,5 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       </div>
     </div>;
 };
+
 export default ChatPanel;
