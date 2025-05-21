@@ -51,13 +51,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
             </div>
             
             <div className="pt-4 border-t">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
-                  <p className="text-lg font-medium">{userData.plan}</p>
-                </div>
-                
-                {userData.plan !== "PRO" && (
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
+                <p className="text-lg font-medium">{userData.plan}</p>
+              </div>
+              
+              {userData.plan !== "PRO" && (
+                <div className="mt-3">
                   <Button 
                     variant="default" 
                     size="sm" 
@@ -66,8 +66,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
                     <Crown className="h-4 w-4" />
                     {PROFILE_STRINGS.PROFILE_INFO.UPGRADE_TO_PRO}
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
             
             <div>
