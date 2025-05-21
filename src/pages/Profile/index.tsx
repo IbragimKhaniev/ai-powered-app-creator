@@ -7,12 +7,49 @@ import ProfileHeader from './components/ProfileHeader';
 import ProfileInfo from './components/ProfileInfo';
 import AppsList from './components/AppsList';
 import AppSettingsDialog from '@/components/AppSettingsDialog';
-import { userData, userApps } from './mockData';
 import { PROFILE_STRINGS } from './constants';
+import { useGetUser, useGetApplications } from '@/api/core';
+import { mapUserData, mapApplicationsData } from './utils/dataMappers';
+import { useToast } from '@/hooks/use-toast';
 
 const Profile: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
   
+  // Загрузка данных пользователя
+  const { 
+    data: userData, 
+    isLoading: isUserLoading,
+    error: userError 
+  } = useGetUser({
+    query: {
+      onError: () => {
+        toast({
+          title: 'Ошибка загрузки',
+          description: 'Не удалось загрузить данные пользователя',
+          variant: 'destructive'
+        });
+      }
+    }
+  });
+  
+  // Загрузка приложений пользователя
+  const {
+    data: applicationsData,
+    isLoading: isAppsLoading,
+    error: appsError
+  } = useGetApplications({
+    query: {
+      onError: () => {
+        toast({
+          title: 'Ошибка загрузки',
+          description: 'Не удалось загрузить список приложений',
+          variant: 'destructive'
+        });
+      }
+    }
+  });
+
   const handleCreateApp = useCallback(() => {
     setDialogOpen(true);
   }, []);
@@ -23,13 +60,43 @@ const Profile: React.FC = () => {
 
   const handleConfirmSettings = useCallback((settings: any) => {
     console.log('New app settings:', settings);
-    // In a real app, this would create a new application
+    // В реальном приложении, здесь было бы создание приложения
     setDialogOpen(false);
   }, []);
 
-  // In a real app, you would fetch user data here with React Query or similar
-  const profileData = useMemo(() => userData, []);
-  const appsData = useMemo(() => userApps, []);
+  const handleLogout = useCallback(() => {
+    // Удаляем признак авторизации из localStorage
+    localStorage.removeItem('isAuthenticated');
+    // Перенаправляем на главную страницу
+    window.location.href = '/';
+  }, []);
+
+  // Преобразуем данные пользователя в нужный формат
+  const profileData = useMemo(() => {
+    if (userData) {
+      return mapUserData(userData);
+    }
+    return null;
+  }, [userData]);
+
+  // Преобразуем данные приложений в нужный формат
+  const appsData = useMemo(() => {
+    if (applicationsData?.applications) {
+      return mapApplicationsData(applicationsData.applications);
+    }
+    return [];
+  }, [applicationsData]);
+
+  const isLoading = isUserLoading || isAppsLoading;
+  const hasError = userError || appsError;
+
+  if (isLoading) {
+    return <div className="container mx-auto py-10 px-4">Загрузка данных...</div>;
+  }
+
+  if (hasError) {
+    return <div className="container mx-auto py-10 px-4">Произошла ошибка при загрузке данных</div>;
+  }
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -37,7 +104,14 @@ const Profile: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
         <div className="md:col-span-1">
-          <ProfileInfo userData={profileData} />
+          {profileData && <ProfileInfo userData={profileData} />}
+          <Button 
+            variant="outline"
+            className="w-full mt-4"
+            onClick={handleLogout}
+          >
+            Выйти
+          </Button>
         </div>
         
         <div className="md:col-span-2">
