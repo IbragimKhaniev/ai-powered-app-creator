@@ -12,12 +12,8 @@ interface AppsListProps {
 const AppsList: React.FC<AppsListProps> = React.memo(({ apps }) => {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">{PROFILE_STRINGS.APPS.TITLE}</h2>
-      </div>
-      
       {apps.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {apps.map((app) => (
             <AppCard key={app.id} app={app} />
           ))}

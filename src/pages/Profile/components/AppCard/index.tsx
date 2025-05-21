@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, ExternalLink } from "lucide-react";
 import { UserApp } from "../../types";
-import TokenProgress from "../TokenProgress";
 import { formatDate } from "../../utils/profileUtils";
 import { APP_STATUS, PROFILE_STRINGS } from "../../constants";
 
@@ -55,8 +54,6 @@ const AppCard: React.FC<AppCardProps> = React.memo(({ app }) => {
               </a>
             </div>
           </div>
-          
-          <TokenProgress tokensUsed={app.tokensUsed} tokensTotal={app.tokensTotal} />
         </div>
       </CardContent>
       

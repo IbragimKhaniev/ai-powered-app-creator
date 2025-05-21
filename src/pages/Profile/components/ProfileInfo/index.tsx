@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 import { Mail } from "lucide-react";
 import { UserData } from "../../types";
 import { PROFILE_STRINGS } from "../../constants";
@@ -14,6 +15,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
   const userInitials = React.useMemo(() => {
     return userData.name.substring(0, 2).toUpperCase();
   }, [userData.name]);
+
+  // Calculate the percentage of tokens used
+  const tokenPercentage = React.useMemo(() => {
+    // Assuming the total tokens is 1000 for this example
+    const totalTokens = 1000;
+    return (userData.tokensLeft / totalTokens) * 100;
+  }, [userData.tokensLeft]);
 
   return (
     <Card className="h-full">
@@ -47,8 +55,11 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
             </div>
             
             <div>
-              <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.TOKENS_LEFT}</h3>
-              <p className="text-lg font-medium">{userData.tokensLeft}</p>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">{PROFILE_STRINGS.PROFILE_INFO.TOKENS_LEFT}</h3>
+              <div className="space-y-2">
+                <Progress value={tokenPercentage} className="h-2" />
+                <p className="text-sm text-right">{userData.tokensLeft} tokens left</p>
+              </div>
             </div>
           </div>
         </div>
