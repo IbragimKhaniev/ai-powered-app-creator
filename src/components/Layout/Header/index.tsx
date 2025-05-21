@@ -29,15 +29,8 @@ const Header: React.FC = React.memo(() => {
     <header className={headerClasses}>
       <Logo />
       <div className="flex items-center gap-4">
-        <Link to="/constructor">
-          <Button variant="ghost" size="sm">Конструктор</Button>
-        </Link>
-        
         {!isAuthenticated ? (
           <>
-            <Link to="/auth">
-              <Button variant="ghost" size="sm">{NAVIGATION.LOG_IN}</Button>
-            </Link>
             <Link to="/auth">
               <Button variant="default" size="sm">{NAVIGATION.GET_STARTED}</Button>
             </Link>

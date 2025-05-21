@@ -28,6 +28,7 @@ export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => (
       // Check if it's an authentication error
       if (error.response?.status === 401) {
         // Redirect to auth page on authentication error
+        localStorage.removeItem('isAuthenticated');
         window.location.pathname = '/auth';
       } else {
         // Display error message

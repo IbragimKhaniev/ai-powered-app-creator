@@ -15,7 +15,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = React.memo(({ title }) => {
   const handleLogout = useCallback(() => {
     // Удаляем признак авторизации из localStorage
     localStorage.removeItem('isAuthenticated');
-    
+
     toast({
       title: PROFILE_STRINGS.LOGOUT.TOAST_TITLE,
       description: PROFILE_STRINGS.LOGOUT.TOAST_DESCRIPTION,
