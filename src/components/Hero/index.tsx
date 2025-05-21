@@ -2,7 +2,6 @@
 import React from 'react';
 import { SITE_CONSTANTS } from '@/config/constants';
 import PromptInput from './PromptInput';
-import ProjectCardList from './ProjectCardList';
 import HeroTitle from './HeroTitle';
 import { usePromptSubmit } from './hooks/usePromptSubmit';
 
