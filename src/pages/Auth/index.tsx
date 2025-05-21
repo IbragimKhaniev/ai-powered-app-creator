@@ -48,7 +48,7 @@ const Auth: React.FC = React.memo(() => {
           description: AUTH_TEXTS.TOAST_SUCCESS_DESCRIPTION,
         });
         // Navigate to home page after successful verification
-        window.location.href = '/';
+        window.location.href = '/profile';
       },
       onError() {
         toast({
