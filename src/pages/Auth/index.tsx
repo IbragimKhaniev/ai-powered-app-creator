@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo } from 'react';
 import AuthCard from './AuthCard';
 import EmailForm from './EmailForm';
@@ -31,7 +30,7 @@ const Auth: React.FC = React.memo(() => {
         toast({
           title: AUTH_TEXTS.TOAST_ERROR_TITLE,
           description: AUTH_TEXTS.TOAST_ERROR_DESCRIPTION,
-          type: 'foreground',
+          variant: 'destructive',
         });
       }
     }
@@ -51,7 +50,7 @@ const Auth: React.FC = React.memo(() => {
         toast({
           title: AUTH_TEXTS.TOAST_ERROR_TITLE,
           description: AUTH_TEXTS.TOAST_ERROR_DESCRIPTION,
-          type: 'foreground',
+          variant: 'destructive',
         });
       }
     }
