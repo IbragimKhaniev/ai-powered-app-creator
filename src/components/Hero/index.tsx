@@ -17,7 +17,7 @@ const Hero: React.FC = React.memo(() => {
           <p className="text-lg text-center text-gray-700 mb-8">
             {SITE_CONSTANTS.HERO_SUBTITLE}
           </p>
-          
+
           <div className="mb-8">
             <PromptInput onSubmit={handlePromptSubmit} />
           </div>

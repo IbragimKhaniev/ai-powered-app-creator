@@ -16,7 +16,7 @@ export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => (
     .then(response => response.data)
     .catch((error) => {
       if (error.status === 401) {
-        window.location.pathname = '/welcome';
+        window.location.pathname = '/auth';
       } else {
         throw error.response.data;
       }

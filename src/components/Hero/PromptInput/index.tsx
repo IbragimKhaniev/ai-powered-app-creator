@@ -44,7 +44,6 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
       />
       <div className="flex justify-between items-center mt-5">
         <button className="text-gray-500 flex items-center gap-2 text-sm hover:text-gray-700 transition-colors">
-          <span className="i-lucide-paperclip h-4 w-4"></span>
           Attach
         </button>
         <div className="flex items-center gap-3">
