@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useScrollPosition } from '@/utils/hooks';
 import { NAVIGATION } from '@/config/constants';
 import Logo from '@/components/Logo';
@@ -9,6 +9,13 @@ import { Link } from 'react-router-dom';
 
 const Header: React.FC = React.memo(() => {
   const scrollPosition = useScrollPosition();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+  // Проверка статуса авторизации при монтировании компонента
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(authStatus);
+  }, []);
   
   const headerClasses = useMemo(() => {
     return cn(
@@ -25,15 +32,21 @@ const Header: React.FC = React.memo(() => {
         <Link to="/constructor">
           <Button variant="ghost" size="sm">Конструктор</Button>
         </Link>
-        <Link to="/auth">
-          <Button variant="ghost" size="sm">{NAVIGATION.LOG_IN}</Button>
-        </Link>
-        <Link to="/profile">
-          <Button variant="outline" size="sm">Профиль</Button>
-        </Link>
-        <Link to="/auth">
-          <Button variant="default" size="sm">{NAVIGATION.GET_STARTED}</Button>
-        </Link>
+        
+        {!isAuthenticated ? (
+          <>
+            <Link to="/auth">
+              <Button variant="ghost" size="sm">{NAVIGATION.LOG_IN}</Button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="default" size="sm">{NAVIGATION.GET_STARTED}</Button>
+            </Link>
+          </>
+        ) : (
+          <Link to="/profile">
+            <Button variant="outline" size="sm">Профиль</Button>
+          </Link>
+        )}
       </div>
     </header>
   );

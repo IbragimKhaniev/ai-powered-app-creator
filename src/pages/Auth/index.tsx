@@ -40,6 +40,9 @@ const Auth: React.FC = React.memo(() => {
   const { mutate: postUserLogin, isPending: isCodeSubmitting } = usePostUserLogin({
     mutation: {
       onSuccess() {
+        // Сохраняем признак авторизации в localStorage
+        localStorage.setItem('isAuthenticated', 'true');
+        
         toast({
           title: AUTH_TEXTS.TOAST_SUCCESS_TITLE,
           description: AUTH_TEXTS.TOAST_SUCCESS_DESCRIPTION,

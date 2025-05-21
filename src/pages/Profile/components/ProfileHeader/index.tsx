@@ -13,7 +13,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = React.memo(({ title }) => {
   const { toast } = useToast();
 
   const handleLogout = useCallback(() => {
-    // In a real app, this would call an authentication service to log the user out
+    // Удаляем признак авторизации из localStorage
+    localStorage.removeItem('isAuthenticated');
+    
     toast({
       title: PROFILE_STRINGS.LOGOUT.TOAST_TITLE,
       description: PROFILE_STRINGS.LOGOUT.TOAST_DESCRIPTION,
