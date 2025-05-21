@@ -11,7 +11,7 @@ import { Check, Loader } from 'lucide-react';
 // Verification code validation schema
 const formSchema = z.object({
   code: z.string().min(6, {
-    message: 'Verification code must be 6 digits.',
+    message: 'Код подтверждения должен состоять из 6 цифр.',
   }),
 });
 
@@ -83,7 +83,7 @@ const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ 
               </>
             ) : (
               <>
-                <Check className="mr-2 h-4 w-4" /> Verify Code
+                <Check className="mr-2 h-4 w-4" /> Подтвердить код
               </>
             )}
           </Button>
@@ -95,7 +95,7 @@ const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ 
             onClick={handleReset}
             disabled={isLoading}
           >
-            Resend Code
+            Отправить код повторно
           </Button>
         </div>
       </form>

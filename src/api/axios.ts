@@ -31,9 +31,10 @@ export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => (
         window.location.pathname = '/auth';
       } else {
         // Display error message
-        const errorMessage = error.response?.data?.message || 'An error occurred';
+        const errorData = error.response?.data as { message?: string };
+        const errorMessage = errorData?.message || 'Произошла ошибка';
         toast({
-          title: 'Error',
+          title: 'Ошибка',
           description: errorMessage,
           variant: 'destructive',
         });

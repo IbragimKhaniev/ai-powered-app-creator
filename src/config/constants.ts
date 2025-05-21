@@ -2,83 +2,83 @@
 // Site information
 export const SITE_CONSTANTS = {
   SITE_NAME: 'easyappz',
-  SITE_DESCRIPTION: 'Create applications in seconds with AI',
-  HERO_TITLE: 'Build something',
-  HERO_SUBTITLE: 'Idea to app in seconds, with your personal full stack engineer',
-  PROMPT_PLACEHOLDER: 'Ask easyappz to create a blog',
+  SITE_DESCRIPTION: 'Создавайте приложения за секунды с ИИ',
+  HERO_TITLE: 'Создайте что-то',
+  HERO_SUBTITLE: 'От идеи до приложения за секунды, с вашим персональным full stack инженером',
+  PROMPT_PLACEHOLDER: 'Попросите easyappz создать блог',
   COPYRIGHT_YEAR: new Date().getFullYear(),
 };
 
 // Navigation
 export const NAVIGATION = {
-  LOG_IN: 'Log In',
-  GET_STARTED: 'Get started for free',
+  LOG_IN: 'Войти',
+  GET_STARTED: 'Начать бесплатно',
 };
 
 // Project types
 export const PROJECT_TYPES = [
-  { id: 'ecommerce', label: 'E-commerce product page' },
-  { id: 'dashboard', label: 'Results dashboard' },
-  { id: 'portfolio', label: 'Developer portfolio' },
-  { id: 'feed', label: 'Social media feed' },
+  { id: 'ecommerce', label: 'Страница товара E-commerce' },
+  { id: 'dashboard', label: 'Панель результатов' },
+  { id: 'portfolio', label: 'Портфолио разработчика' },
+  { id: 'feed', label: 'Лента соцсетей' },
 ];
 
 // Community section
 export const COMMUNITY_SECTION = {
-  TITLE: 'From the Community',
-  VIEW_ALL: 'View All',
-  SHOW_MORE: 'Show More',
+  TITLE: 'От сообщества',
+  VIEW_ALL: 'Смотреть все',
+  SHOW_MORE: 'Показать больше',
 };
 
 // Footer sections
 export const FOOTER_SECTIONS = {
   COMPANY: {
-    TITLE: 'Company',
+    TITLE: 'Компания',
     LINKS: [
-      { label: 'Blog', href: '/blog' },
-      { label: 'Careers', href: '/careers' },
-      { label: 'Status', href: '/status' },
-      { label: 'Changelog', href: '/changelog' },
-      { label: 'Pricing', href: '/pricing' },
-      { label: 'Solutions', href: '/solutions' },
-      { label: 'Hire a Partner', href: '/partners/hire' },
-      { label: 'Become a Partner', href: '/partners/become' },
+      { label: 'Блог', href: '/blog' },
+      { label: 'Карьера', href: '/careers' },
+      { label: 'Статус', href: '/status' },
+      { label: 'Изменения', href: '/changelog' },
+      { label: 'Цены', href: '/pricing' },
+      { label: 'Решения', href: '/solutions' },
+      { label: 'Нанять партнера', href: '/partners/hire' },
+      { label: 'Стать партнером', href: '/partners/become' },
     ],
   },
   PRODUCT: {
-    TITLE: 'Product',
+    TITLE: 'Продукт',
     LINKS: [
-      { label: 'Import from Figma', href: '/import-figma' },
-      { label: 'Roadmap', href: '/roadmap' },
-      { label: 'Status', href: '/status' },
-      { label: 'Support', href: '/support' },
-      { label: 'Integrations', href: '/integrations' },
-      { label: 'Affiliates', href: '/affiliates' },
-      { label: 'Brand Guidelines', href: '/brand' },
+      { label: 'Импорт из Figma', href: '/import-figma' },
+      { label: 'Дорожная карта', href: '/roadmap' },
+      { label: 'Статус', href: '/status' },
+      { label: 'Поддержка', href: '/support' },
+      { label: 'Интеграции', href: '/integrations' },
+      { label: 'Партнерская программа', href: '/affiliates' },
+      { label: 'Правила бренда', href: '/brand' },
     ],
   },
   RESOURCES: {
-    TITLE: 'Resources',
+    TITLE: 'Ресурсы',
     LINKS: [
-      { label: 'Launched', href: '/launched' },
-      { label: 'Enterprise', href: '/enterprise' },
-      { label: 'Learn', href: '/learn' },
-      { label: 'Support', href: '/support' },
-      { label: 'Integrations', href: '/integrations' },
-      { label: 'Affiliates', href: '/affiliates' },
-      { label: 'Brand Guidelines', href: '/brand' },
+      { label: 'Запущенные', href: '/launched' },
+      { label: 'Для предприятий', href: '/enterprise' },
+      { label: 'Обучение', href: '/learn' },
+      { label: 'Поддержка', href: '/support' },
+      { label: 'Интеграции', href: '/integrations' },
+      { label: 'Партнерская программа', href: '/affiliates' },
+      { label: 'Правила бренда', href: '/brand' },
     ],
   },
   LEGAL: {
-    TITLE: 'Legal',
+    TITLE: 'Юридическое',
     LINKS: [
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms & Conditions', href: '/terms' },
-      { label: 'Report Abuse', href: '/report' },
+      { label: 'Политика конфиденциальности', href: '/privacy' },
+      { label: 'Условия использования', href: '/terms' },
+      { label: 'Сообщить о нарушении', href: '/report' },
     ],
   },
   SOCIALS: {
-    TITLE: 'Socials',
+    TITLE: 'Соцсети',
     LINKS: [
       { label: 'X / Twitter', href: 'https://twitter.com' },
       { label: 'LinkedIn', href: 'https://linkedin.com' },

@@ -10,7 +10,7 @@ import { Loader, Mail } from 'lucide-react';
 
 // Email validation schema
 const formSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
+  email: z.string().email({ message: 'Пожалуйста, введите корректный email адрес' }),
 });
 
 type EmailFormProps = {
@@ -72,7 +72,7 @@ const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit, isLoading })
               Отправка...
             </>
           ) : (
-            'Continue'
+            'Продолжить'
           )}
         </Button>
       </form>
