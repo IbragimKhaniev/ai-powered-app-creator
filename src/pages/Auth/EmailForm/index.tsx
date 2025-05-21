@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Mail } from 'lucide-react';
+import { Loader, Mail } from 'lucide-react';
 
 // Email validation schema
 const formSchema = z.object({
@@ -15,7 +15,6 @@ const formSchema = z.object({
 
 type EmailFormProps = {
   onSubmit: (email: string) => void;
-
   isLoading?: boolean;
 };
 
@@ -52,6 +51,7 @@ const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit, isLoading })
                   <Input 
                     placeholder="email@example.com" 
                     className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    disabled={isLoading}
                     {...field} 
                   />
                 </div>
@@ -64,8 +64,16 @@ const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit, isLoading })
         <Button 
           type="submit" 
           className="w-full"
+          disabled={isLoading}
         >
-          Continue
+          {isLoading ? (
+            <>
+              <Loader className="mr-2 h-4 w-4 animate-spin" />
+              Отправка...
+            </>
+          ) : (
+            'Continue'
+          )}
         </Button>
       </form>
     </Form>

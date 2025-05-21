@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useMemo } from 'react';
 import AuthCard from './AuthCard';
 import EmailForm from './EmailForm';
@@ -16,7 +17,7 @@ const Auth: React.FC = React.memo(() => {
 
   const { toast } = useToast();
 
-  const { mutate: postUser } = usePostUser({
+  const { mutate: postUser, isPending: isEmailSubmitting } = usePostUser({
     mutation: {
       onSuccess() {
         setStep('verification');
@@ -36,7 +37,7 @@ const Auth: React.FC = React.memo(() => {
     }
   });
 
-  const { mutate: postUserLogin } = usePostUserLogin({
+  const { mutate: postUserLogin, isPending: isCodeSubmitting } = usePostUserLogin({
     mutation: {
       onSuccess() {
         toast({
@@ -78,7 +79,7 @@ const Auth: React.FC = React.memo(() => {
         email: submittedEmail,
       },
     });
-  }, []);
+  }, [postUser]);
 
   // Code submission handler
   const handleCodeSubmit = useCallback((code: string) => {
@@ -88,15 +89,15 @@ const Auth: React.FC = React.memo(() => {
         email,
       }
     });
-  }, [email]);
+  }, [email, postUserLogin]);
 
   // Render appropriate form based on the current step
   const renderForm = useMemo(() => {
     if (step === 'email') {
-      return <EmailForm onSubmit={handleEmailSubmit} />;
+      return <EmailForm onSubmit={handleEmailSubmit} isLoading={isEmailSubmitting} />;
     }
-    return <CodeVerificationForm onSubmit={handleCodeSubmit} email={email} />;
-  }, [step, email, handleEmailSubmit, handleCodeSubmit]);
+    return <CodeVerificationForm onSubmit={handleCodeSubmit} email={email} isLoading={isCodeSubmitting} />;
+  }, [step, email, handleEmailSubmit, handleCodeSubmit, isEmailSubmitting, isCodeSubmitting]);
 
   return (
     <AuthCard 

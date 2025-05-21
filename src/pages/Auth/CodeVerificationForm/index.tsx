@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Check } from 'lucide-react';
+import { Check, Loader } from 'lucide-react';
 
 // Verification code validation schema
 const formSchema = z.object({
@@ -18,9 +18,10 @@ const formSchema = z.object({
 type CodeVerificationFormProps = {
   onSubmit: (code: string) => void;
   email: string;
+  isLoading?: boolean;
 };
 
-const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ onSubmit, email }) => {
+const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ onSubmit, email, isLoading }) => {
   // Form initialization with validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,6 +56,7 @@ const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ 
                 <InputOTP 
                   maxLength={6} 
                   {...field}
+                  disabled={isLoading}
                   className="justify-center"
                 >
                   <InputOTPGroup>
@@ -73,8 +75,17 @@ const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ 
         />
         
         <div className="flex flex-col gap-2">
-          <Button type="submit" className="w-full">
-            <Check className="mr-2 h-4 w-4" /> Verify Code
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+                Проверка...
+              </>
+            ) : (
+              <>
+                <Check className="mr-2 h-4 w-4" /> Verify Code
+              </>
+            )}
           </Button>
           
           <Button 
@@ -82,6 +93,7 @@ const CodeVerificationForm: React.FC<CodeVerificationFormProps> = React.memo(({ 
             variant="ghost" 
             className="text-sm"
             onClick={handleReset}
+            disabled={isLoading}
           >
             Resend Code
           </Button>
