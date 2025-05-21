@@ -3,7 +3,7 @@
 export const SITE_CONSTANTS = {
   SITE_NAME: 'easyappz',
   SITE_DESCRIPTION: 'Создавайте приложения за секунды с ИИ',
-  HERO_TITLE: 'Создайте что-то',
+  HERO_TITLE: 'Творите вместе с easyappz',
   HERO_SUBTITLE: 'От идеи до приложения за секунды, с вашим персональным full stack инженером',
   PROMPT_PLACEHOLDER: 'Попросите easyappz создать блог',
   COPYRIGHT_YEAR: new Date().getFullYear(),

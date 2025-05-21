@@ -44,10 +44,10 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
       />
       <div className="flex justify-between items-center mt-5">
         <button className="text-gray-500 flex items-center gap-2 text-sm hover:text-gray-700 transition-colors">
-          Attach
+          Прикрепить файл
         </button>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">Public</span>
+          <span className="text-sm text-gray-500">Публичный</span>
           <Switch
             size="small"
             checked={isPublic}
