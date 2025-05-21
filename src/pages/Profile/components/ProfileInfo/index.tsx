@@ -59,9 +59,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
               {userData.plan !== "PRO" && (
                 <div className="mt-3">
                   <Button 
-                    variant="default" 
+                    variant="secondary" 
                     size="sm" 
-                    className="bg-primary text-white flex items-center gap-2"
+                    className="text-muted-foreground flex items-center gap-2"
                   >
                     <Crown className="h-4 w-4" />
                     {PROFILE_STRINGS.PROFILE_INFO.UPGRADE_TO_PRO}
