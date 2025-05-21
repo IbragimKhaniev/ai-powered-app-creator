@@ -38,34 +38,37 @@ const Profile: React.FC = () => {
   const appsData = useMemo(() => userApps, []);
 
   return (
-    <div className="container mx-auto py-20 px-4">
+    <div className="container mx-auto py-10 px-4">
       <ProfileHeader title={PROFILE_STRINGS.TITLE} />
       
-      <Tabs defaultValue="profile" value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="mb-8">
-          <TabsTrigger value="profile">{PROFILE_STRINGS.TABS.PROFILE}</TabsTrigger>
-          <TabsTrigger value="apps">{PROFILE_STRINGS.TABS.APPS}</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="profile">
+      <div className="flex flex-col md:flex-row gap-8 mt-8">
+        <div className="w-full md:w-1/3">
           <ProfileInfo userData={profileData} />
-        </TabsContent>
+        </div>
         
-        <TabsContent value="apps">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">{PROFILE_STRINGS.APPS.TITLE}</h2>
-            <Link to="/constructor">
-              <Button 
-                className="bg-primary text-white flex items-center gap-2 rounded-full"
-              >
-                <Plus className="h-4 w-4" />
-                {PROFILE_STRINGS.CREATE_APP_BUTTON}
-              </Button>
-            </Link>
-          </div>
-          <AppsList apps={appsData} />
-        </TabsContent>
-      </Tabs>
+        <div className="w-full md:w-2/3">
+          <Tabs defaultValue="apps" value={activeTab} onValueChange={handleTabChange} className="w-full">
+            <div className="flex justify-between items-center mb-6">
+              <TabsList>
+                <TabsTrigger value="apps">{PROFILE_STRINGS.TABS.APPS}</TabsTrigger>
+              </TabsList>
+              
+              <Link to="/constructor">
+                <Button 
+                  className="bg-primary text-white flex items-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  {PROFILE_STRINGS.CREATE_APP_BUTTON}
+                </Button>
+              </Link>
+            </div>
+            
+            <TabsContent value="apps">
+              <AppsList apps={appsData} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
 
       <AppSettingsDialog 
         isOpen={dialogOpen}

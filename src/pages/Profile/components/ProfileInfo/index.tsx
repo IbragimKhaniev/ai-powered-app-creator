@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Mail } from "lucide-react";
 import { UserData } from "../../types";
@@ -16,42 +16,39 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
   }, [userData.name]);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>{PROFILE_STRINGS.PROFILE_INFO.TITLE}</CardTitle>
-        <CardDescription>{PROFILE_STRINGS.PROFILE_INFO.DESCRIPTION}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex items-start gap-8">
-          <Avatar className="h-24 w-24">
+        <div className="flex flex-col items-center gap-6">
+          <Avatar className="h-32 w-32">
             <AvatarImage src={userData.avatarUrl} alt={userData.name} />
-            <AvatarFallback className="text-2xl">{userInitials}</AvatarFallback>
+            <AvatarFallback className="text-3xl">{userInitials}</AvatarFallback>
           </Avatar>
           
-          <div className="space-y-4">
+          <div className="space-y-6 w-full">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.NAME}</h3>
-              <p className="text-lg">{userData.name}</p>
+              <p className="text-lg font-medium">{userData.name}</p>
             </div>
             
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.EMAIL}</h3>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <p className="text-lg">{userData.email}</p>
+                <p>{userData.email}</p>
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
-                <p className="text-lg">{userData.plan}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.TOKENS_LEFT}</h3>
-                <p className="text-lg">{userData.tokensLeft}</p>
-              </div>
+            <div className="pt-4 border-t">
+              <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
+              <p className="text-lg font-medium">{userData.plan}</p>
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.TOKENS_LEFT}</h3>
+              <p className="text-lg font-medium">{userData.tokensLeft}</p>
             </div>
           </div>
         </div>
