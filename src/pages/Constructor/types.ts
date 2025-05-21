@@ -18,3 +18,8 @@ export interface AppSettings {
   aiModel: string;
   appType: string;
 }
+
+export interface AIModel {
+  id: string;
+  name: string;
+}
