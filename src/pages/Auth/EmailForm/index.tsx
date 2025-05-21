@@ -15,9 +15,11 @@ const formSchema = z.object({
 
 type EmailFormProps = {
   onSubmit: (email: string) => void;
+
+  isLoading?: boolean;
 };
 
-const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit }) => {
+const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit, isLoading }) => {
   // Form initialization with validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,7 +51,7 @@ const EmailForm: React.FC<EmailFormProps> = React.memo(({ onSubmit }) => {
                   </div>
                   <Input 
                     placeholder="email@example.com" 
-                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0" 
+                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                     {...field} 
                   />
                 </div>

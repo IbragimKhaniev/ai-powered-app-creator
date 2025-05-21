@@ -4,12 +4,14 @@
  */
 
 export const AUTH_TEXTS = {
-  EMAIL_STEP_TITLE: 'Sign In',
-  VERIFICATION_STEP_TITLE: 'Verify Your Email',
-  EMAIL_STEP_DESCRIPTION: 'Enter your email address to continue',
-  VERIFICATION_STEP_DESCRIPTION: 'Enter the verification code sent to',
-  TOAST_VERIFICATION_SENT_TITLE: 'Verification code sent',
-  TOAST_VERIFICATION_SENT_DESCRIPTION: 'A verification code has been sent to',
-  TOAST_SUCCESS_TITLE: 'Success!',
-  TOAST_SUCCESS_DESCRIPTION: 'You have been successfully authenticated',
+  EMAIL_STEP_TITLE: 'Войти',
+  VERIFICATION_STEP_TITLE: 'Подтвердите вашу почту',
+  EMAIL_STEP_DESCRIPTION: 'Введите вашу почту',
+  VERIFICATION_STEP_DESCRIPTION: 'Введите ваш код верификации',
+  TOAST_VERIFICATION_SENT_TITLE: 'Отправлен проверочный код',
+  TOAST_VERIFICATION_SENT_DESCRIPTION: 'Проверочный код был отправлен по адресу',
+  TOAST_SUCCESS_TITLE: 'Успешно!',
+  TOAST_SUCCESS_DESCRIPTION: 'Вы успешно прошли аутентификацию',
+  TOAST_ERROR_TITLE: 'Ошибка',
+  TOAST_ERROR_DESCRIPTION: 'Произошла ошибка, попробуйте еще раз.',
 };
