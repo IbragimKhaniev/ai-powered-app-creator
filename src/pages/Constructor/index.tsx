@@ -10,38 +10,100 @@ import ChatPanel from './components/ChatPanel';
 import LogsPanel from './components/LogsPanel';
 import PreviewPanel from './components/PreviewPanel';
 import { CONSTRUCTOR_TEXT } from './constants';
+import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId } from '@/api/core';
+import { useToast } from '@/hooks/use-toast';
 
 const Constructor: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     createAiMessage(CONSTRUCTOR_TEXT.DEFAULT_AI_RESPONSE, false),
-    createAiMessage(CONSTRUCTOR_TEXT.DEFAULT_ERROR_MESSAGE, true)
   ]);
   const [showLogs, setShowLogs] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isAppCreated, setIsAppCreated] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
-
-  // Simulate loading
-  useEffect(() => {
-    if (isLoading) {
-      const interval = setInterval(() => {
-        setLoadingProgress(prev => {
-          const newProgress = prev + 5;
-          if (newProgress >= 100) {
-            clearInterval(interval);
-            setTimeout(() => setIsLoading(false), 500);
-            return 100;
-          }
-          return newProgress;
+  const [applicationId, setApplicationId] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState('gpt-4o');
+  const { toast } = useToast();
+  
+  // Create application mutation
+  const { mutate: createApplication, isPending: isCreatingApp } = usePostApplications({
+    mutation: {
+      onSuccess: (data) => {
+        console.log('Application created:', data);
+        toast({
+          title: 'Успешно!',
+          description: 'Приложение создано',
         });
-      }, 150);
-      
-      return () => clearInterval(interval);
+        setApplicationId(data._id);
+        setIsAppCreated(true);
+        setIsLoading(true);
+        startLoadingAnimation();
+      },
+      onError: (error) => {
+        console.error('Error creating application:', error);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось создать приложение',
+          variant: 'destructive'
+        });
+      }
     }
-  }, [isLoading]);
+  });
+  
+  // Send message mutation
+  const { mutate: sendMessage, isPending: isSendingMessage } = usePostApplicationsApplicationIdMessages({
+    mutation: {
+      onSuccess: (data) => {
+        console.log('Message sent:', data);
+        setIsChatLoading(false);
+      },
+      onError: (error) => {
+        console.error('Error sending message:', error);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось отправить сообщение',
+          variant: 'destructive'
+        });
+        setIsChatLoading(false);
+      }
+    }
+  });
+  
+  // Get application details if we have an ID
+  const { data: appData, isLoading: isLoadingAppData } = useGetApplicationsId(
+    applicationId || '',
+    {
+      query: {
+        enabled: !!applicationId,
+        refetchInterval: 5000, // Poll every 5 seconds
+        onSuccess: (data) => {
+          console.log('Application data:', data);
+          // Check if the app is no longer pending deployment
+          if (data && !data.pending && isLoading) {
+            setIsLoading(false);
+            setLoadingProgress(100);
+          }
+        }
+      }
+    }
+  );
+
+  const startLoadingAnimation = () => {
+    setLoadingProgress(0);
+    const interval = setInterval(() => {
+      setLoadingProgress(prev => {
+        const newProgress = prev + 2;
+        if (newProgress >= 95) {
+          clearInterval(interval);
+          return 95; // We'll set it to 100 when actual loading is done
+        }
+        return newProgress;
+      });
+    }, 300);
+  };
 
   // Demo error toast
   useEffect(() => {
@@ -80,34 +142,40 @@ const Constructor: React.FC = () => {
       return;
     }
     
-    // Simulate AI response with loading state
-    setIsChatLoading(true);
-    
-    setTimeout(() => {
-      const aiResponse = createAiMessage(
-        'Я получил ваше сообщение. Сейчас я работаю над вашим запросом...'
-      );
-      setMessages(prev => [...prev, aiResponse]);
-      setIsChatLoading(false);
-    }, 1500);
-  }, [isAppCreated]);
+    // If we have an application ID, send the message
+    if (applicationId) {
+      setIsChatLoading(true);
+      
+      sendMessage({
+        applicationId,
+        data: { content: inputMessage }
+      });
+      
+      // Simulate AI response (in a real app, this would come from the server)
+      setTimeout(() => {
+        const aiResponse = createAiMessage(
+          'Я получил ваше сообщение. Сейчас я работаю над вашим запросом...'
+        );
+        setMessages(prev => [...prev, aiResponse]);
+      }, 1500);
+    }
+  }, [applicationId, isAppCreated, sendMessage]);
 
   const handleConfirmSettings = (settings: AppSettings) => {
     console.log('App settings confirmed:', settings);
     setAppSettings(settings);
-    setIsAppCreated(true);
+    setSelectedModel(settings.aiModel);
+    
+    // Create the application
+    createApplication({
+      data: {
+        name: settings.appName,
+        modelAi: settings.aiModel,
+        type: settings.appType
+      }
+    });
+    
     setShowSettingsDialog(false);
-    
-    // Send a confirmation message from AI with loading state
-    setIsChatLoading(true);
-    
-    setTimeout(() => {
-      const aiResponse = createAiMessage(
-        `Отлично! Я создал новое приложение "${settings.appName}". Теперь давайте начнем работу над вашим запросом.`
-      );
-      setMessages(prev => [...prev, aiResponse]);
-      setIsChatLoading(false);
-    }, 1500);
   };
 
   const handleToggleLogs = useCallback(() => {
@@ -116,6 +184,10 @@ const Constructor: React.FC = () => {
   
   const handleStartCreation = useCallback(() => {
     document.querySelector('textarea')?.focus();
+  }, []);
+
+  const handleModelChange = useCallback((model: string) => {
+    setSelectedModel(model);
   }, []);
 
   return (
@@ -136,6 +208,8 @@ const Constructor: React.FC = () => {
             onSendMessage={handleSendMessage} 
             onTryFix={handleTryFix}
             isLoading={isChatLoading}
+            selectedModel={selectedModel}
+            onModelChange={handleModelChange}
           />
         </ResizablePanel>
         
@@ -151,7 +225,7 @@ const Constructor: React.FC = () => {
             />
           ) : (
             <PreviewPanel 
-              isLoading={isLoading}
+              isLoading={isLoading || isCreatingApp}
               loadingProgress={loadingProgress}
               isAppCreated={isAppCreated}
               showLogs={showLogs}

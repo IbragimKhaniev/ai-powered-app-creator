@@ -23,6 +23,9 @@ const Profile: React.FC = () => {
     error: userError 
   } = useGetUser({
     query: {
+      onSuccess: (data) => {
+        console.log('User data loaded:', data);
+      },
       onError: () => {
         toast({
           title: 'Ошибка загрузки',
@@ -40,6 +43,9 @@ const Profile: React.FC = () => {
     error: appsError
   } = useGetApplications({
     query: {
+      onSuccess: (data) => {
+        console.log('Applications loaded:', data);
+      },
       onError: () => {
         toast({
           title: 'Ошибка загрузки',

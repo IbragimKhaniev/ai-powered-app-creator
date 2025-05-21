@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Header from '../Header';
@@ -7,12 +8,16 @@ import { Message } from '../../types';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Microchip } from "lucide-react";
+
 interface ChatPanelProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
   onTryFix: () => void;
   isLoading?: boolean;
+  selectedModel: string;
+  onModelChange: (model: string) => void;
 }
+
 const AI_MODELS = [{
   id: 'gpt-4o',
   name: 'GPT-4o'
@@ -23,17 +28,21 @@ const AI_MODELS = [{
   id: 'gpt-4.5-preview',
   name: 'GPT-4.5 Preview'
 }];
+
 const ChatPanel: React.FC<ChatPanelProps> = ({
   messages,
   onSendMessage,
   onTryFix,
-  isLoading = false
+  isLoading = false,
+  selectedModel,
+  onModelChange
 }) => {
-  const [selectedModel, setSelectedModel] = React.useState('gpt-4o');
   const handleModelChange = (value: string) => {
-    setSelectedModel(value);
+    onModelChange(value);
   };
-  return <div className="flex h-full flex-col">
+
+  return (
+    <div className="flex h-full flex-col">
       <div className="border-b flex justify-between items-center bg-white p-4">
         <Header title={CONSTRUCTOR_TEXT.CHAT_WITH_AI} description={CONSTRUCTOR_TEXT.DESCRIBE_APP} showBackButton={true} />
       </div>
@@ -46,20 +55,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <div className="border-t p-2 bg-white">
         <div className="flex items-center gap-2 mb-2 px-[18px]">
-          
           <Select value={selectedModel} onValueChange={handleModelChange}>
             <SelectTrigger className="h-8 w-[180px]">
               <SelectValue placeholder="Выберите модель" />
             </SelectTrigger>
             <SelectContent>
-              {AI_MODELS.map(model => <SelectItem key={model.id} value={model.id}>
+              {AI_MODELS.map(model => (
+                <SelectItem key={model.id} value={model.id}>
                   {model.name}
-                </SelectItem>)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
         <ChatInput onSendMessage={onSendMessage} isLoading={isLoading} />
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ChatPanel;
