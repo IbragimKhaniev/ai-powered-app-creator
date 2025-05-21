@@ -3,7 +3,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Mail, Crown } from "lucide-react";
 import { UserData } from "../../types";
 import { PROFILE_STRINGS } from "../../constants";
 
@@ -50,8 +51,23 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
             </div>
             
             <div className="pt-4 border-t">
-              <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
-              <p className="text-lg font-medium">{userData.plan}</p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.PLAN}</h3>
+                  <p className="text-lg font-medium">{userData.plan}</p>
+                </div>
+                
+                {userData.plan !== "PRO" && (
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="bg-primary text-white flex items-center gap-2"
+                  >
+                    <Crown className="h-4 w-4" />
+                    {PROFILE_STRINGS.PROFILE_INFO.UPGRADE_TO_PRO}
+                  </Button>
+                )}
+              </div>
             </div>
             
             <div>

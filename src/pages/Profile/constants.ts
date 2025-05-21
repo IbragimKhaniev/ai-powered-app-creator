@@ -12,6 +12,7 @@ export const PROFILE_STRINGS = {
     EMAIL: "Электронная почта",
     PLAN: "Тарифный план",
     TOKENS_LEFT: "Остаток токенов",
+    UPGRADE_TO_PRO: "Перейти в PRO",
   },
   APPS: {
     TITLE: "Мои приложения",
