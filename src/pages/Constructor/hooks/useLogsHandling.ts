@@ -1,8 +1,11 @@
 
 import { useState, useCallback, useEffect } from 'react';
-import { IMongoModelLog, useGetApplicationsApplicationIdLogs } from '@/api/core';
+import { IMongoModelLog, useGetApplicationsApplicationIdLogs, usePostApplicationsApplicationIdMessages } from '@/api/core';
+import { useToast } from '@/hooks/use-toast';
 
 export const useLogsHandling = (applicationId: string | null, showLogs: boolean) => {
+  const { toast } = useToast();
+  
   // Get application logs
   const { data: logsData, isLoading: isLoadingLogs } = useGetApplicationsApplicationIdLogs(
     applicationId || '',
@@ -14,13 +17,51 @@ export const useLogsHandling = (applicationId: string | null, showLogs: boolean)
     }
   );
 
-  const handleTryFixLog = useCallback((log: IMongoModelLog) => {
-    console.log(`Attempting to fix: ${log.content}`);
-  }, []);
+  // Send message mutation for fixing logs
+  const { mutate: sendFixMessage, isPending: isSendingFixMessage } = usePostApplicationsApplicationIdMessages({
+    mutation: {
+      onSuccess: () => {
+        toast({
+          title: "Запрос на исправление отправлен",
+          description: "AI анализирует ошибку и предложит решение",
+        });
+      },
+      onError: (error) => {
+        console.error("Error sending fix message:", error);
+        toast({
+          title: "Ошибка",
+          description: "Не удалось отправить запрос на исправление",
+          variant: "destructive",
+        });
+      }
+    }
+  });
+
+  const handleTryFixLog = useCallback((content: string) => {
+    console.log(`Attempting to fix: ${content}`);
+    
+    if (!applicationId) {
+      toast({
+        title: "Ошибка",
+        description: "Отсутствует ID приложения",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    sendFixMessage({
+      applicationId,
+      data: { 
+        content: "Исправь ошибку",
+        additionalContent: content
+      }
+    });
+  }, [applicationId, sendFixMessage, toast]);
 
   return {
     logs: logsData?.logs?.reverse() || [],
     isLoadingLogs,
-    handleTryFixLog
+    handleTryFixLog,
+    isSendingFixMessage
   };
 };

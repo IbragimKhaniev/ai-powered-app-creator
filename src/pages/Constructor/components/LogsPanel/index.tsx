@@ -15,13 +15,15 @@ interface LogsPanelProps {
   onToggleLogs: () => void;
   onTryFixLog: (content: string) => void;
   isLoading?: boolean;
+  isSendingFixMessage?: boolean;
 }
 
 const LogsPanel: React.FC<LogsPanelProps> = ({ 
   logs, 
   onToggleLogs, 
   onTryFixLog,
-  isLoading = false
+  isLoading = false,
+  isSendingFixMessage = false
 }) => {
   return (
     <div className="flex h-full flex-col">
@@ -65,8 +67,16 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
                       onClick={() => onTryFixLog(log.content)}
                       className="bg-brand-purple hover:bg-purple-700 text-white mt-1 self-start rounded-full"
                       size="sm"
+                      disabled={isSendingFixMessage}
                     >
-                      {CONSTRUCTOR_TEXT.TRY_TO_FIX}
+                      {isSendingFixMessage ? (
+                        <>
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          {CONSTRUCTOR_TEXT.FIXING}
+                        </>
+                      ) : (
+                        CONSTRUCTOR_TEXT.TRY_TO_FIX
+                      )}
                     </Button>
                   )}
                 </div>

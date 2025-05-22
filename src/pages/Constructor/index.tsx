@@ -49,7 +49,7 @@ const Constructor: React.FC = () => {
   const { messages } = useMessagesData(applicationId);
 
   // Hook for logs handling
-  const { logs, isLoadingLogs, handleTryFixLog } = useLogsHandling(applicationId, showLogs);
+  const { logs, isLoadingLogs, handleTryFixLog, isSendingFixMessage } = useLogsHandling(applicationId, showLogs);
 
   // Calculate if there's any loading happening
   const isCommonLoading = useMemo(() => (
@@ -133,6 +133,7 @@ const Constructor: React.FC = () => {
               onToggleLogs={handleToggleLogs} 
               onTryFixLog={handleTryFixLog} 
               isLoading={isLoadingLogs}
+              isSendingFixMessage={isSendingFixMessage}
             />
           ) : (
             <PreviewPanel 
