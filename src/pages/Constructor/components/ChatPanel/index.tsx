@@ -71,15 +71,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   };
 
-  // Function to determine if a message should have additional content
-  // For demo purposes, we'll add additional content to assistant messages
-  const getAdditionalContent = (message: GetApplicationsApplicationIdMessages200Item): string | undefined => {
-    if (message.role === 'assistant' && !['created', 'processing', 'error'].includes(message.status)) {
-      return "Дополнительная информация о сообщении: это сообщение создано с использованием модели " + selectedModel;
-    }
-    return undefined;
-  };
-
   return (
     <div className="flex h-full flex-col">
       <div className="border-b flex justify-between items-center bg-white p-4">
@@ -94,7 +85,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               message={message} 
               onTryFix={onTryFix} 
               isNewMessage={newMessageIds.has(message.id)}
-              additionalContent={getAdditionalContent(message)}
+              additionalContent={message.additionalContent}
             />
           ))}
           <div ref={messagesEndRef} />
