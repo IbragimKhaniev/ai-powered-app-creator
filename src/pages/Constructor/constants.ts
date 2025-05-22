@@ -26,6 +26,7 @@ export const CONSTRUCTOR_TEXT = {
   DEFAULT_ERROR_MESSAGE: "Приложение имеет ошибки",
   FIXING_ERRORS: "Я пытаюсь исправить ошибки в приложении...",
   FIXING_ISSUE: "Я пытаюсь исправить проблему:",
+  FIXING: "Исправление...", // Added missing FIXING property
 };
 
 export const LOG_LEVELS = {
