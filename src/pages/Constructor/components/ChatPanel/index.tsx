@@ -34,6 +34,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 }) => {
   const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(messages.length);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Check if new messages have been added
@@ -46,6 +47,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       });
 
       setNewMessageIds(newIds);
+      
+      // Scroll to bottom when new messages are added
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
     
     prevMessagesLengthRef.current = messages.length;
@@ -81,6 +87,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               isNewMessage={newMessageIds.has(message.id)}
             />
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
       

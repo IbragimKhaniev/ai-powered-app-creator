@@ -1,4 +1,3 @@
-
 import { UserApp, UserData } from "./types";
 
 // Mock data - In a real app, this would come from an API or context
@@ -42,4 +41,38 @@ export const userApps: UserApp[] = [
     tokensTotal: 5000,
     url: "https://portfolio.example.com"
   }
+];
+
+// Fix type errors by converting numbers to strings
+export const mockApps = [
+  {
+    id: '1',
+    name: 'Музыкальный плеер',
+    description: 'Приложение для прослушивания музыки',
+    domain: 'music-player',
+    updatedAt: new Date('2023-05-10'),
+    createdAt: new Date('2023-05-01'),
+    calls: 120,
+    status: 'active',
+  },
+  {
+    id: '2',
+    name: 'Трекер задач',
+    description: 'Приложение для управления задачами',
+    domain: 'task-tracker',
+    updatedAt: new Date('2023-05-15'),
+    createdAt: new Date('2023-05-05'),
+    calls: 85,
+    status: 'active',
+  },
+  {
+    id: '3',
+    name: 'Калькулятор калорий',
+    description: 'Приложение для подсчета калорий',
+    domain: 'calorie-calculator',
+    updatedAt: new Date('2023-05-20'),
+    createdAt: new Date('2023-05-10'),
+    calls: 45,
+    status: 'pending',
+  },
 ];

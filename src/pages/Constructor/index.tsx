@@ -15,7 +15,8 @@ import {
   useGetApplicationsId, 
   useGetApplicationsApplicationIdLogs, 
   useGetApplicationsApplicationIdMessages,
-  useGetConfig
+  useGetConfig,
+  usePostPromtsAnalyze
 } from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
 import { IMongoModelLog } from '@/api/core/types';
@@ -29,6 +30,8 @@ const Constructor: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<string>('gpt-4o');
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [analyzeInProgress, setAnalyzeInProgress] = useState(false);
+  const [suggestedSettings, setSuggestedSettings] = useState<Partial<AppSettings> | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -67,6 +70,34 @@ const Constructor: React.FC = () => {
           description: 'Не удалось создать приложение',
           variant: 'destructive'
         });
+      }
+    }
+  });
+  
+  // Analyze message mutation
+  const { mutate: analyzeMessage, isPending: isAnalyzing } = usePostPromtsAnalyze({
+    mutation: {
+      onSuccess: (data) => {
+        console.log('Analysis result:', data);
+        setSuggestedSettings({
+          appName: data.name || 'Новое приложение',
+          appType: 'web', // Default type
+          aiModel: data.modelAi || selectedModel,
+          templateId: data.template || undefined
+        });
+        setAnalyzeInProgress(false);
+        setShowSettingsDialog(true);
+      },
+      onError: (error) => {
+        console.error('Error analyzing message:', error);
+        toast({
+          title: 'Ошибка анализа',
+          description: 'Не удалось проанализировать сообщение',
+          variant: 'destructive'
+        });
+        setAnalyzeInProgress(false);
+        // Still show the dialog but without suggestions
+        setShowSettingsDialog(true);
       }
     }
   });
@@ -122,8 +153,8 @@ const Constructor: React.FC = () => {
   }, [configData]);
 
   const isCommonLoading = useMemo(() => (
-    Boolean(appData?.pending || isCreatingApp || isSendingMessage)
-  ), [appData?.pending, isCreatingApp, isSendingMessage]);
+    Boolean(appData?.pending || isCreatingApp || isSendingMessage || analyzeInProgress)
+  ), [appData?.pending, isCreatingApp, isSendingMessage, analyzeInProgress]);
   
   // Update logs when data changes
   useEffect(() => {
@@ -147,10 +178,15 @@ const Constructor: React.FC = () => {
   };
 
   const handleSendMessage = useCallback((inputMessage: string) => {
-    // If app is not created, show settings dialog
+    // If app is not created, analyze the message and show settings dialog
     if (!applicationId) {
       setInputMessage(inputMessage);
-      setShowSettingsDialog(true);
+      setAnalyzeInProgress(true);
+      
+      // Analyze the message to get suggestions
+      analyzeMessage({
+        data: { message: inputMessage }
+      });
       return;
     }
 
@@ -161,7 +197,7 @@ const Constructor: React.FC = () => {
         data: { content: inputMessage }
       });
     }
-  }, [applicationId, sendMessage]);
+  }, [applicationId, sendMessage, analyzeMessage]);
 
   const handleConfirmSettings = (settings: AppSettings) => {
     console.log('App settings confirmed:', settings);
@@ -205,7 +241,8 @@ const Constructor: React.FC = () => {
         isOpen={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
         onConfirm={handleConfirmSettings}
-        initialSettings={{ aiModel: selectedModel }}
+        initialSettings={suggestedSettings || { aiModel: selectedModel, appName: 'Новое приложение', appType: 'web' }}
+        isLoading={isAnalyzing}
       />
       <ResizablePanelGroup
         direction="horizontal"

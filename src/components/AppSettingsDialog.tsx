@@ -25,7 +25,8 @@ interface AppSettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (settings: AppSettings) => void;
-  initialSettings?: AppSettings;
+  initialSettings?: Partial<AppSettings>;
+  isLoading?: boolean;
 }
 
 export interface AppSettings {
@@ -52,7 +53,8 @@ const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,
-  initialSettings
+  initialSettings,
+  isLoading = false
 }) => {
   const [settings, setSettings] = useState<AppSettings>({ ...DEFAULT_SETTINGS, ...initialSettings });
   
@@ -66,7 +68,14 @@ const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
   // Update settings if initialSettings changes
   useEffect(() => {
     if (initialSettings) {
-      setSettings(prev => ({ ...prev, ...initialSettings }));
+      setSettings(prev => ({ 
+        ...prev, 
+        ...initialSettings,
+        // Ensure all required fields have values
+        appName: initialSettings.appName || prev.appName,
+        aiModel: initialSettings.aiModel || prev.aiModel,
+        appType: initialSettings.appType || prev.appType,
+      }));
     }
   }, [initialSettings]);
 
@@ -82,19 +91,26 @@ const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
     onConfirm(settings);
   };
 
+  const isShowingLoader = isLoading || isLoadingConfig;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px] rounded-xl">
         <DialogHeader>
           <DialogTitle>Настройки нового приложения</DialogTitle>
           <DialogDescription>
-            Заполните базовые настройки для вашего нового приложения
+            {isLoading 
+              ? "Анализируем ваше сообщение для подготовки настроек..." 
+              : "Заполните базовые настройки для вашего нового приложения"}
           </DialogDescription>
         </DialogHeader>
         
-        {isLoadingConfig ? (
-          <div className="py-8 flex justify-center">
+        {isShowingLoader ? (
+          <div className="py-8 flex flex-col items-center gap-4">
             <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground text-sm">
+              {isLoading ? "Анализируем ваше сообщение..." : "Загрузка доступных опций..."}
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
