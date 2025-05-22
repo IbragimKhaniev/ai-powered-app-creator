@@ -17,16 +17,18 @@ export const useSettingsDialog = (selectedModel: string, createApplication: any)
     setShowSettingsDialog(true);
 
     analyzeMessage(
-      { data: { prompt: message } },
+      { data: { message } }, // Use message instead of prompt as per API contract
       {
         onSuccess: (data) => {
-          if (data.data?.appName || data.data?.modelAi) {
-            setInitialSettings({
-              appName: data.data.appName || "Новое приложение",
-              aiModel: data.data.modelAi || selectedModel,
-              appType: "web" // Default for now
-            });
-          }
+          // Access data correctly based on the API response structure
+          const appName = data.name || "Новое приложение";
+          const modelAi = data.modelAi || selectedModel;
+          
+          setInitialSettings({
+            appName: appName,
+            aiModel: modelAi,
+            appType: "web" // Default for now
+          });
         }
       }
     );
