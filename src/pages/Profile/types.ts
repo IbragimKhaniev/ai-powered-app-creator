@@ -1,4 +1,3 @@
-
 export interface UserData {
   email: string;
   name: string;
@@ -16,4 +15,26 @@ export interface UserApp {
   tokensUsed: number;
   tokensTotal: number;
   url: string;
+}
+
+export interface UserProfile {
+  name: string;
+  email: string;
+  avatarUrl: string;
+}
+
+export interface Application {
+  id: string;
+  name: string;
+  description: string;
+  status: string;
+  created: string;
+  lastModified: string;
+  thumbnail: string;
+}
+
+export interface TokenUsage {
+  used: number;
+  total: number;
+  percentageUsed: number;
 }
