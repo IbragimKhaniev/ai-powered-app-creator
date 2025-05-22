@@ -186,14 +186,14 @@ const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
                     Шаблон
                   </Label>
                   <Select
-                    value={settings.templateId || ""}
-                    onValueChange={(value) => setSettings({ ...settings, templateId: value || undefined })}
+                    value={settings.templateId || "no-template"}
+                    onValueChange={(value) => setSettings({ ...settings, templateId: value === "no-template" ? undefined : value })}
                   >
                     <SelectTrigger id="templateId" className="col-span-3">
                       <SelectValue placeholder="Выберите шаблон (опционально)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Без шаблона</SelectItem>
+                      <SelectItem value="no-template">Без шаблона</SelectItem>
                       {configData.templates.map(template => (
                         <SelectItem key={template.id} value={template.id || ""}>
                           {template.description}
