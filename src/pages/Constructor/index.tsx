@@ -3,13 +3,20 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { showErrorToast } from "@/components/ui/error-toast";
 import AppSettingsDialog from '@/components/AppSettingsDialog';
-import { Message, LogEntry, AppSettings } from './types';
-import { createUserMessage, createAiMessage } from './utils/messageUtils';
+import { AppSettings } from '@/components/AppSettingsDialog';
+import { LogEntry } from './types';
 import ChatPanel from './components/ChatPanel';
 import LogsPanel from './components/LogsPanel';
 import PreviewPanel from './components/PreviewPanel';
 import { CONSTRUCTOR_TEXT } from './constants';
-import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId, useGetApplicationsApplicationIdLogs, useGetApplicationsApplicationIdMessages } from '@/api/core';
+import { 
+  usePostApplications, 
+  usePostApplicationsApplicationIdMessages, 
+  useGetApplicationsId, 
+  useGetApplicationsApplicationIdLogs, 
+  useGetApplicationsApplicationIdMessages,
+  useGetConfig
+} from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
 import { IMongoModelLog } from '@/api/core/types';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -19,8 +26,7 @@ const Constructor: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [showLogs, setShowLogs] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
-  const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
-  const [selectedModel, setSelectedModel] = useState('gpt-4o');
+  const [selectedModel, setSelectedModel] = useState<string>('gpt-4o');
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const { toast } = useToast();
@@ -28,9 +34,18 @@ const Constructor: React.FC = () => {
 
   const applicationId = useMemo(() => searchParams.get('appId'), [searchParams]);
 
+  // Fetch configuration data
+  const { data: configData } = useGetConfig({
+    query: {
+      staleTime: 3600000, // Cache for 1 hour
+    }
+  });
+
+  // Get messages for the current application
   const { data: messages } = useGetApplicationsApplicationIdMessages(applicationId, {
     query: {
       queryKey: ['getMessagesKey', applicationId],
+      enabled: !!applicationId,
     },
   });
   
@@ -61,10 +76,8 @@ const Constructor: React.FC = () => {
     mutation: {
       onSuccess: (data) => {
         console.log('Message sent:', data);
-
-        queryClient.invalidateQueries({ queryKey: ['getMessagesKey'], });
-        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'], });
-
+        queryClient.invalidateQueries({ queryKey: ['getMessagesKey'] });
+        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'] });
         clearMessageInput();
       },
       onError: (error) => {
@@ -101,11 +114,16 @@ const Constructor: React.FC = () => {
     }
   );
 
+  // Set default model from config when it loads
+  useEffect(() => {
+    if (configData?.modelsAi && configData.modelsAi.length > 0) {
+      setSelectedModel(configData.modelsAi[0]);
+    }
+  }, [configData]);
+
   const isCommonLoading = useMemo(() => (
-    Boolean(
-      appData?.pending
-    )
-  ), []);
+    Boolean(appData?.pending || isCreatingApp || isSendingMessage)
+  ), [appData?.pending, isCreatingApp, isSendingMessage]);
   
   // Update logs when data changes
   useEffect(() => {
@@ -121,24 +139,17 @@ const Constructor: React.FC = () => {
 
   const handleTryFix = () => {
     console.log("Attempting to fix errors");
-
-    const fixResponseMessage = createAiMessage(CONSTRUCTOR_TEXT.FIXING_ERRORS);
-    // setMessages(prev => [...prev, fixResponseMessage]);
   };
 
   const handleTryFixLog = (logContent: string) => {
     console.log(`Attempting to fix: ${logContent}`);
-    
-    const cleanLogContent = logContent.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '');
-    const fixLogResponseMessage = createAiMessage(`${CONSTRUCTOR_TEXT.FIXING_ISSUE} ${cleanLogContent}`);
-
-    // setMessages(prev => [...prev, fixLogResponseMessage]);
     setShowLogs(false);
   };
 
   const handleSendMessage = useCallback((inputMessage: string) => {
     // If app is not created, show settings dialog
     if (!applicationId) {
+      setInputMessage(inputMessage);
       setShowSettingsDialog(true);
       return;
     }
@@ -154,14 +165,14 @@ const Constructor: React.FC = () => {
 
   const handleConfirmSettings = (settings: AppSettings) => {
     console.log('App settings confirmed:', settings);
-    setAppSettings(settings);
     setSelectedModel(settings.aiModel);
     
     // Create the application
     createApplication({
       data: {
         name: settings.appName,
-        modelAi: settings.aiModel
+        modelAi: settings.aiModel,
+        template: settings.templateId
       }
     });
     
@@ -194,6 +205,7 @@ const Constructor: React.FC = () => {
         isOpen={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
         onConfirm={handleConfirmSettings}
+        initialSettings={{ aiModel: selectedModel }}
       />
       <ResizablePanelGroup
         direction="horizontal"
@@ -210,6 +222,7 @@ const Constructor: React.FC = () => {
             onModelChange={handleModelChange}
             handleChangeMessageInput={handleChangeMessageInput}
             messageInputValue={inputMessage}
+            availableModels={configData?.modelsAi || []}
           />
         </ResizablePanel>
         

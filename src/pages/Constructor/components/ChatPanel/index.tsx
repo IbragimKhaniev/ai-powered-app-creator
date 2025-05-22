@@ -5,7 +5,6 @@ import { Microchip } from "lucide-react";
 import Header from '../Header';
 import ChatInput from '../ChatInput';
 import ChatMessage from '../ChatMessage';
-import { Message } from '../../types';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GetApplicationsApplicationIdMessages200Item } from '@/api/core';
@@ -17,21 +16,10 @@ interface ChatPanelProps {
   isLoading?: boolean;
   selectedModel: string;
   onModelChange: (model: string) => void;
-
   handleChangeMessageInput: (value: string) => void;
   messageInputValue: string;
+  availableModels: string[];
 }
-
-const AI_MODELS = [{
-  id: 'gpt-4o',
-  name: 'GPT-4o'
-}, {
-  id: 'gpt-4o-mini',
-  name: 'GPT-4o Mini'
-}, {
-  id: 'gpt-4.5-preview',
-  name: 'GPT-4.5 Preview'
-}];
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
   messages,
@@ -41,7 +29,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   selectedModel,
   onModelChange,
   handleChangeMessageInput,
-  messageInputValue
+  messageInputValue,
+  availableModels = []
 }) => {
   const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(messages.length);
@@ -64,6 +53,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
   const handleModelChange = (value: string) => {
     onModelChange(value);
+  };
+
+  // Transform model IDs to display names
+  const getModelDisplayName = (modelId: string): string => {
+    switch (modelId) {
+      case 'gpt-4o-mini': return 'GPT-4o Mini';
+      case 'gpt-4o': return 'GPT-4o';
+      case 'gpt-4.5-preview': return 'GPT-4.5 Preview';
+      default: return modelId;
+    }
   };
 
   return (
@@ -93,20 +92,31 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <SelectValue placeholder="Выберите модель" />
             </SelectTrigger>
             <SelectContent>
-              {AI_MODELS.map(model => (
-                <SelectItem key={model.id} value={model.id}>
-                  {model.name}
-                </SelectItem>
-              ))}
+              {availableModels.length > 0 ? (
+                availableModels.map(model => (
+                  <SelectItem key={model} value={model}>
+                    {getModelDisplayName(model)}
+                  </SelectItem>
+                ))
+              ) : (
+                <>
+                  <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                  <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                  <SelectItem value="gpt-4.5-preview">GPT-4.5 Preview</SelectItem>
+                </>
+              )}
             </SelectContent>
           </Select>
         </div>
-        <ChatInput
-          onSendMessage={onSendMessage}
-          isLoading={isLoading}
-          handleChangeMessageInput={handleChangeMessageInput}
-          messageInputValue={messageInputValue}
-        />
+        
+        <div className="p-4">
+          <ChatInput
+            onSendMessage={onSendMessage}
+            isLoading={isLoading}
+            handleChangeMessageInput={handleChangeMessageInput}
+            messageInputValue={messageInputValue}
+          />
+        </div>
       </div>
     </div>
   );

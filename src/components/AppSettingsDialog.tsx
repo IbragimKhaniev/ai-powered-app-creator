@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,29 +18,64 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useGetConfig } from '@/api/core';
+import { LoaderCircle } from 'lucide-react';
 
 interface AppSettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (settings: AppSettings) => void;
+  initialSettings?: AppSettings;
 }
 
 export interface AppSettings {
   appName: string;
   aiModel: string;
   appType: string;
+  templateId?: string;
 }
+
+const DEFAULT_SETTINGS: AppSettings = {
+  appName: "Новое приложение",
+  aiModel: "gpt-4o",
+  appType: "web",
+};
+
+const APP_TYPES = [
+  { id: "web", name: "Веб-приложение" },
+  { id: "mobile", name: "Мобильное приложение" },
+  { id: "desktop", name: "Десктопное приложение" },
+  { id: "other", name: "Другое" },
+];
 
 const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
   isOpen,
   onClose,
-  onConfirm
+  onConfirm,
+  initialSettings
 }) => {
-  const [settings, setSettings] = useState<AppSettings>({
-    appName: "Новое приложение",
-    aiModel: "gpt-4o",
-    appType: "web",
+  const [settings, setSettings] = useState<AppSettings>({ ...DEFAULT_SETTINGS, ...initialSettings });
+  
+  const { data: configData, isLoading: isLoadingConfig } = useGetConfig({
+    query: {
+      enabled: isOpen,
+      refetchOnWindowFocus: false,
+    }
   });
+
+  // Update settings if initialSettings changes
+  useEffect(() => {
+    if (initialSettings) {
+      setSettings(prev => ({ ...prev, ...initialSettings }));
+    }
+  }, [initialSettings]);
+
+  // Set first available model as default if available
+  useEffect(() => {
+    if (configData?.modelsAi && configData.modelsAi.length > 0 && !settings.aiModel) {
+      setSettings(prev => ({ ...prev, aiModel: configData.modelsAi[0] }));
+    }
+  }, [configData, settings.aiModel]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,65 +91,111 @@ const AppSettingsDialog: React.FC<AppSettingsDialogProps> = ({
             Заполните базовые настройки для вашего нового приложения
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="appName" className="text-right">
-                Название
-              </Label>
-              <Input
-                id="appName"
-                value={settings.appName}
-                onChange={(e) => setSettings({ ...settings, appName: e.target.value })}
-                className="col-span-3"
-                placeholder="Введите название приложения"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="aiModel" className="text-right">
-                Модель ИИ
-              </Label>
-              <Select
-                value={settings.aiModel}
-                onValueChange={(value) => setSettings({ ...settings, aiModel: value })}
-              >
-                <SelectTrigger id="aiModel" className="col-span-3">
-                  <SelectValue placeholder="Выберите модель ИИ" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                  <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                  <SelectItem value="gpt-4.5-preview">GPT-4.5 Preview</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="appType" className="text-right">
-                Тип приложения
-              </Label>
-              <Select
-                value={settings.appType}
-                onValueChange={(value) => setSettings({ ...settings, appType: value })}
-              >
-                <SelectTrigger id="appType" className="col-span-3">
-                  <SelectValue placeholder="Выберите тип приложения" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="web">Веб-приложение</SelectItem>
-                  <SelectItem value="mobile">Мобильное приложение</SelectItem>
-                  <SelectItem value="desktop">Десктопное приложение</SelectItem>
-                  <SelectItem value="other">Другое</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        
+        {isLoadingConfig ? (
+          <div className="py-8 flex justify-center">
+            <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
           </div>
-          <DialogFooter>
-            <Button type="submit" className="rounded-full">
-              Создать приложение
-            </Button>
-          </DialogFooter>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="appName" className="text-right">
+                  Название
+                </Label>
+                <Input
+                  id="appName"
+                  value={settings.appName}
+                  onChange={(e) => setSettings({ ...settings, appName: e.target.value })}
+                  className="col-span-3"
+                  placeholder="Введите название приложения"
+                  required
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="aiModel" className="text-right">
+                  Модель ИИ
+                </Label>
+                <Select
+                  value={settings.aiModel}
+                  onValueChange={(value) => setSettings({ ...settings, aiModel: value })}
+                >
+                  <SelectTrigger id="aiModel" className="col-span-3">
+                    <SelectValue placeholder="Выберите модель ИИ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {configData?.modelsAi?.map(model => (
+                      <SelectItem key={model} value={model}>
+                        {model === 'gpt-4o-mini' ? 'GPT-4o Mini' : 
+                         model === 'gpt-4o' ? 'GPT-4o' : 
+                         model === 'gpt-4.5-preview' ? 'GPT-4.5 Preview' : 
+                         model}
+                      </SelectItem>
+                    )) || (
+                      <>
+                        <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                        <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                        <SelectItem value="gpt-4.5-preview">GPT-4.5 Preview</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="appType" className="text-right">
+                  Тип приложения
+                </Label>
+                <Select
+                  value={settings.appType}
+                  onValueChange={(value) => setSettings({ ...settings, appType: value })}
+                >
+                  <SelectTrigger id="appType" className="col-span-3">
+                    <SelectValue placeholder="Выберите тип приложения" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {APP_TYPES.map(type => (
+                      <SelectItem key={type.id} value={type.id}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {configData?.templates && configData.templates.length > 0 && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="templateId" className="text-right">
+                    Шаблон
+                  </Label>
+                  <Select
+                    value={settings.templateId || ""}
+                    onValueChange={(value) => setSettings({ ...settings, templateId: value || undefined })}
+                  >
+                    <SelectTrigger id="templateId" className="col-span-3">
+                      <SelectValue placeholder="Выберите шаблон (опционально)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Без шаблона</SelectItem>
+                      {configData.templates.map(template => (
+                        <SelectItem key={template.id} value={template.id || ""}>
+                          {template.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+            
+            <DialogFooter>
+              <Button type="submit" className="rounded-full">
+                Создать приложение
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
