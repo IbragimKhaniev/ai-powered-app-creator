@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { IMongoModelLog, useGetApplicationsApplicationIdLogs, usePostApplicationsApplicationIdMessages } from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
 
@@ -58,8 +58,16 @@ export const useLogsHandling = (applicationId: string | null, showLogs: boolean)
     });
   }, [applicationId, sendFixMessage, toast]);
 
+  const logsParsed = useMemo(() => {
+    if (logsData?.logs) {
+      return [...logsData.logs].reverse();
+    }
+
+    return [];
+  }, [logsData?.logs]);
+
   return {
-    logs: logsData?.logs?.reverse() || [],
+    logs: logsParsed,
     isLoadingLogs,
     handleTryFixLog,
     isSendingFixMessage

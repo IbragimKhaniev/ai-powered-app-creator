@@ -37,7 +37,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           />
         ) : (
           <div
-            className={`max-w-[80%] rounded-xl p-4 ${
+            className={`rounded-xl p-4 ${
+              additionalContent ? 'w-[60%]' : 'max-w-[80%]'
+            } ${
               isUser
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'bg-white border border-gray-100 shadow-sm'
@@ -56,10 +58,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               <Collapsible
                 open={isOpen}
                 onOpenChange={setIsOpen}
-                className="mt-2 pt-2 border-t border-gray-100"
+                className="mt-2 pt-2"
               >
                 <div className="flex items-center">
-                  <CollapsibleTrigger className="flex items-center text-xs text-blue-500 hover:text-blue-700">
+                  <CollapsibleTrigger className="flex items-center text-xs">
                     {isOpen ? (
                       <>
                         <ChevronUp className="h-3 w-3 mr-1" />
@@ -73,7 +75,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     )}
                   </CollapsibleTrigger>
                 </div>
-                <CollapsibleContent className="mt-2 text-sm text-gray-700">
+                <CollapsibleContent className="mt-2 text-sm">
                   {additionalContent}
                 </CollapsibleContent>
               </Collapsible>
@@ -82,7 +84,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         )}
       </div>
       <div className={`flex justify-start flex-col my-5 pr-20`}>
-        <div className="py-2">easyappz:</div>
         {message.promts?.map((currentPromt, index) => (
           <TypedMessage
             key={index}
@@ -101,7 +102,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           />
         )}
         {isDeploying && (
-          <div>Деплою приложение ...</div>
+          <TypedMessage 
+            content="Деплою приложение ..."
+            showAnimation
+            className="mb-1"
+          />
         )}
       </div>
     </div>

@@ -145,7 +145,7 @@ const Constructor: React.FC = () => {
         {/* Preview/Logs Panel */}
         <ResizablePanel defaultSize={60}>
           {showLogs ? (
-            <LogsPanel 
+            <LogsPanel
               logs={logs} 
               onToggleLogs={handleToggleLogs} 
               onTryFixLog={handleTryFixLog} 

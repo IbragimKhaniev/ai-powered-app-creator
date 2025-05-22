@@ -84,16 +84,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <ScrollArea className="flex-1 p-4 bg-background">
         <div className="space-y-4">
-          {/* Display deployment error if exists */}
-          {deployingError && (
-            <div className="mb-4">
-              <ChatErrorMessage 
-                message={`Ошибка развертывания: ${deployingError}`} 
-                onTryFix={onTryFixDeployError}
-              />
-            </div>
-          )}
-          
           {messages?.map(message => (
             <ChatMessage 
               key={message.id} 
@@ -103,6 +93,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               additionalContent={message.additionalContent}
             />
           ))}
+          {/* Display deployment error if exists */}
+          {deployingError && (
+            <div className="mb-4">
+              <ChatErrorMessage 
+                message={`Ошибка развертывания: ${deployingError.substring(0, 100)}...`} 
+                onTryFix={onTryFixDeployError}
+
+                disabled={isLoading}
+              />
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
       </ScrollArea>

@@ -50,6 +50,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
           showLogs={showLogs} 
           onToggleLogs={onToggleLogs} 
           applicationId={applicationId}
+          domain={parsedDir}
         />
       </div>
 

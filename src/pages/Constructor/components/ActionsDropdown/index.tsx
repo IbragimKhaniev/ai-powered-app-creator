@@ -16,12 +16,14 @@ interface ActionsDropdownProps {
   showLogs: boolean;
   onToggleLogs: () => void;
   applicationId?: string | null;
+  domain: string;
 }
 
 const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ 
   showLogs, 
   onToggleLogs,
-  applicationId
+  applicationId,
+  domain
 }) => {
   const { toast } = useToast();
   
@@ -68,7 +70,7 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
     }
     
     // Open application in a new tab
-    window.open(`https://${applicationId}.easyappz.ru`, '_blank');
+    window.open(domain, '_blank');
   };
 
   return (
