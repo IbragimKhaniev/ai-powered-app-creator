@@ -5,6 +5,7 @@ import { Microchip } from "lucide-react";
 import Header from '../Header';
 import ChatInput from '../ChatInput';
 import ChatMessage from '../ChatMessage';
+import ChatErrorMessage from '@/components/ui/chat-error-message';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GetApplicationsApplicationIdMessages200Item } from '@/api/core';
@@ -19,6 +20,8 @@ interface ChatPanelProps {
   handleChangeMessageInput: (value: string) => void;
   messageInputValue: string;
   availableModels: string[];
+  deployingError?: string | null;
+  onTryFixDeployError?: () => void;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
@@ -30,7 +33,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onModelChange,
   handleChangeMessageInput,
   messageInputValue,
-  availableModels = []
+  availableModels = [],
+  deployingError,
+  onTryFixDeployError
 }) => {
   const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(messages.length);
@@ -79,6 +84,16 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <ScrollArea className="flex-1 p-4 bg-background">
         <div className="space-y-4">
+          {/* Display deployment error if exists */}
+          {deployingError && (
+            <div className="mb-4">
+              <ChatErrorMessage 
+                message={`Ошибка развертывания: ${deployingError}`} 
+                onTryFix={onTryFixDeployError}
+              />
+            </div>
+          )}
+          
           {messages?.map(message => (
             <ChatMessage 
               key={message.id} 

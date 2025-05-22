@@ -95,7 +95,7 @@ const Constructor: React.FC = () => {
     console.log("Attempting to fix errors");
   }, []);
 
-  // New function to handle fixing deployment errors
+  // Function to handle fixing deployment errors
   const handleTryFixDeployError = useCallback(() => {
     if (!applicationId || !appData?.deployingError) return;
     
@@ -134,6 +134,8 @@ const Constructor: React.FC = () => {
             handleChangeMessageInput={handleChangeMessageInput}
             messageInputValue={inputMessage}
             availableModels={configData?.modelsAi || []}
+            deployingError={appData?.deployingError}
+            onTryFixDeployError={handleTryFixDeployError}
           />
         </ResizablePanel>
         
@@ -159,8 +161,6 @@ const Constructor: React.FC = () => {
               onToggleLogs={handleToggleLogs}
               onStartCreation={handleStartCreation}
               applicationId={applicationId}
-              deployingError={appData?.deployingError}
-              onTryFixDeployError={handleTryFixDeployError}
             />
           )}
         </ResizablePanel>
