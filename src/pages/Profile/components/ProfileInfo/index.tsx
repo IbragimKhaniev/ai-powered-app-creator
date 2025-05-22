@@ -26,16 +26,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(({ userData }) => {
 
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle>{PROFILE_STRINGS.PROFILE_INFO.TITLE}</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="pt-10">
         <div className="flex flex-col items-center gap-6">
           <Avatar className="h-32 w-32">
             <AvatarImage src={userData.avatarUrl} alt={userData.name} />
             <AvatarFallback className="text-3xl">{userInitials}</AvatarFallback>
           </Avatar>
-          
+
           <div className="space-y-6 w-full">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.PROFILE_INFO.NAME}</h3>

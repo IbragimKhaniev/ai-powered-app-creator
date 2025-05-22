@@ -127,18 +127,10 @@ const Profile: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
         <div className="md:col-span-1">
           {profileData && <ProfileInfo userData={profileData} />}
-          <Button 
-            variant="outline"
-            className="w-full mt-4"
-            onClick={handleLogout}
-          >
-            Выйти
-          </Button>
         </div>
         
         <div className="md:col-span-2">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">{PROFILE_STRINGS.APPS.TITLE}</h2>
             <Link to="/constructor">
               <Button 
                 className="bg-primary text-white flex items-center gap-2"
