@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Microchip } from "lucide-react";
 import Header from '../Header';
@@ -37,6 +37,25 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   selectedModel,
   onModelChange
 }) => {
+  const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
+  const prevMessagesLengthRef = useRef(messages.length);
+  
+  useEffect(() => {
+    // Check if new messages have been added
+    if (messages.length > prevMessagesLengthRef.current) {
+      const newMessages = messages.slice(prevMessagesLengthRef.current);
+      const newIds = new Set(newMessageIds);
+      
+      newMessages.forEach(message => {
+        newIds.add(message.id);
+      });
+      
+      setNewMessageIds(newIds);
+    }
+    
+    prevMessagesLengthRef.current = messages.length;
+  }, [messages, newMessageIds]);
+
   const handleModelChange = (value: string) => {
     onModelChange(value);
   };
@@ -49,7 +68,14 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <ScrollArea className="flex-1 p-4 bg-background">
         <div className="space-y-4">
-          {messages.map(message => <ChatMessage key={message.id} message={message} onTryFix={onTryFix} />)}
+          {messages.map(message => (
+            <ChatMessage 
+              key={message.id} 
+              message={message} 
+              onTryFix={onTryFix} 
+              isNewMessage={newMessageIds.has(message.id)}
+            />
+          ))}
         </div>
       </ScrollArea>
       
