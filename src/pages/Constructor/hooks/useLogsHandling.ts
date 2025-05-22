@@ -1,6 +1,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
-import { useGetApplicationsApplicationIdLogs } from '@/api/core';
+import { IMongoModelLog, useGetApplicationsApplicationIdLogs } from '@/api/core';
 
 export const useLogsHandling = (applicationId: string | null, showLogs: boolean) => {
   // Get application logs
@@ -14,8 +14,8 @@ export const useLogsHandling = (applicationId: string | null, showLogs: boolean)
     }
   );
 
-  const handleTryFixLog = useCallback((logContent: string) => {
-    console.log(`Attempting to fix: ${logContent}`);
+  const handleTryFixLog = useCallback((log: IMongoModelLog) => {
+    console.log(`Attempting to fix: ${log.content}`);
   }, []);
 
   return {
