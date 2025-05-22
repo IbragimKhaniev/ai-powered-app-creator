@@ -8,7 +8,7 @@ export interface UserData {
 }
 
 export interface UserApp {
-  id: number;
+  id: string;
   name: string;
   createdAt: string;
   status: string;

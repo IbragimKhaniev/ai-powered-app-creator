@@ -33,7 +33,7 @@ const AppCard: React.FC<AppCardProps> = React.memo(({ app }) => {
         </div>
         <p className="text-xs text-muted-foreground mt-1">{formattedDate}</p>
       </CardHeader>
-      
+
       <CardContent className="flex-grow">
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -41,7 +41,7 @@ const AppCard: React.FC<AppCardProps> = React.memo(({ app }) => {
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.APPS.MODEL}</h3>
               <p>{app.aiModel}</p>
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.APPS.APP_LINK}</h3>
               <a 
@@ -56,7 +56,7 @@ const AppCard: React.FC<AppCardProps> = React.memo(({ app }) => {
           </div>
         </div>
       </CardContent>
-      
+
       <CardFooter className="pt-4 bg-muted/20 mt-auto">
         <Button
           variant="outline"

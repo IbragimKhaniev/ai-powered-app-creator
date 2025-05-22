@@ -24,7 +24,7 @@ export const mapApplicationsData = (applications: IMongoModelApplication[]): Use
     const domain = app.domain || `app-${index}.easyappz.io`;
     
     return {
-      id: Number(app._id) || index + 1,
+      id: app._id,
       name: app.name || 'Приложение без названия',
       createdAt: app.createdAt || new Date().toISOString(),
       status: app.pending ? 'В процессе' : 'Активно',

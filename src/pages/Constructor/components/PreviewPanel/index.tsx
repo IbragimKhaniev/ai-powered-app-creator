@@ -1,29 +1,32 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Header from '../Header';
 import ActionsDropdown from '../ActionsDropdown';
-import LoadingState from '../LoadingState';
 import AppCreationCard from '../AppCreationCard';
 import AppPreviewCard from '../AppPreviewCard';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 
 interface PreviewPanelProps {
   isLoading: boolean;
-  loadingProgress: number;
   isAppCreated: boolean;
   showLogs: boolean;
   onToggleLogs: () => void;
   onStartCreation: () => void;
+  domain: string;
+  keyIframe: string;
 }
 
 const PreviewPanel: React.FC<PreviewPanelProps> = ({
   isLoading,
-  loadingProgress,
   isAppCreated,
   showLogs,
   onToggleLogs,
-  onStartCreation
+  onStartCreation,
+  domain,
+  keyIframe
 }) => {
+  const parsedDir = useMemo(() => `https://${domain}.easyappz.ru`, [domain]);
+
   return (
     <div className="flex h-full flex-col">
       <div className="border-b flex justify-between items-center bg-white p-4">
@@ -43,14 +46,17 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
         </div>
         <ActionsDropdown showLogs={showLogs} onToggleLogs={onToggleLogs} />
       </div>
-      
+
       <div className="flex-1 overflow-auto p-6 bg-gray-50">
-        {isLoading ? (
-          <LoadingState loadingProgress={loadingProgress} />
-        ) : !isAppCreated ? (
-          <AppCreationCard onStartCreation={onStartCreation} />
-        ) : (
-          <AppPreviewCard />
+        {isLoading ? <AppPreviewCard /> : !isAppCreated ? <AppCreationCard onStartCreation={onStartCreation} /> : (
+          <iframe
+            key={keyIframe}
+            id="preview-iframe"
+            src={parsedDir}
+            className="w-full h-full rounded-lg bg-white"
+            title="Превью"
+            sandbox="allow-scripts allow-forms"
+          />
         )}
       </div>
     </div>

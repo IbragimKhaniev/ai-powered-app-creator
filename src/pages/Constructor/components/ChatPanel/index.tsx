@@ -8,9 +8,10 @@ import ChatMessage from '../ChatMessage';
 import { Message } from '../../types';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GetApplicationsApplicationIdMessages200Item } from '@/api/core';
 
 interface ChatPanelProps {
-  messages: Message[];
+  messages: GetApplicationsApplicationIdMessages200Item[];
   onSendMessage: (message: string) => void;
   onTryFix: () => void;
   isLoading?: boolean;
@@ -49,7 +50,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       newMessages.forEach(message => {
         newIds.add(message.id);
       });
-      
+
       setNewMessageIds(newIds);
     }
     
@@ -68,7 +69,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <ScrollArea className="flex-1 p-4 bg-background">
         <div className="space-y-4">
-          {messages.map(message => (
+          {messages?.map(message => (
             <ChatMessage 
               key={message.id} 
               message={message} 

@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { showErrorToast } from "@/components/ui/error-toast";
 import AppSettingsDialog from '@/components/AppSettingsDialog';
@@ -9,25 +9,29 @@ import ChatPanel from './components/ChatPanel';
 import LogsPanel from './components/LogsPanel';
 import PreviewPanel from './components/PreviewPanel';
 import { CONSTRUCTOR_TEXT } from './constants';
-import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId, useGetApplicationsApplicationIdLogs } from '@/api/core';
+import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId, useGetApplicationsApplicationIdLogs, useGetApplicationsApplicationIdMessages } from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
 import { IMongoModelLog } from '@/api/core/types';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Constructor: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    createAiMessage(CONSTRUCTOR_TEXT.DEFAULT_AI_RESPONSE, false),
-  ]);
+  const [searchParams] = useSearchParams();
   const [showLogs, setShowLogs] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isChatLoading, setIsChatLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [isAppCreated, setIsAppCreated] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
-  const [applicationId, setApplicationId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState('gpt-4o');
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const applicationId = useMemo(() => searchParams.get('appId'), [searchParams]);
+
+  const { data: messages } = useGetApplicationsApplicationIdMessages(applicationId, {
+    query: {
+      queryKey: ['getMessagesKey', applicationId],
+    },
+  });
   
   // Create application mutation
   const { mutate: createApplication, isPending: isCreatingApp } = usePostApplications({
@@ -38,10 +42,7 @@ const Constructor: React.FC = () => {
           title: 'Успешно!',
           description: 'Приложение создано',
         });
-        setApplicationId(data._id);
-        setIsAppCreated(true);
-        setIsLoading(true);
-        startLoadingAnimation();
+        window.location.href = `/constructor?appId=${data._id}`;
       },
       onError: (error) => {
         console.error('Error creating application:', error);
@@ -59,7 +60,9 @@ const Constructor: React.FC = () => {
     mutation: {
       onSuccess: (data) => {
         console.log('Message sent:', data);
-        setIsChatLoading(false);
+
+        queryClient.invalidateQueries({ queryKey: ['getMessagesKey'], });
+        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'], });
       },
       onError: (error) => {
         console.error('Error sending message:', error);
@@ -68,29 +71,21 @@ const Constructor: React.FC = () => {
           description: 'Не удалось отправить сообщение',
           variant: 'destructive'
         });
-        setIsChatLoading(false);
       }
     }
   });
-  
+
   // Get application details if we have an ID
   const { data: appData, isLoading: isLoadingAppData } = useGetApplicationsId(
     applicationId || '',
     {
       query: {
         enabled: !!applicationId,
+        queryKey: ['getApplicationKey', applicationId],
         refetchInterval: 5000, // Poll every 5 seconds
       }
     }
   );
-  
-  // Watch for application status changes
-  useEffect(() => {
-    if (appData && !appData.pending && isLoading) {
-      setIsLoading(false);
-      setLoadingProgress(100);
-    }
-  }, [appData, isLoading]);
   
   // Get application logs
   const { data: logsData, isLoading: isLoadingLogs } = useGetApplicationsApplicationIdLogs(
@@ -102,6 +97,12 @@ const Constructor: React.FC = () => {
       }
     }
   );
+
+  const isCommonLoading = useMemo(() => (
+    Boolean(
+      appData?.pending
+    )
+  ), []);
   
   // Update logs when data changes
   useEffect(() => {
@@ -115,75 +116,41 @@ const Constructor: React.FC = () => {
     }
   }, [logsData]);
 
-  const startLoadingAnimation = () => {
-    setLoadingProgress(0);
-    const interval = setInterval(() => {
-      setLoadingProgress(prev => {
-        const newProgress = prev + 2;
-        if (newProgress >= 95) {
-          clearInterval(interval);
-          return 95; // We'll set it to 100 when actual loading is done
-        }
-        return newProgress;
-      });
-    }, 300);
-  };
-
-  // Demo error toast
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      showErrorToast({ onTryFix: handleTryFix });
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleTryFix = () => {
     console.log("Attempting to fix errors");
-    
+
     const fixResponseMessage = createAiMessage(CONSTRUCTOR_TEXT.FIXING_ERRORS);
-    setMessages(prev => [...prev, fixResponseMessage]);
+    // setMessages(prev => [...prev, fixResponseMessage]);
   };
-  
+
   const handleTryFixLog = (logContent: string) => {
     console.log(`Attempting to fix: ${logContent}`);
     
     const cleanLogContent = logContent.replace(/\[(INFO|WARNING|ERROR|DEBUG)\]\s/, '');
     const fixLogResponseMessage = createAiMessage(`${CONSTRUCTOR_TEXT.FIXING_ISSUE} ${cleanLogContent}`);
-    
-    setMessages(prev => [...prev, fixLogResponseMessage]);
+
+    // setMessages(prev => [...prev, fixLogResponseMessage]);
     setShowLogs(false);
   };
 
   const handleSendMessage = useCallback((inputMessage: string) => {
     // Add user message
     const newMessage = createUserMessage(inputMessage);
-    setMessages(prev => [...prev, newMessage]);
-    
+
     // If app is not created, show settings dialog
-    if (!isAppCreated) {
+    if (!applicationId) {
       setShowSettingsDialog(true);
       return;
     }
-    
+
     // If we have an application ID, send the message
     if (applicationId) {
-      setIsChatLoading(true);
-      
       sendMessage({
         applicationId,
         data: { content: inputMessage }
       });
-      
-      // Simulate AI response (in a real app, this would come from the server)
-      setTimeout(() => {
-        const aiResponse = createAiMessage(
-          'Я получил ваше сообщение. Сейчас я работаю над вашим запросом...'
-        );
-        setMessages(prev => [...prev, aiResponse]);
-      }, 1500);
     }
-  }, [applicationId, isAppCreated, sendMessage]);
+  }, [applicationId, sendMessage]);
 
   const handleConfirmSettings = (settings: AppSettings) => {
     console.log('App settings confirmed:', settings);
@@ -227,10 +194,10 @@ const Constructor: React.FC = () => {
         {/* Chat Panel */}
         <ResizablePanel defaultSize={40} minSize={30}>
           <ChatPanel 
-            messages={messages} 
+            messages={messages || []} 
             onSendMessage={handleSendMessage} 
             onTryFix={handleTryFix}
-            isLoading={isChatLoading}
+            isLoading={isCommonLoading}
             selectedModel={selectedModel}
             onModelChange={handleModelChange}
           />
@@ -249,9 +216,10 @@ const Constructor: React.FC = () => {
             />
           ) : (
             <PreviewPanel 
-              isLoading={isLoading || isCreatingApp}
-              loadingProgress={loadingProgress}
-              isAppCreated={isAppCreated}
+              isLoading={isCommonLoading}
+              isAppCreated={Boolean(applicationId)}
+              keyIframe="1"
+              domain={appData?.domain}
               showLogs={showLogs}
               onToggleLogs={handleToggleLogs}
               onStartCreation={handleStartCreation}
