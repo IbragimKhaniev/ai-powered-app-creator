@@ -174,8 +174,8 @@ const AppSettingsForm: React.FC<AppSettingsFormProps> = ({ settings, setSettings
               <SelectContent>
                 <SelectItem value="no-template">Без шаблона</SelectItem>
                 {configData.templates.map(template => (
-                  <SelectItem key={template.id || template.description} value={template.id || ""}>
-                    {template.description}
+                  <SelectItem key={template.id || template.description || ""} value={template.id || ""}>
+                    {template.description || ""}
                   </SelectItem>
                 ))}
               </SelectContent>
