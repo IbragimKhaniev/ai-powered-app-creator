@@ -9,16 +9,68 @@ import {
 import { Button } from "@/components/ui/button";
 import { RefreshCw, ExternalLink, Logs } from "lucide-react";
 import { CONSTRUCTOR_TEXT } from '../../constants';
+import { useToast } from '@/hooks/use-toast';
+import { usePostApplicationsApplicationIdRestart } from '@/api/core';
 
 interface ActionsDropdownProps {
   showLogs: boolean;
   onToggleLogs: () => void;
+  applicationId?: string | null;
 }
 
 const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ 
   showLogs, 
-  onToggleLogs 
+  onToggleLogs,
+  applicationId
 }) => {
+  const { toast } = useToast();
+  
+  const { mutate: restartApplication, isPending: isRestarting } = usePostApplicationsApplicationIdRestart({
+    mutation: {
+      onSuccess: () => {
+        toast({
+          title: 'Успешно',
+          description: 'Приложение перезагружено',
+        });
+      },
+      onError: (error) => {
+        console.error('Error restarting application:', error);
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось перезагрузить приложение',
+          variant: 'destructive'
+        });
+      }
+    }
+  });
+
+  const handleRestartServer = () => {
+    if (!applicationId) {
+      toast({
+        title: 'Ошибка',
+        description: 'Приложение еще не создано',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    restartApplication({ applicationId });
+  };
+
+  const handleOpenNewTab = () => {
+    if (!applicationId) {
+      toast({
+        title: 'Ошибка',
+        description: 'Приложение еще не создано',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    // Open application in a new tab
+    window.open(`https://${applicationId}.easyappz.ru`, '_blank');
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,12 +86,20 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
         align="end" 
         className="w-[220px] rounded-xl p-1 border-primary/10 shadow-lg bg-white/95 backdrop-blur-sm"
       >
-        <DropdownMenuItem className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors">
-          <RefreshCw className="mr-3 h-4 w-4 text-primary" />
-          <span>{CONSTRUCTOR_TEXT.RESTART_SERVER}</span>
+        <DropdownMenuItem 
+          onClick={handleRestartServer}
+          disabled={isRestarting || !applicationId}
+          className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
+        >
+          <RefreshCw className={`mr-3 h-4 w-4 ${isRestarting ? 'animate-spin' : 'text-primary'}`} />
+          <span>{isRestarting ? 'Перезагрузка...' : CONSTRUCTOR_TEXT.RESTART_SERVER}</span>
         </DropdownMenuItem>
         
-        <DropdownMenuItem className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors">
+        <DropdownMenuItem 
+          onClick={handleOpenNewTab}
+          disabled={!applicationId}
+          className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
+        >
           <ExternalLink className="mr-3 h-4 w-4 text-primary" />
           <span>{CONSTRUCTOR_TEXT.OPEN_NEW_TAB}</span>
         </DropdownMenuItem>

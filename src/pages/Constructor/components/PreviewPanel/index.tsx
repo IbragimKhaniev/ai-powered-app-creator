@@ -14,6 +14,7 @@ interface PreviewPanelProps {
   onStartCreation: () => void;
   domain: string;
   keyIframe: string;
+  applicationId?: string | null;
 }
 
 const PreviewPanel: React.FC<PreviewPanelProps> = ({
@@ -23,7 +24,8 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
   onToggleLogs,
   onStartCreation,
   domain,
-  keyIframe
+  keyIframe,
+  applicationId
 }) => {
   const parsedDir = useMemo(() => `https://${domain}.easyappz.ru`, [domain]);
 
@@ -44,7 +46,11 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             </div>
           )}
         </div>
-        <ActionsDropdown showLogs={showLogs} onToggleLogs={onToggleLogs} />
+        <ActionsDropdown 
+          showLogs={showLogs} 
+          onToggleLogs={onToggleLogs} 
+          applicationId={applicationId}
+        />
       </div>
 
       <div className="flex-1 overflow-auto p-6 bg-gray-50">

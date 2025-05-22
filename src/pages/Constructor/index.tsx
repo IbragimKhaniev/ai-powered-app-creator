@@ -143,6 +143,7 @@ const Constructor: React.FC = () => {
               showLogs={showLogs}
               onToggleLogs={handleToggleLogs}
               onStartCreation={handleStartCreation}
+              applicationId={applicationId}
             />
           )}
         </ResizablePanel>
