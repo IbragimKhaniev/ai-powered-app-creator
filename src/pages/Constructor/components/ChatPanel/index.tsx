@@ -17,6 +17,9 @@ interface ChatPanelProps {
   isLoading?: boolean;
   selectedModel: string;
   onModelChange: (model: string) => void;
+
+  handleChangeMessageInput: (value: string) => void;
+  messageInputValue: string;
 }
 
 const AI_MODELS = [{
@@ -36,7 +39,9 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onTryFix,
   isLoading = false,
   selectedModel,
-  onModelChange
+  onModelChange,
+  handleChangeMessageInput,
+  messageInputValue
 }) => {
   const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
   const prevMessagesLengthRef = useRef(messages.length);
@@ -96,7 +101,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             </SelectContent>
           </Select>
         </div>
-        <ChatInput onSendMessage={onSendMessage} isLoading={isLoading} />
+        <ChatInput
+          onSendMessage={onSendMessage}
+          isLoading={isLoading}
+          handleChangeMessageInput={handleChangeMessageInput}
+          messageInputValue={messageInputValue}
+        />
       </div>
     </div>
   );

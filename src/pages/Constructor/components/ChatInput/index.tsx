@@ -7,16 +7,19 @@ import { CONSTRUCTOR_TEXT } from '../../constants';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+
+  handleChangeMessageInput: (value: string) => void;
+  messageInputValue: string;
+
   isLoading?: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false }) => {
-  const [inputMessage, setInputMessage] = useState('');
-
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, handleChangeMessageInput, messageInputValue, isLoading = false }) => {
   const handleSendMessage = () => {
-    if (inputMessage.trim() === '' || isLoading) return;
-    onSendMessage(inputMessage);
-    setInputMessage('');
+
+    if (messageInputValue.trim() === '' || isLoading) return;
+    onSendMessage(messageInputValue);
+    handleChangeMessageInput('');
   };
 
   return (
@@ -24,8 +27,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false 
       <div className="relative">
         <Textarea
           placeholder={CONSTRUCTOR_TEXT.ENTER_MESSAGE}
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
+          value={messageInputValue}
+          onChange={(e) => handleChangeMessageInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
               e.preventDefault();

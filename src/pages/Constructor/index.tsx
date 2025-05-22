@@ -22,6 +22,7 @@ const Constructor: React.FC = () => {
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
   const [selectedModel, setSelectedModel] = useState('gpt-4o');
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -63,6 +64,8 @@ const Constructor: React.FC = () => {
 
         queryClient.invalidateQueries({ queryKey: ['getMessagesKey'], });
         queryClient.invalidateQueries({ queryKey: ['getApplicationKey'], });
+
+        clearMessageInput();
       },
       onError: (error) => {
         console.error('Error sending message:', error);
@@ -134,9 +137,6 @@ const Constructor: React.FC = () => {
   };
 
   const handleSendMessage = useCallback((inputMessage: string) => {
-    // Add user message
-    const newMessage = createUserMessage(inputMessage);
-
     // If app is not created, show settings dialog
     if (!applicationId) {
       setShowSettingsDialog(true);
@@ -180,6 +180,14 @@ const Constructor: React.FC = () => {
     setSelectedModel(model);
   }, []);
 
+  const handleChangeMessageInput = useCallback((value: string) => {
+    setInputMessage(value);
+  }, []);
+
+  const clearMessageInput = useCallback(() => {
+    setInputMessage("");
+  }, []);
+
   return (
     <div className="h-screen w-full bg-background">
       <AppSettingsDialog 
@@ -200,6 +208,8 @@ const Constructor: React.FC = () => {
             isLoading={isCommonLoading}
             selectedModel={selectedModel}
             onModelChange={handleModelChange}
+            handleChangeMessageInput={handleChangeMessageInput}
+            messageInputValue={inputMessage}
           />
         </ResizablePanel>
         
