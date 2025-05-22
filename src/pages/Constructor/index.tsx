@@ -95,6 +95,20 @@ const Constructor: React.FC = () => {
     console.log("Attempting to fix errors");
   }, []);
 
+  // New function to handle fixing deployment errors
+  const handleTryFixDeployError = useCallback(() => {
+    if (!applicationId || !appData?.deployingError) return;
+    
+    console.log("Attempting to fix deployment error:", appData.deployingError);
+    sendMessage({
+      applicationId,
+      data: { 
+        content: "Исправь ошибку", 
+        additionalContent: appData.deployingError 
+      }
+    });
+  }, [applicationId, appData?.deployingError, sendMessage]);
+
   return (
     <div className="h-screen w-full bg-background">
       <AppSettingsDialog 
@@ -145,6 +159,8 @@ const Constructor: React.FC = () => {
               onToggleLogs={handleToggleLogs}
               onStartCreation={handleStartCreation}
               applicationId={applicationId}
+              deployingError={appData?.deployingError}
+              onTryFixDeployError={handleTryFixDeployError}
             />
           )}
         </ResizablePanel>
