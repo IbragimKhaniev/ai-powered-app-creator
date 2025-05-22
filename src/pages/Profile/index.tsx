@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -23,18 +23,17 @@ const Profile: React.FC = () => {
     error: userError 
   } = useGetUser({
     query: {
-      onSuccess: (data) => {
-        console.log('User data loaded:', data);
-      },
-      onError: () => {
-        toast({
-          title: 'Ошибка загрузки',
-          description: 'Не удалось загрузить данные пользователя',
-          variant: 'destructive'
-        });
-      }
+      enabled: true,
+      retry: 3,
+      staleTime: 1000 * 60 * 5, // 5 минут
     }
   });
+
+  useEffect(() => {
+    if (userData) {
+      console.log('User data loaded:', userData);
+    }
+  }, [userData]);
   
   // Загрузка приложений пользователя
   const {
@@ -43,18 +42,35 @@ const Profile: React.FC = () => {
     error: appsError
   } = useGetApplications({
     query: {
-      onSuccess: (data) => {
-        console.log('Applications loaded:', data);
-      },
-      onError: () => {
-        toast({
-          title: 'Ошибка загрузки',
-          description: 'Не удалось загрузить список приложений',
-          variant: 'destructive'
-        });
-      }
+      enabled: true,
+      retry: 3,
+      staleTime: 1000 * 60 * 5, // 5 минут
     }
   });
+
+  useEffect(() => {
+    if (applicationsData) {
+      console.log('Applications loaded:', applicationsData);
+    }
+  }, [applicationsData]);
+
+  useEffect(() => {
+    if (userError) {
+      toast({
+        title: 'Ошибка загрузки',
+        description: 'Не удалось загрузить данные пользователя',
+        variant: 'destructive'
+      });
+    }
+    
+    if (appsError) {
+      toast({
+        title: 'Ошибка загрузки',
+        description: 'Не удалось загрузить список приложений',
+        variant: 'destructive'
+      });
+    }
+  }, [userError, appsError, toast]);
 
   const handleCreateApp = useCallback(() => {
     setDialogOpen(true);

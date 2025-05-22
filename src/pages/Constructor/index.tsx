@@ -4,14 +4,14 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { showErrorToast } from "@/components/ui/error-toast";
 import AppSettingsDialog from '@/components/AppSettingsDialog';
 import { Message, LogEntry, AppSettings } from './types';
-import { mockLogs } from './utils/logUtils';
 import { createUserMessage, createAiMessage } from './utils/messageUtils';
 import ChatPanel from './components/ChatPanel';
 import LogsPanel from './components/LogsPanel';
 import PreviewPanel from './components/PreviewPanel';
 import { CONSTRUCTOR_TEXT } from './constants';
-import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId } from '@/api/core';
+import { usePostApplications, usePostApplicationsApplicationIdMessages, useGetApplicationsId, useGetApplicationsApplicationIdLogs } from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
+import { IMongoModelLog } from '@/api/core/types';
 
 const Constructor: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -26,6 +26,7 @@ const Constructor: React.FC = () => {
   const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState('gpt-4o');
+  const [logs, setLogs] = useState<LogEntry[]>([]);
   const { toast } = useToast();
   
   // Create application mutation
@@ -79,17 +80,40 @@ const Constructor: React.FC = () => {
       query: {
         enabled: !!applicationId,
         refetchInterval: 5000, // Poll every 5 seconds
-        onSuccess: (data) => {
-          console.log('Application data:', data);
-          // Check if the app is no longer pending deployment
-          if (data && !data.pending && isLoading) {
-            setIsLoading(false);
-            setLoadingProgress(100);
-          }
-        }
       }
     }
   );
+  
+  // Watch for application status changes
+  useEffect(() => {
+    if (appData && !appData.pending && isLoading) {
+      setIsLoading(false);
+      setLoadingProgress(100);
+    }
+  }, [appData, isLoading]);
+  
+  // Get application logs
+  const { data: logsData, isLoading: isLoadingLogs } = useGetApplicationsApplicationIdLogs(
+    applicationId || '',
+    {
+      query: {
+        enabled: !!applicationId && showLogs,
+        refetchInterval: showLogs ? 5000 : false,
+      }
+    }
+  );
+  
+  // Update logs when data changes
+  useEffect(() => {
+    if (logsData?.logs && logsData.logs.length > 0) {
+      const formattedLogs: LogEntry[] = logsData.logs.map((log: IMongoModelLog) => ({
+        id: log._id || `log-${Date.now()}-${Math.random()}`,
+        content: log.content || '',
+        timestamp: log.createdAt ? new Date(log.createdAt) : new Date()
+      }));
+      setLogs(formattedLogs);
+    }
+  }, [logsData]);
 
   const startLoadingAnimation = () => {
     setLoadingProgress(0);
@@ -170,8 +194,7 @@ const Constructor: React.FC = () => {
     createApplication({
       data: {
         name: settings.appName,
-        modelAi: settings.aiModel,
-        type: settings.appType
+        modelAi: settings.aiModel
       }
     });
     
@@ -219,9 +242,10 @@ const Constructor: React.FC = () => {
         <ResizablePanel defaultSize={60}>
           {showLogs ? (
             <LogsPanel 
-              logs={mockLogs} 
+              logs={logs} 
               onToggleLogs={handleToggleLogs} 
               onTryFixLog={handleTryFixLog} 
+              isLoading={isLoadingLogs}
             />
           ) : (
             <PreviewPanel 

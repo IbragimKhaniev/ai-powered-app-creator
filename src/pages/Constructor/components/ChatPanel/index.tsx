@@ -1,13 +1,13 @@
 
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Microchip } from "lucide-react";
 import Header from '../Header';
 import ChatInput from '../ChatInput';
 import ChatMessage from '../ChatMessage';
 import { Message } from '../../types';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Microchip } from "lucide-react";
 
 interface ChatPanelProps {
   messages: Message[];
@@ -57,6 +57,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         <div className="flex items-center gap-2 mb-2 px-[18px]">
           <Select value={selectedModel} onValueChange={handleModelChange}>
             <SelectTrigger className="h-8 w-[180px]">
+              <Microchip className="h-4 w-4 mr-2 text-primary" />
               <SelectValue placeholder="Выберите модель" />
             </SelectTrigger>
             <SelectContent>
