@@ -1,4 +1,5 @@
-import { IMongoModelLog } from "@/api/core";
+
+import { IMongoModelLog, IMongoModelApplication } from "@/api/core";
 
 export interface Message {
   id: string;
@@ -19,4 +20,9 @@ export interface AppSettings {
 export interface AIModel {
   id: string;
   name: string;
+}
+
+// Extended application type that includes the deployingError property
+export interface ExtendedApplicationData extends IMongoModelApplication {
+  deployingError?: string | null;
 }

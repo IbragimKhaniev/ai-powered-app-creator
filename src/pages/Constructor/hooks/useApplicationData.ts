@@ -8,6 +8,7 @@ import {
   usePostApplications,
   useGetConfig
 } from '@/api/core';
+import { ExtendedApplicationData } from '../types';
 
 export const useApplicationData = () => {
   const [searchParams] = useSearchParams();
@@ -58,9 +59,12 @@ export const useApplicationData = () => {
     }
   });
 
+  // Cast the appData to our extended type that includes deployingError
+  const extendedAppData = appData as ExtendedApplicationData;
+
   return {
     applicationId,
-    appData,
+    appData: extendedAppData,
     isLoadingAppData,
     configData,
     createApplication,

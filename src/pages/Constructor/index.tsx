@@ -12,6 +12,7 @@ import {
   useMessagesData,
   useModelSelection
 } from './hooks';
+import { ExtendedApplicationData } from './types';
 
 const Constructor: React.FC = () => {
   const [showLogs, setShowLogs] = useState(false);
