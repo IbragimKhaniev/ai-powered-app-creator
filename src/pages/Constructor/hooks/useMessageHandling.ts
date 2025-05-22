@@ -46,7 +46,7 @@ export const useMessageHandling = (applicationId: string | null) => {
   });
   
   // Send message mutation
-  const { mutate: sendMessage, isPending: isSendingMessage } = usePostApplicationsApplicationIdMessages({
+  const { mutate: sendMessage, mutateAsync: asyncSendMessage, isPending: isSendingMessage } = usePostApplicationsApplicationIdMessages({
     mutation: {
       onSuccess: (data) => {
         console.log('Message sent:', data);
@@ -70,7 +70,7 @@ export const useMessageHandling = (applicationId: string | null) => {
     if (!applicationId) {
       setInputMessage(message);
       setAnalyzeInProgress(true);
-      
+
       // Analyze the message to get suggestions
       analyzeMessage({
         data: { message }
@@ -106,6 +106,8 @@ export const useMessageHandling = (applicationId: string | null) => {
     isSendingMessage,
     suggestedSettings,
     showSettingsDialog,
-    setShowSettingsDialog
+    setShowSettingsDialog,
+    sendMessage,
+    asyncSendMessage
   };
 };

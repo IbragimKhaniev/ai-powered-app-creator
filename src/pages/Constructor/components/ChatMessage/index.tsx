@@ -23,7 +23,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 }) => {
   const isError = useMemo(() => message.status === 'error', []);
   const isUser = useMemo(() => message.role === 'user', []);
-  const isLoading = useMemo(() => ['created', 'processing'].includes(message.status), []);
+  const isLoading = useMemo(() => ['created', 'processing'].includes(message.status), [message.status]);
+  const isDeploying = useMemo(() => ['deploying'].includes(message.status), [message.status]);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -81,6 +82,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         )}
       </div>
       <div className={`flex justify-start flex-col my-5 pr-20`}>
+        <div className="py-2">easyappz:</div>
         {message.promts?.map((currentPromt, index) => (
           <TypedMessage
             key={index}
@@ -93,6 +95,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       <div>
         {isLoading && (
           <div>Думаю над вашим запросом ...</div>
+        )}
+        {isDeploying && (
+          <div>Деплою приложение ...</div>
         )}
       </div>
     </div>

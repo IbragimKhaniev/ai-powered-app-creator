@@ -12,6 +12,7 @@ export type GetApplicationsApplicationIdMessages200Item = {
   id?: string;
   /** Содержимое сообщения. */
   content?: string;
+  additionalContent?: string;
   /** Роль отправителя (user или assistant). */
   role?: string;
   /** Статус сообщения. */

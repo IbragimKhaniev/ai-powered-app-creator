@@ -11,8 +11,6 @@ export interface IMongoModelApplication {
   _id?: string;
   /** Название приложения. */
   name?: string;
-  /** Описание приложения. */
-  description?: string;
   /** Количество использованных входящих токенов. */
   usedTokensInput?: number;
   /** Количество использованных исходящих токенов. */

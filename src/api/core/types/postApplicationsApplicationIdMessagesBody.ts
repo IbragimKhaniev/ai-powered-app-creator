@@ -9,4 +9,5 @@
 export type PostApplicationsApplicationIdMessagesBody = {
   /** Содержимое сообщения */
   content?: string;
+  additionalContent?: string;
 };

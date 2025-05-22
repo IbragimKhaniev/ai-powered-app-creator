@@ -15,14 +15,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { AppSettingsFormProps } from './types';
 
-// App types definition
-const APP_TYPES = [
-  { id: "web", name: "Веб-приложение" },
-  { id: "mobile", name: "Мобильное приложение" },
-  { id: "desktop", name: "Десктопное приложение" },
-  { id: "other", name: "Другое" },
-];
-
 const AppSettingsForm: React.FC<AppSettingsFormProps> = ({ settings, setSettings, configData, onSubmit }) => {
   // Create form with validation
   const form = useForm({
@@ -124,36 +116,6 @@ const AppSettingsForm: React.FC<AppSettingsFormProps> = ({ settings, setSettings
             </Select>
             {form.formState.errors.aiModel && (
               <p className="text-sm text-red-500">{form.formState.errors.aiModel.message}</p>
-            )}
-          </div>
-        </div>
-        
-        {/* App Type Selection */}
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="appType" className="text-right">
-            Тип приложения
-          </Label>
-          <div className="col-span-3 space-y-1">
-            <Select
-              value={settings.appType}
-              onValueChange={(value) => handleValueChange('appType', value)}
-            >
-              <SelectTrigger 
-                id="appType" 
-                className={`${!settings.appType && form.formState.isSubmitted ? 'border-red-500' : ''}`}
-              >
-                <SelectValue placeholder="Выберите тип приложения" />
-              </SelectTrigger>
-              <SelectContent>
-                {APP_TYPES.map(type => (
-                  <SelectItem key={type.id} value={type.id}>
-                    {type.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {form.formState.errors.appType && (
-              <p className="text-sm text-red-500">{form.formState.errors.appType.message}</p>
             )}
           </div>
         </div>

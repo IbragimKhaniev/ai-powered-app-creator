@@ -9,8 +9,6 @@
 export type PostApplicationsBody = {
   /** Название приложения. */
   name?: string;
-  /** Описание приложения. */
-  description?: string;
   /** Шаблон приложения. */
   template?: string;
   /** Модель искусственного интеллекта. */

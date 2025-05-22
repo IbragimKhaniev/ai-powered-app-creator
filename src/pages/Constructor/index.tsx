@@ -23,6 +23,7 @@ const Constructor: React.FC = () => {
     isLoadingAppData,
     configData,
     createApplication,
+    asyncCreateApplication,
     isCreatingApp
   } = useApplicationData();
 
@@ -39,7 +40,9 @@ const Constructor: React.FC = () => {
     isAnalyzing,
     suggestedSettings,
     showSettingsDialog,
-    setShowSettingsDialog
+    setShowSettingsDialog,
+    sendMessage,
+    asyncSendMessage
   } = useMessageHandling(applicationId);
 
   // Hook for messages data
@@ -61,21 +64,32 @@ const Constructor: React.FC = () => {
     document.querySelector('textarea')?.focus();
   }, []);
 
-  const handleConfirmSettings = useCallback((settings) => {
+  const redirectiToApplicationId = useCallback((applicationId: string) => {
+    window.location.href = `/constructor?appId=${applicationId}`;
+  }, []);
+
+  const handleConfirmSettings = useCallback(async (settings) => {
     console.log('App settings confirmed:', settings);
     handleModelChange(settings.aiModel);
-    
+
     // Create the application
-    createApplication({
+    const application = await asyncCreateApplication({
       data: {
         name: settings.appName,
         modelAi: settings.aiModel,
         template: settings.templateId
       }
     });
-    
+
+    await asyncSendMessage({
+      applicationId: application._id,
+      data: { content: inputMessage }
+    });
+
+    redirectiToApplicationId(application._id);
+
     setShowSettingsDialog(false);
-  }, [createApplication, handleModelChange, setShowSettingsDialog]);
+  }, [asyncCreateApplication, asyncSendMessage, handleModelChange, inputMessage, redirectiToApplicationId, setShowSettingsDialog]);
 
   const handleTryFix = useCallback(() => {
     console.log("Attempting to fix errors");
@@ -87,7 +101,7 @@ const Constructor: React.FC = () => {
         isOpen={showSettingsDialog}
         onClose={() => setShowSettingsDialog(false)}
         onConfirm={handleConfirmSettings}
-        initialSettings={suggestedSettings || { aiModel: selectedModel, appName: 'Новое приложение', appType: 'web' }}
+        initialSettings={suggestedSettings}
         isLoading={isAnalyzing}
       />
       <ResizablePanelGroup

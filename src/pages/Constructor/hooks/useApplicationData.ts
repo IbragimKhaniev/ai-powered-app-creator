@@ -36,7 +36,7 @@ export const useApplicationData = () => {
   });
 
   // Create application mutation
-  const { mutate: createApplication, isPending: isCreatingApp } = usePostApplications({
+  const { mutate: createApplication, mutateAsync: asyncCreateApplication, isPending: isCreatingApp } = usePostApplications({
     mutation: {
       onSuccess: (data) => {
         console.log('Application created:', data);
@@ -44,7 +44,8 @@ export const useApplicationData = () => {
           title: 'Успешно!',
           description: 'Приложение создано',
         });
-        window.location.href = `/constructor?appId=${data._id}`;
+
+        // window.location.href = `/constructor?appId=${data._id}`;
       },
       onError: (error) => {
         console.error('Error creating application:', error);
@@ -63,6 +64,7 @@ export const useApplicationData = () => {
     isLoadingAppData,
     configData,
     createApplication,
+    asyncCreateApplication,
     isCreatingApp
   };
 };
