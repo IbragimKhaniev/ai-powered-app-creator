@@ -48,7 +48,7 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
         ) : (
           <div className="space-y-2">
             {logs.map((log) => (
-              <div key={log.id} className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+              <div key={log._id} className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
                 <div className="flex flex-col space-y-2">
                   <div className="flex justify-between">
                     <div>
@@ -56,11 +56,11 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
                       <span className="ml-2">{cleanLogMessage(log.content)}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {formatTime(log.timestamp)}
+                      {log.createdAt}
                     </div>
                   </div>
-                  
-                  {isErrorOrWarning(log.content) && (
+ 
+                  {isErrorOrWarning(log) && (
                     <Button 
                       onClick={() => onTryFixLog(log.content)}
                       className="bg-brand-purple hover:bg-purple-700 text-white mt-1 self-start rounded-full"

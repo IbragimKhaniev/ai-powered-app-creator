@@ -1,3 +1,4 @@
+import { IMongoModelLog } from "@/api/core";
 
 export interface Message {
   id: string;
@@ -7,11 +8,7 @@ export interface Message {
   isError?: boolean;
 }
 
-export interface LogEntry {
-  id: string;
-  content: string;
-  timestamp: Date;
-}
+export type LogEntry = IMongoModelLog;
 
 export interface AppSettings {
   appName: string;

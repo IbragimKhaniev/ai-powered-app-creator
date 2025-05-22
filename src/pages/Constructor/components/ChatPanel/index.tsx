@@ -103,7 +103,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <div className="border-t p-2 bg-white">
         <div className="flex items-center gap-2 mb-2 px-[18px]">
-          <Select value={selectedModel} onValueChange={handleModelChange} disabled={isLoading}>
+          {/* <Select value={selectedModel} onValueChange={handleModelChange} disabled={isLoading}>
             <SelectTrigger className="h-8 w-[180px]">
               <Microchip className="h-4 w-4 mr-2 text-primary" />
               <SelectValue placeholder="Выберите модель" />
@@ -123,7 +123,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 </>
               )}
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
         
         <div className="p-4">

@@ -51,7 +51,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             <div className={`text-xs ${isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
               {/* {formatTime(message.)} */}
             </div>
-            
+
             {additionalContent && (
               <Collapsible
                 open={isOpen}
@@ -94,7 +94,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       </div>
       <div>
         {isLoading && (
-          <div>Думаю над вашим запросом ...</div>
+          <TypedMessage 
+            content="Думаю над вашим запросом ..."
+            showAnimation
+            className="mb-1"
+          />
         )}
         {isDeploying && (
           <div>Деплою приложение ...</div>

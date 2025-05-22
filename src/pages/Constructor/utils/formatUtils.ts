@@ -1,3 +1,4 @@
+import { LogEntry } from "../types";
 
 /**
  * Formats a date object to display only hours and minutes
@@ -13,8 +14,8 @@ export const formatTime = (date: Date): string => {
  * @param content Log content to check
  * @returns Boolean indicating if it's an error or warning
  */
-export const isErrorOrWarning = (content: string): boolean => {
-  return content.includes('[ERROR]') || content.includes('[WARNING]');
+export const isErrorOrWarning = (log: LogEntry): boolean => {
+  if (log.type === 'error' ) return true;
 };
 
 /**
