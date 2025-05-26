@@ -8,6 +8,7 @@ export const useMessagesData = (applicationId: string | null) => {
     query: {
       queryKey: ['getMessagesKey', applicationId],
       enabled: !!applicationId,
+      refetchInterval: 3000,
     },
   });
 

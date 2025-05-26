@@ -10,9 +10,7 @@ import {
   useMessageHandling,
   useLogsHandling,
   useMessagesData,
-  useModelSelection
 } from './hooks';
-import { ExtendedApplicationData } from './types';
 
 const Constructor: React.FC = () => {
   const [showLogs, setShowLogs] = useState(false);
@@ -21,15 +19,9 @@ const Constructor: React.FC = () => {
   const {
     applicationId,
     appData,
-    isLoadingAppData,
-    configData,
-    createApplication,
     asyncCreateApplication,
     isCreatingApp
   } = useApplicationData();
-
-  // Hook for model selection
-  const { selectedModel, handleModelChange } = useModelSelection('gpt-4o', configData?.modelsAi);
 
   // Hook for messages handling
   const {
@@ -71,7 +63,6 @@ const Constructor: React.FC = () => {
 
   const handleConfirmSettings = useCallback(async (settings) => {
     console.log('App settings confirmed:', settings);
-    handleModelChange(settings.aiModel);
 
     // Create the application
     const application = await asyncCreateApplication({
@@ -90,7 +81,7 @@ const Constructor: React.FC = () => {
     redirectiToApplicationId(application._id);
 
     setShowSettingsDialog(false);
-  }, [asyncCreateApplication, asyncSendMessage, handleModelChange, inputMessage, redirectiToApplicationId, setShowSettingsDialog]);
+  }, [asyncCreateApplication, asyncSendMessage, inputMessage, redirectiToApplicationId, setShowSettingsDialog]);
 
   const handleTryFix = useCallback(() => {
     console.log("Attempting to fix errors");
@@ -124,17 +115,14 @@ const Constructor: React.FC = () => {
         className="h-screen"
       >
         {/* Chat Panel */}
-        <ResizablePanel defaultSize={40} minSize={30}>
+        <ResizablePanel defaultSize={30} minSize={30}>
           <ChatPanel 
-            messages={messages || []} 
+            messages={messages || []}
             onSendMessage={handleSendMessage} 
             onTryFix={handleTryFix}
             isLoading={isCommonLoading}
-            selectedModel={selectedModel}
-            onModelChange={handleModelChange}
             handleChangeMessageInput={handleChangeMessageInput}
             messageInputValue={inputMessage}
-            availableModels={configData?.modelsAi || []}
             deployingError={appData?.deployingError}
             onTryFixDeployError={handleTryFixDeployError}
           />
@@ -143,7 +131,7 @@ const Constructor: React.FC = () => {
         <ResizableHandle withHandle />
         
         {/* Preview/Logs Panel */}
-        <ResizablePanel defaultSize={60}>
+        <ResizablePanel defaultSize={70}>
           {showLogs ? (
             <LogsPanel
               logs={logs} 
@@ -154,7 +142,7 @@ const Constructor: React.FC = () => {
             />
           ) : (
             <PreviewPanel 
-              isLoading={isCommonLoading}
+              isLoading={appData?.deploying}
               isAppCreated={Boolean(applicationId)}
               keyIframe="1"
               domain={appData?.domain}

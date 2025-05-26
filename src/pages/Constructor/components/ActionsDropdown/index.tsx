@@ -11,6 +11,7 @@ import { RefreshCw, ExternalLink, Logs } from "lucide-react";
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { useToast } from '@/hooks/use-toast';
 import { usePostApplicationsApplicationIdRestart } from '@/api/core';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ActionsDropdownProps {
   showLogs: boolean;
@@ -26,7 +27,8 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   domain
 }) => {
   const { toast } = useToast();
-  
+  const queryClient = useQueryClient();
+
   const { mutate: restartApplication, isPending: isRestarting } = usePostApplicationsApplicationIdRestart({
     mutation: {
       onSuccess: () => {
@@ -34,6 +36,8 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
           title: 'Успешно',
           description: 'Приложение перезагружено',
         });
+
+        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'] });
       },
       onError: (error) => {
         console.error('Error restarting application:', error);

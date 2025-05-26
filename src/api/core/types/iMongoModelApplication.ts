@@ -25,6 +25,7 @@ export interface IMongoModelApplication {
   template?: string;
   /** Статус ожидания (pending) приложения. */
   pending?: boolean;
+  deploying?: boolean;
   /** Модель искусственного интеллекта. */
   modelAi?: string;
   /** Версия приложения. */

@@ -6,13 +6,15 @@ interface TypedMessageProps {
   className?: string;
   showAnimation: boolean;
   typingSpeed?: number;
+  showPulseAlways?: boolean;
 }
 
 const TypedMessage: React.FC<TypedMessageProps> = ({
   content,
   className = '',
   showAnimation = true,
-  typingSpeed = 30
+  typingSpeed = 20,
+  showPulseAlways
 }) => {
   const [displayedContent, setDisplayedContent] = useState('');
   const [isComplete, setIsComplete] = useState(!showAnimation);
@@ -28,24 +30,24 @@ const TypedMessage: React.FC<TypedMessageProps> = ({
 
     let currentIndex = 0;
     const totalLength = content.length;
-    
+
     const typingInterval = setInterval(() => {
       if (currentIndex < totalLength) {
-        setDisplayedContent(prev => prev + content.charAt(currentIndex));
+        setDisplayedContent(prev => content.substring(0, currentIndex));
         currentIndex++;
       } else {
         clearInterval(typingInterval);
         setIsComplete(true);
       }
     }, typingSpeed);
-    
+
     return () => clearInterval(typingInterval);
   }, [content, showAnimation, typingSpeed]);
 
   return (
     <div className={className}>
       {displayedContent}
-      {!isComplete && <span className="animate-pulse">▌</span>}
+      {(!isComplete || showPulseAlways) && <span className="animate-pulse">▌</span>}
     </div>
   );
 };

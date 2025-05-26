@@ -15,11 +15,8 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   onTryFix: () => void;
   isLoading?: boolean;
-  selectedModel: string;
-  onModelChange: (model: string) => void;
   handleChangeMessageInput: (value: string) => void;
   messageInputValue: string;
-  availableModels: string[];
   deployingError?: string | null;
   onTryFixDeployError?: () => void;
 }
@@ -29,52 +26,18 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onSendMessage,
   onTryFix,
   isLoading = false,
-  selectedModel,
-  onModelChange,
   handleChangeMessageInput,
   messageInputValue,
-  availableModels = [],
   deployingError,
   onTryFixDeployError
 }) => {
-  const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
-  const prevMessagesLengthRef = useRef(messages.length);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
-    // Check if new messages have been added
-    if (messages.length > prevMessagesLengthRef.current) {
-      const newMessages = messages.slice(prevMessagesLengthRef.current);
-      const newIds = new Set(newMessageIds);
-      
-      newMessages.forEach(message => {
-        newIds.add(message.id);
-      });
-
-      setNewMessageIds(newIds);
-      
-      // Scroll to bottom when new messages are added
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+    if (messages) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-    
-    prevMessagesLengthRef.current = messages.length;
-  }, [messages, newMessageIds]);
-
-  const handleModelChange = (value: string) => {
-    onModelChange(value);
-  };
-
-  // Transform model IDs to display names
-  const getModelDisplayName = (modelId: string): string => {
-    switch (modelId) {
-      case 'gpt-4o-mini': return 'GPT-4o Mini';
-      case 'gpt-4o': return 'GPT-4o';
-      case 'gpt-4.5-preview': return 'GPT-4.5 Preview';
-      default: return modelId;
-    }
-  };
+  }, [messages]);
 
   return (
     <div className="flex h-full flex-col">
@@ -84,13 +47,13 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <ScrollArea className="flex-1 p-4 bg-background">
         <div className="space-y-4">
-          {messages?.map(message => (
+          {messages?.map((message, index) => (
             <ChatMessage 
               key={message.id} 
               message={message} 
-              onTryFix={onTryFix} 
-              isNewMessage={newMessageIds.has(message.id)}
+              onTryFix={onTryFix}
               additionalContent={message.additionalContent}
+              isNewMessage={index === messages.length - 1}
             />
           ))}
           {/* Display deployment error if exists */}
@@ -109,29 +72,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       </ScrollArea>
       
       <div className="border-t p-2 bg-white">
-        <div className="flex items-center gap-2 mb-2 px-[18px]">
-          {/* <Select value={selectedModel} onValueChange={handleModelChange} disabled={isLoading}>
-            <SelectTrigger className="h-8 w-[180px]">
-              <Microchip className="h-4 w-4 mr-2 text-primary" />
-              <SelectValue placeholder="Выберите модель" />
-            </SelectTrigger>
-            <SelectContent>
-              {availableModels.length > 0 ? (
-                availableModels.map(model => (
-                  <SelectItem key={model} value={model}>
-                    {getModelDisplayName(model)}
-                  </SelectItem>
-                ))
-              ) : (
-                <>
-                  <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
-                  <SelectItem value="gpt-4o">GPT-4o</SelectItem>
-                  <SelectItem value="gpt-4.5-preview">GPT-4.5 Preview</SelectItem>
-                </>
-              )}
-            </SelectContent>
-          </Select> */}
-        </div>
         
         <div className="p-4">
           <ChatInput

@@ -23,7 +23,7 @@ import type {
 import type {
   GetApplicationsId404,
   GetApplicationsId500,
-  IMongoModelApplication
+  MongoModelApplication
 } from './types';
 
 import getApplicationsIdMutator from '../axios';
@@ -43,7 +43,7 @@ export const getApplicationsId = (
 ) => {
       
       
-      return getApplicationsIdMutator<IMongoModelApplication>(
+      return getApplicationsIdMutator<MongoModelApplication>(
       {url: `/applications/${id}`, method: 'GET', signal
     },
       );
@@ -118,3 +118,6 @@ export function useGetApplicationsId<TData = Awaited<ReturnType<typeof getApplic
 
   return query;
 }
+
+
+

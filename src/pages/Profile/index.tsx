@@ -44,7 +44,7 @@ const Profile: React.FC = () => {
     query: {
       enabled: true,
       retry: 3,
-      staleTime: 1000 * 60 * 5, // 5 минут
+      refetchInterval: 3000,
     }
   });
 

@@ -1,11 +1,13 @@
 
-import { useState, useCallback, useEffect, useMemo } from 'react';
-import { IMongoModelLog, useGetApplicationsApplicationIdLogs, usePostApplicationsApplicationIdMessages } from '@/api/core';
+import { useCallback, useMemo } from 'react';
+import { useGetApplicationsApplicationIdLogs, usePostApplicationsApplicationIdMessages } from '@/api/core';
 import { useToast } from '@/hooks/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const useLogsHandling = (applicationId: string | null, showLogs: boolean) => {
   const { toast } = useToast();
-  
+  const queryClient = useQueryClient();
+
   // Get application logs
   const { data: logsData, isLoading: isLoadingLogs } = useGetApplicationsApplicationIdLogs(
     applicationId || '',
@@ -25,6 +27,9 @@ export const useLogsHandling = (applicationId: string | null, showLogs: boolean)
           title: "Запрос на исправление отправлен",
           description: "AI анализирует ошибку и предложит решение",
         });
+
+        queryClient.invalidateQueries({ queryKey: ['getMessagesKey'] });
+        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'] });
       },
       onError: (error) => {
         console.error("Error sending fix message:", error);
@@ -33,6 +38,9 @@ export const useLogsHandling = (applicationId: string | null, showLogs: boolean)
           description: "Не удалось отправить запрос на исправление",
           variant: "destructive",
         });
+
+        queryClient.invalidateQueries({ queryKey: ['getMessagesKey'] });
+        queryClient.invalidateQueries({ queryKey: ['getApplicationKey'] });
       }
     }
   });
