@@ -16,6 +16,7 @@ interface ChatPanelProps {
   onSendMessage: (message: string) => void;
   application?: ExtendedApplicationData;
   isLoading?: boolean;
+  isDeploying?: boolean;
   handleChangeMessageInput: (value: string) => void;
   messageInputValue: string;
   deployingError?: string | null;
@@ -27,6 +28,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   messages,
   onSendMessage,
   isLoading = false,
+  isDeploying,
   handleChangeMessageInput,
   messageInputValue,
   deployingError,
@@ -75,7 +77,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
                 message={`Ошибка развертывания: ${deployingError.substring(0, 100)}...`} 
                 onTryFix={onTryFixDeployError}
 
-                disabled={isLoading}
+                disabled={isDeploying || isLoading}
               />
             </div>
           )}

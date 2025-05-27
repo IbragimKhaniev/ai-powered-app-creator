@@ -117,6 +117,7 @@ const Constructor: React.FC = () => {
             messages={messages || []}
             onSendMessage={handleSendMessage} 
             isLoading={isCommonLoading}
+            isDeploying={Boolean(appData?.deploying)}
             handleChangeMessageInput={handleChangeMessageInput}
             messageInputValue={inputMessage}
             deployingError={appData?.deployingError}
