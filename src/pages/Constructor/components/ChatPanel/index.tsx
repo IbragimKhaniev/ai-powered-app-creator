@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Microchip } from "lucide-react";
 import Header from '../Header';
@@ -8,12 +8,13 @@ import ChatMessage from '../ChatMessage';
 import ChatErrorMessage from '@/components/ui/chat-error-message';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GetApplicationsApplicationIdMessages200Item } from '@/api/core';
+import { GetApplicationsApplicationIdMessages200Item, usePostApplicationsApplicationIdMessagesMessageIdRetry } from '@/api/core';
+import { ExtendedApplicationData } from '../../types';
 
 interface ChatPanelProps {
   messages: GetApplicationsApplicationIdMessages200Item[];
   onSendMessage: (message: string) => void;
-  onTryFix: () => void;
+  application?: ExtendedApplicationData;
   isLoading?: boolean;
   handleChangeMessageInput: (value: string) => void;
   messageInputValue: string;
@@ -22,9 +23,9 @@ interface ChatPanelProps {
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({
+  application,
   messages,
   onSendMessage,
-  onTryFix,
   isLoading = false,
   handleChangeMessageInput,
   messageInputValue,
@@ -32,6 +33,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onTryFixDeployError
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { mutate: retryMessage } = usePostApplicationsApplicationIdMessagesMessageIdRetry();
+
+  const handleTryFixAIError = useCallback((id: string) => {
+    if (!application?._id) return;
+
+    retryMessage({
+      applicationId: application._id,
+      messageId: id,
+    });
+  }, [application?._id, retryMessage]);
 
   useEffect(() => {
     if (messages) {
@@ -51,7 +63,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             <ChatMessage 
               key={message.id} 
               message={message} 
-              onTryFix={onTryFix}
+              onTryFix={handleTryFixAIError}
               additionalContent={message.additionalContent}
               isNewMessage={index === messages.length - 1}
             />

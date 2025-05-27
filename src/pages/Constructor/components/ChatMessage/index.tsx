@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Message } from '../../types';
 import ChatErrorMessage from '@/components/ui/chat-error-message';
 import { formatTime } from '../../utils/formatUtils';
@@ -7,10 +7,12 @@ import TypedMessage from '../TypedMessage';
 import { GetApplicationsApplicationIdMessages200Item, GetApplicationsApplicationIdMessages200ItemPromtsItem } from '@/api/core';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import Button from '@/components/Button';
+import { cn } from '@/lib/utils';
 
 interface ChatMessageProps {
   message: GetApplicationsApplicationIdMessages200Item;
-  onTryFix?: () => void;
+  onTryFix?: (id: string) => void;
   additionalContent?: string; // New prop for additional collapsible content
   isNewMessage?: boolean;
 }
@@ -24,11 +26,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const [promts, setPromts] = useState<GetApplicationsApplicationIdMessages200ItemPromtsItem[]>(message?.promts || []);
   const [isOnlineRender, setIsOnlineRender] = useState(false);
 
-  const isError = useMemo(() => message.status === 'error', []);
-  const isUser = useMemo(() => message.role === 'user', []);
+  const isError = useMemo(() => message.status === 'error', [message.status]);
+  const isUser = useMemo(() => message.role === 'user', [message.role]);
   const isLoading = useMemo(() => ['created', 'processing'].includes(message.status), [message.status]);
   const isDeploying = useMemo(() => ['deploying'].includes(message.status), [message.status]);
   const [isOpen, setIsOpen] = useState(false);
+
+  const onClickTryFix = useCallback(() => {
+    if (onTryFix) {
+      onTryFix(message.id);
+    }
+  }, [message.id, onTryFix]);
 
   useEffect(() => {
     if (!message?.promts.length) return;
@@ -43,58 +51,60 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   }, [message?.promts?.length, promts.length]);
 
   return (
-    <div>
-      <div key={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
-        {isError ? (
-          <ChatErrorMessage 
-            message={message.content} 
-            onTryFix={onTryFix}
+    <div key={message.id}>
+      <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div
+          className={cn(
+            'rounded-xl p-4',
+            {
+              "w-[60%]": additionalContent,
+              "max-w-[80%]": !additionalContent,
+              "bg-primary text-primary-foreground shadow-sm": isUser,
+              "bg-white border border-gray-100 shadow-sm": !isUser,
+              "bg-destructive border-destructive-100": isError,
+              "animate-pulse": isLoading,
+            }
+          )}
+        >
+          <TypedMessage 
+            content={message.content}
+            showAnimation={false}
+            className="mb-1"
           />
-        ) : (
-          <div
-            className={`rounded-xl p-4 ${
-              additionalContent ? 'w-[60%]' : 'max-w-[80%]'
-            } ${
-              isUser
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'bg-white border border-gray-100 shadow-sm'
-            }`}
-          >
-            <TypedMessage 
-              content={message.content}
-              showAnimation={false}
-              className="mb-1"
-            />
-            {/* <div className={`text-xs ${isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
-              {formatTime(message.)}
-            </div> */}
-
-            {additionalContent && (
-              <Collapsible
-                open={isOpen}
-                onOpenChange={setIsOpen}
-                className="mt-2 pt-2"
-              >
-                <div className="flex items-center">
-                  <CollapsibleTrigger className="flex items-center text-xs">
-                    {isOpen ? (
-                      <>
-                        <ChevronUp className="h-3 w-3 mr-1" />
-                        Скрыть детали
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="h-3 w-3 mr-1" />
-                        Показать детали
-                      </>
-                    )}
-                  </CollapsibleTrigger>
-                </div>
-                <CollapsibleContent className="mt-2 text-sm">
-                  {additionalContent}
-                </CollapsibleContent>
-              </Collapsible>
-            )}
+          {additionalContent && (
+            <Collapsible
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              className="mt-2 pt-2"
+            >
+              <div className="flex items-center">
+                <CollapsibleTrigger className="flex items-center text-xs">
+                  {isOpen ? (
+                    <>
+                      <ChevronUp className="h-3 w-3 mr-1" />
+                      Скрыть детали
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-3 w-3 mr-1" />
+                      Показать детали
+                    </>
+                  )}
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="mt-2 text-sm">
+                {additionalContent}
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+        </div>
+      </div>
+      <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} p-2`}>
+        {isNewMessage && isError && (
+          <div>
+            <Button onClick={onClickTryFix}>
+              Попробовать исправить
+            </Button>
           </div>
         )}
       </div>
@@ -104,7 +114,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             key={index}
             content={currentPromt.result}
             showAnimation={isOnlineRender && isNewMessage && index === message.promts.length - 1}
-            className="mb-1"
+            className="mb-4"
           />
         ))}
       </div>
@@ -123,6 +133,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             showAnimation
             className="mb-1"
             showPulseAlways
+          />
+        )}
+        {isNewMessage && isError && (
+          <ChatErrorMessage
+            message={`Ошибка при общении с AI: 'Неизвестная ошибка'}`}
+            onTryFix={onClickTryFix}
+            disabled={isLoading}
           />
         )}
       </div>

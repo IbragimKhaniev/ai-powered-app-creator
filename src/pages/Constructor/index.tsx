@@ -83,10 +83,6 @@ const Constructor: React.FC = () => {
     setShowSettingsDialog(false);
   }, [asyncCreateApplication, asyncSendMessage, inputMessage, redirectiToApplicationId, setShowSettingsDialog]);
 
-  const handleTryFix = useCallback(() => {
-    console.log("Attempting to fix errors");
-  }, []);
-
   // Function to handle fixing deployment errors
   const handleTryFixDeployError = useCallback(() => {
     if (!applicationId || !appData?.deployingError) return;
@@ -117,9 +113,9 @@ const Constructor: React.FC = () => {
         {/* Chat Panel */}
         <ResizablePanel defaultSize={30} minSize={30}>
           <ChatPanel 
+            application={appData}
             messages={messages || []}
             onSendMessage={handleSendMessage} 
-            onTryFix={handleTryFix}
             isLoading={isCommonLoading}
             handleChangeMessageInput={handleChangeMessageInput}
             messageInputValue={inputMessage}
