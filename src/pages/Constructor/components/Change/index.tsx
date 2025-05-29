@@ -1,6 +1,7 @@
+
 import { useGetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges } from "@/api/core";
-import TypedMessage from "../TypedMessage";
-import { useEffect } from "react";
+import ChangesModal from "../ChangesModal";
+import { useState, useEffect } from "react";
 
 interface ChangeProps {
   promtId: string;
@@ -9,6 +10,8 @@ interface ChangeProps {
 }
 
 const Change: React.FC<ChangeProps> = ({ promtId, messageId, applicationId }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const { data } = useGetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges(
     applicationId,
     messageId,
@@ -18,13 +21,16 @@ const Change: React.FC<ChangeProps> = ({ promtId, messageId, applicationId }) =>
   useEffect(() => {
     if (data) {
       console.log("Changes fetched:", data);
+      setIsModalOpen(true);
     }
   }, [data]);
 
   return (
-    <div>
-      Смотри консоль логов для изменений
-    </div>
+    <ChangesModal 
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      data={data}
+    />
   );
 };
 
