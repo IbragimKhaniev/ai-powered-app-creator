@@ -18,85 +18,68 @@ interface ChangesModalProps {
   data: GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200 | undefined;
 }
 
-interface ParsedFileChange {
+interface ParsedChange {
   filepath: string;
-  type: string;
+  changeType: string;
   content: string;
-  change: IMongoModelChange;
+  createdAt?: string;
+  changeId: string;
 }
 
 const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) => {
   const [activeTab, setActiveTab] = useState<string>("");
 
-  const parseFileChanges = (): ParsedFileChange[] => {
+  const parseChanges = (): ParsedChange[] => {
     if (!data?.changes) return [];
 
-    const fileChanges: ParsedFileChange[] = [];
+    const parsedChanges: ParsedChange[] = [];
 
-    data.changes.forEach((change) => {
+    data.changes.forEach((change, index) => {
       if (change.content) {
         try {
+          // Пытаемся распарсить content как JSON
           const parsedContent = JSON.parse(change.content);
           
-          // Если это объект с информацией о файле
-          if (parsedContent.filepath && parsedContent.type) {
-            fileChanges.push({
-              filepath: parsedContent.filepath,
-              type: parsedContent.type,
-              content: parsedContent.content || parsedContent.code || "",
-              change
-            });
-          } else if (typeof parsedContent === 'object') {
-            // Если это просто JSON объект без структуры файла
-            fileChanges.push({
-              filepath: `Change #${fileChanges.length + 1}`,
-              type: change.changeType || "unknown",
-              content: JSON.stringify(parsedContent, null, 2),
-              change
-            });
-          }
-        } catch (error) {
-          // Если не удается распарсить как JSON, добавляем как текст
-          fileChanges.push({
-            filepath: `Change #${fileChanges.length + 1}`,
-            type: change.changeType || "text",
+          // Извлекаем filepath из распарсенного содержимого
+          const filepath = parsedContent.filepath || `Change #${index + 1}`;
+          
+          parsedChanges.push({
+            filepath,
+            changeType: change.changeType || "unknown",
             content: change.content,
-            change
+            createdAt: change.createdAt,
+            changeId: change._id || `change-${index}`
+          });
+        } catch (error) {
+          // Если не удается распарсить как JSON, используем fallback
+          parsedChanges.push({
+            filepath: `Change #${index + 1}`,
+            changeType: change.changeType || "text",
+            content: change.content,
+            createdAt: change.createdAt,
+            changeId: change._id || `change-${index}`
           });
         }
       }
     });
 
-    return fileChanges;
+    return parsedChanges;
   };
 
-  const fileChanges = parseFileChanges();
+  const changes = parseChanges();
 
   // Устанавливаем первую вкладку как активную при открытии
-  if (fileChanges.length > 0 && !activeTab) {
-    setActiveTab(fileChanges[0].filepath);
+  if (changes.length > 0 && !activeTab) {
+    setActiveTab(changes[0].changeId);
   }
 
-  const renderCode = (content: string, type: string) => {
-    // Если тип указывает на JSON или код выглядит как JSON
-    if (type === 'json' || (content.trim().startsWith('{') && content.trim().endsWith('}'))) {
-      try {
-        const jsonData = JSON.parse(content);
-        return (
-          <pre className="text-sm font-mono whitespace-pre-wrap">
-            {JSON.stringify(jsonData, null, 2)}
-          </pre>
-        );
-      } catch (error) {
-        // Если не удается распарсить, показываем как есть
-      }
+  const formatContent = (content: string) => {
+    try {
+      const jsonData = JSON.parse(content);
+      return JSON.stringify(jsonData, null, 2);
+    } catch (error) {
+      return content;
     }
-
-    return (
-      <pre className="text-sm font-mono whitespace-pre-wrap">
-        {content}
-      </pre>
-    );
   };
 
   return (
@@ -106,34 +89,34 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
           <DialogTitle>Изменения промта</DialogTitle>
         </DialogHeader>
         
-        {fileChanges.length > 0 ? (
+        {changes.length > 0 ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-[75vh]">
-            <TabsList className="grid w-full grid-cols-auto overflow-x-auto">
-              {fileChanges.map((fileChange, index) => (
+            <TabsList className="grid w-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${changes.length}, minmax(0, 1fr))` }}>
+              {changes.map((change) => (
                 <TabsTrigger 
-                  key={`${fileChange.filepath}-${index}`}
-                  value={fileChange.filepath}
+                  key={change.changeId}
+                  value={change.changeId}
                   className="text-sm truncate max-w-48"
                 >
-                  {fileChange.filepath}
+                  {change.filepath}
                 </TabsTrigger>
               ))}
             </TabsList>
             
-            {fileChanges.map((fileChange, index) => (
+            {changes.map((change) => (
               <TabsContent 
-                key={`${fileChange.filepath}-${index}`}
-                value={fileChange.filepath}
+                key={change.changeId}
+                value={change.changeId}
                 className="h-full"
               >
                 <Card className="h-full">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <CardTitle className="text-lg">{fileChange.filepath}</CardTitle>
-                      <Badge variant="outline">{fileChange.type}</Badge>
-                      {fileChange.change.createdAt && (
+                      <CardTitle className="text-lg">{change.filepath}</CardTitle>
+                      <Badge variant="outline">{change.changeType}</Badge>
+                      {change.createdAt && (
                         <Badge variant="secondary">
-                          {new Date(fileChange.change.createdAt).toLocaleString()}
+                          {new Date(change.createdAt).toLocaleString()}
                         </Badge>
                       )}
                     </div>
@@ -141,7 +124,9 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
                   <CardContent className="p-0 h-[calc(100%-120px)]">
                     <ScrollArea className="h-full w-full">
                       <div className="bg-slate-50 p-4 h-full">
-                        {renderCode(fileChange.content, fileChange.type)}
+                        <pre className="text-sm font-mono whitespace-pre-wrap">
+                          {formatContent(change.content)}
+                        </pre>
                       </div>
                     </ScrollArea>
                   </CardContent>
