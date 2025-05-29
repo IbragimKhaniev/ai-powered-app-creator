@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200 } from "@/api/core";
+import { GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200, IMongoModelChange } from "@/api/core";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,7 @@ interface ParsedFileChange {
   filepath: string;
   type: string;
   content: string;
-  change: any;
+  change: IMongoModelChange;
 }
 
 const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) => {
