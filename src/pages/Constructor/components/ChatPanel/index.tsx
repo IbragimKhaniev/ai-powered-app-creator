@@ -65,7 +65,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
             <ChatMessage 
               key={message.id} 
               message={message} 
-              applicationId={application._id}
+              applicationId={application?._id}
               onTryFix={handleTryFixAIError}
               additionalContent={message.additionalContent}
               isNewMessage={index === messages.length - 1}

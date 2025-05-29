@@ -66,7 +66,7 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
             changeType: change.changeType || "text",
             content: change.content,
             createdAt: change.createdAt,
-            changeId: change._id || `change-${changeIndex}`
+            changeId: change?._id || `change-${changeIndex}`
           });
         }
       }
