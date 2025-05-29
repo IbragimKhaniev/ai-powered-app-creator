@@ -1,3 +1,4 @@
+
 import { GetApplicationsApplicationIdMessages200ItemPromtsItem } from "@/api/core";
 import TypedMessage from "../TypedMessage";
 import { useCallback, useState } from "react";
@@ -5,11 +6,9 @@ import Button from "@/components/Button";
 import Change from "../Change";
 
 interface PromtProps {
-  data: GetApplicationsApplicationIdMessages200ItemPromtsItem;
-
+  data: GetApplicationsApplicationIdMessages200ItemPromtsItem & { _id?: string };
   messageId: string;
   applicationId: string;
-
   showAnimation?: boolean;
 }
 
@@ -28,7 +27,7 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
         className="mb-4"
       />
       <Button onClick={onClickToggleChanges}>Показать изменения</Button>
-      {isOpenedChanges && (
+      {isOpenedChanges && data._id && (
         <Change
           promtId={data._id}
           messageId={messageId}

@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200, IMongoModelChange } from "@/api/core";
+import { GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200 } from "@/api/core";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,25 +37,30 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
     data.changes.forEach((change, changeIndex) => {
       if (change.content) {
         try {
-          // Пытаемся распарсить content как JSON
           const parsedContent = JSON.parse(change.content);
-
-          console.log({ change, parsedContent });
-
-          parsedContent.map((currentContent, contentIndex) => {
-            // Извлекаем filepath из распарсенного содержимого
-            const filepath = currentContent.filepath || `Change #${index + 1}`;
-
+          
+          if (Array.isArray(parsedContent)) {
+            parsedContent.forEach((item, contentIndex) => {
+              const filepath = item.filepath || `Change #${changeIndex + 1}-${contentIndex + 1}`;
+              parsedChanges.push({
+                filepath,
+                changeType: item.type || change.changeType || "unknown",
+                content: item.content || change.content,
+                createdAt: change.createdAt,
+                changeId: `change-${changeIndex}-${contentIndex}`
+              });
+            });
+          } else {
+            const filepath = parsedContent.filepath || `Change #${changeIndex + 1}`;
             parsedChanges.push({
               filepath,
-              changeType: currentContent.type || "unknown",
-              content: currentContent.content,
+              changeType: parsedContent.type || change.changeType || "unknown",
+              content: parsedContent.content || change.content,
               createdAt: change.createdAt,
-              changeId: `change-${changeIndex}-${contentIndex}`
+              changeId: `change-${changeIndex}`
             });
-          }, []);
+          }
         } catch (error) {
-          // Если не удается распарсить как JSON, используем fallback
           parsedChanges.push({
             filepath: `Change #${changeIndex + 1}`,
             changeType: change.changeType || "text",
@@ -72,7 +77,6 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
 
   const changes = parseChanges();
 
-  // Устанавливаем первую вкладку как активную при открытии
   if (changes.length > 0 && !activeTab) {
     setActiveTab(changes[0].changeId);
   }
@@ -88,14 +92,14 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh]">
-        <DialogHeader>
+      <DialogContent className="max-w-6xl h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Изменения промта</DialogTitle>
         </DialogHeader>
         
         {changes.length > 0 ? (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-[75vh]">
-            <TabsList className="grid w-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${changes.length}, minmax(0, 1fr))` }}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
+            <TabsList className="flex-shrink-0 grid w-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${changes.length}, minmax(0, 1fr))` }}>
               {changes.map((change) => (
                 <TabsTrigger 
                   key={change.changeId}
@@ -111,10 +115,10 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
               <TabsContent 
                 key={change.changeId}
                 value={change.changeId}
-                className="h-full"
+                className="flex-1 min-h-0 mt-4"
               >
-                <Card className="h-full">
-                  <CardHeader className="pb-3">
+                <Card className="h-full flex flex-col">
+                  <CardHeader className="flex-shrink-0 pb-3">
                     <div className="flex items-center gap-3 flex-wrap">
                       <CardTitle className="text-lg">{change.filepath}</CardTitle>
                       <Badge variant="outline">{change.changeType}</Badge>
@@ -125,10 +129,10 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="p-0 h-[calc(100%-120px)]">
+                  <CardContent className="flex-1 min-h-0 p-0">
                     <ScrollArea className="h-full w-full">
-                      <div className="bg-slate-50 p-4 h-full">
-                        <pre className="text-sm font-mono whitespace-pre-wrap">
+                      <div className="bg-slate-50 p-4">
+                        <pre className="text-sm font-mono whitespace-pre-wrap break-words">
                           {formatContent(change.content)}
                         </pre>
                       </div>

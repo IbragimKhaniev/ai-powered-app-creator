@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,11 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
           showBackButton={true}
           onBackClick={onToggleLogs}
         />
-        <ActionsDropdown showLogs={true} onToggleLogs={onToggleLogs} />
+        <ActionsDropdown 
+          showLogs={true} 
+          onToggleLogs={onToggleLogs}
+          domain=""
+        />
       </div>
       
       <ScrollArea className="flex-1 p-4 bg-gray-50">
