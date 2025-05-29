@@ -2,6 +2,7 @@ export * from './application-files';
 export * from './applications';
 export * from './логи-приложения';
 export * from './application-messages';
+export * from './promt-changes';
 export * from './message';
 export * from './messages';
 export * from './application';

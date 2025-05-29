@@ -9,9 +9,11 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Button from '@/components/Button';
 import { cn } from '@/lib/utils';
+import Promt from '../Promt';
 
 interface ChatMessageProps {
   message: GetApplicationsApplicationIdMessages200Item;
+  applicationId: string;
   onTryFix?: (id: string) => void;
   additionalContent?: string; // New prop for additional collapsible content
   isNewMessage?: boolean;
@@ -21,7 +23,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   message, 
   onTryFix,
   additionalContent,
-  isNewMessage
+  isNewMessage,
+  applicationId
 }) => {
   const [promts, setPromts] = useState<GetApplicationsApplicationIdMessages200ItemPromtsItem[]>(message?.promts || []);
   const [isOnlineRender, setIsOnlineRender] = useState(false);
@@ -110,11 +113,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       </div>
       <div className={`flex justify-start flex-col my-5 pr-20`}>
         {message.promts?.map((currentPromt, index) => (
-          <TypedMessage
+          <Promt
             key={index}
-            content={currentPromt.result}
+            data={currentPromt}
+            messageId={message.id}
+            applicationId={applicationId}
             showAnimation={isOnlineRender && isNewMessage && index === message.promts.length - 1}
-            className="mb-4"
           />
         ))}
       </div>

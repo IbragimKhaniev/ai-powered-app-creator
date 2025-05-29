@@ -7,6 +7,7 @@
  */
 
 export type GetApplicationsApplicationIdMessages200ItemPromtsItem = {
+  _id: string;
   /** Содержимое промта. */
   content?: string;
   /** Результат выполнения промта. */
