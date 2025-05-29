@@ -34,30 +34,34 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
 
     const parsedChanges: ParsedChange[] = [];
 
-    data.changes.forEach((change, index) => {
+    data.changes.forEach((change, changeIndex) => {
       if (change.content) {
         try {
           // Пытаемся распарсить content как JSON
           const parsedContent = JSON.parse(change.content);
-          
-          // Извлекаем filepath из распарсенного содержимого
-          const filepath = parsedContent.filepath || `Change #${index + 1}`;
-          
-          parsedChanges.push({
-            filepath,
-            changeType: change.changeType || "unknown",
-            content: change.content,
-            createdAt: change.createdAt,
-            changeId: change._id || `change-${index}`
-          });
+
+          console.log({ change, parsedContent });
+
+          parsedContent.map((currentContent, contentIndex) => {
+            // Извлекаем filepath из распарсенного содержимого
+            const filepath = currentContent.filepath || `Change #${index + 1}`;
+
+            parsedChanges.push({
+              filepath,
+              changeType: currentContent.type || "unknown",
+              content: currentContent.content,
+              createdAt: change.createdAt,
+              changeId: `change-${changeIndex}-${contentIndex}`
+            });
+          }, []);
         } catch (error) {
           // Если не удается распарсить как JSON, используем fallback
           parsedChanges.push({
-            filepath: `Change #${index + 1}`,
+            filepath: `Change #${changeIndex + 1}`,
             changeType: change.changeType || "text",
             content: change.content,
             createdAt: change.createdAt,
-            changeId: change._id || `change-${index}`
+            changeId: change._id || `change-${changeIndex}`
           });
         }
       }
