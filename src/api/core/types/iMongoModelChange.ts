@@ -8,8 +8,17 @@
  */
 
 export interface IMongoModelChange {
+  /** Идентификатор изменения. */
   _id?: string;
+  /** Идентификатор приложения, к которому относится изменение. */
+  application?: string;
+  /** Идентификатор промта, к которому относится изменение. */
+  promt?: string;
+  /** Тип изменения (например, 'update', 'create', 'delete'). */
+  changeType?: string;
+  /** Содержимое изменения. */
   content?: string;
+  /** Дата и время создания изменения. */
   createdAt?: string;
   updatedAt?: string;
 }

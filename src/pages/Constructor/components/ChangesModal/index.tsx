@@ -9,6 +9,8 @@ import { GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200 } 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 
 interface ChangesModalProps {
   isOpen: boolean;
@@ -16,108 +18,142 @@ interface ChangesModalProps {
   data: GetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges200 | undefined;
 }
 
+interface ParsedFileChange {
+  filepath: string;
+  type: string;
+  content: string;
+  change: any;
+}
+
 const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) => {
-  const parseContent = (content: string) => {
-    try {
-      return JSON.parse(content);
-    } catch (error) {
-      return content;
-    }
+  const [activeTab, setActiveTab] = useState<string>("");
+
+  const parseFileChanges = (): ParsedFileChange[] => {
+    if (!data?.changes) return [];
+
+    const fileChanges: ParsedFileChange[] = [];
+
+    data.changes.forEach((change) => {
+      if (change.content) {
+        try {
+          const parsedContent = JSON.parse(change.content);
+          
+          // Если это объект с информацией о файле
+          if (parsedContent.filepath && parsedContent.type) {
+            fileChanges.push({
+              filepath: parsedContent.filepath,
+              type: parsedContent.type,
+              content: parsedContent.content || parsedContent.code || "",
+              change
+            });
+          } else if (typeof parsedContent === 'object') {
+            // Если это просто JSON объект без структуры файла
+            fileChanges.push({
+              filepath: `Change #${fileChanges.length + 1}`,
+              type: change.changeType || "unknown",
+              content: JSON.stringify(parsedContent, null, 2),
+              change
+            });
+          }
+        } catch (error) {
+          // Если не удается распарсить как JSON, добавляем как текст
+          fileChanges.push({
+            filepath: `Change #${fileChanges.length + 1}`,
+            type: change.changeType || "text",
+            content: change.content,
+            change
+          });
+        }
+      }
+    });
+
+    return fileChanges;
   };
 
-  const renderJsonContent = (jsonData: any, depth = 0) => {
-    if (typeof jsonData === 'string') {
-      return <span className="text-green-600">"{jsonData}"</span>;
+  const fileChanges = parseFileChanges();
+
+  // Устанавливаем первую вкладку как активную при открытии
+  if (fileChanges.length > 0 && !activeTab) {
+    setActiveTab(fileChanges[0].filepath);
+  }
+
+  const renderCode = (content: string, type: string) => {
+    // Если тип указывает на JSON или код выглядит как JSON
+    if (type === 'json' || (content.trim().startsWith('{') && content.trim().endsWith('}'))) {
+      try {
+        const jsonData = JSON.parse(content);
+        return (
+          <pre className="text-sm font-mono whitespace-pre-wrap">
+            {JSON.stringify(jsonData, null, 2)}
+          </pre>
+        );
+      } catch (error) {
+        // Если не удается распарсить, показываем как есть
+      }
     }
-    
-    if (typeof jsonData === 'number') {
-      return <span className="text-blue-600">{jsonData}</span>;
-    }
-    
-    if (typeof jsonData === 'boolean') {
-      return <span className="text-purple-600">{jsonData.toString()}</span>;
-    }
-    
-    if (jsonData === null) {
-      return <span className="text-gray-500">null</span>;
-    }
-    
-    if (Array.isArray(jsonData)) {
-      return (
-        <div className="ml-4">
-          <span className="text-gray-700">[</span>
-          {jsonData.map((item, index) => (
-            <div key={index} className="ml-4">
-              {renderJsonContent(item, depth + 1)}
-              {index < jsonData.length - 1 && <span className="text-gray-700">,</span>}
-            </div>
-          ))}
-          <span className="text-gray-700">]</span>
-        </div>
-      );
-    }
-    
-    if (typeof jsonData === 'object') {
-      return (
-        <div className="ml-4">
-          <span className="text-gray-700">{'{'}</span>
-          {Object.entries(jsonData).map(([key, value], index, array) => (
-            <div key={key} className="ml-4">
-              <span className="text-red-600">"{key}"</span>
-              <span className="text-gray-700">: </span>
-              {renderJsonContent(value, depth + 1)}
-              {index < array.length - 1 && <span className="text-gray-700">,</span>}
-            </div>
-          ))}
-          <span className="text-gray-700">{'}'}</span>
-        </div>
-      );
-    }
-    
-    return <span>{String(jsonData)}</span>;
+
+    return (
+      <pre className="text-sm font-mono whitespace-pre-wrap">
+        {content}
+      </pre>
+    );
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh]">
+      <DialogContent className="max-w-6xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle>Изменения промта</DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[60vh] w-full">
-          {data?.changes && data.changes.length > 0 ? (
-            <div className="space-y-4">
-              {data.changes.map((change, index) => {
-                const parsedContent = parseContent(change.content || '');
-                return (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-lg">
-                        Изменение #{index + 1}
-                        <Badge variant="outline">
-                          {change.createdAt ? new Date(change.createdAt).toLocaleString() : 'Неизвестно'}
+        
+        {fileChanges.length > 0 ? (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-[75vh]">
+            <TabsList className="grid w-full grid-cols-auto overflow-x-auto">
+              {fileChanges.map((fileChange, index) => (
+                <TabsTrigger 
+                  key={`${fileChange.filepath}-${index}`}
+                  value={fileChange.filepath}
+                  className="text-sm truncate max-w-48"
+                >
+                  {fileChange.filepath}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
+            {fileChanges.map((fileChange, index) => (
+              <TabsContent 
+                key={`${fileChange.filepath}-${index}`}
+                value={fileChange.filepath}
+                className="h-full"
+              >
+                <Card className="h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <CardTitle className="text-lg">{fileChange.filepath}</CardTitle>
+                      <Badge variant="outline">{fileChange.type}</Badge>
+                      {fileChange.change.createdAt && (
+                        <Badge variant="secondary">
+                          {new Date(fileChange.change.createdAt).toLocaleString()}
                         </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="bg-slate-50 p-4 rounded-lg">
-                        <pre className="text-sm font-mono whitespace-pre-wrap">
-                          {typeof parsedContent === 'object' ? 
-                            renderJsonContent(parsedContent) : 
-                            parsedContent
-                          }
-                        </pre>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 h-[calc(100%-120px)]">
+                    <ScrollArea className="h-full w-full">
+                      <div className="bg-slate-50 p-4 h-full">
+                        {renderCode(fileChange.content, fileChange.type)}
                       </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              Изменения не найдены
-            </div>
-          )}
-        </ScrollArea>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            Изменения не найдены
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
