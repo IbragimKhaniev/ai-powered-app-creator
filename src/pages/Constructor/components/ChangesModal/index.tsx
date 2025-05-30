@@ -99,17 +99,22 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
         
         {changes.length > 0 ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
-            <TabsList className="flex-shrink-0 grid w-full overflow-x-auto" style={{ gridTemplateColumns: `repeat(${changes.length}, minmax(0, 1fr))` }}>
-              {changes.map((change) => (
-                <TabsTrigger 
-                  key={change.changeId}
-                  value={change.changeId}
-                  className="text-sm truncate max-w-48"
-                >
-                  {change.filepath}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <ScrollArea className="flex-shrink-0">
+              <TabsList className="inline-flex h-auto min-w-full w-max p-1">
+                {changes.map((change) => (
+                  <TabsTrigger 
+                    key={change.changeId}
+                    value={change.changeId}
+                    className="text-sm whitespace-nowrap px-4 py-2 min-w-0 flex-shrink-0"
+                    title={change.filepath}
+                  >
+                    <span className="block max-w-48 truncate">
+                      {change.filepath}
+                    </span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </ScrollArea>
             
             {changes.map((change) => (
               <TabsContent 
@@ -120,7 +125,7 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
                 <Card className="h-full flex flex-col">
                   <CardHeader className="flex-shrink-0 pb-3">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <CardTitle className="text-lg">{change.filepath}</CardTitle>
+                      <CardTitle className="text-lg break-all">{change.filepath}</CardTitle>
                       <Badge variant="outline">{change.changeType}</Badge>
                       {change.createdAt && (
                         <Badge variant="secondary">
