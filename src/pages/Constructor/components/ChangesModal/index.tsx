@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -99,9 +98,9 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
         
         {changes.length > 0 ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
-            <div className="flex-shrink-0 overflow-hidden">
-              <ScrollArea className="w-full">
-                <TabsList className="inline-flex h-auto w-max p-1 min-w-full">
+            <div className="flex-shrink-0 overflow-x-auto">
+              <div className="min-w-max">
+                <TabsList className="inline-flex h-auto w-max p-1">
                   {changes.map((change) => (
                     <TabsTrigger 
                       key={change.changeId}
@@ -113,7 +112,7 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
                     </TabsTrigger>
                   ))}
                 </TabsList>
-              </ScrollArea>
+              </div>
             </div>
             
             {changes.map((change) => (
