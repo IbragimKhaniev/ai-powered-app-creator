@@ -20,7 +20,7 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
   }, []);
 
   return (
-    <div>
+    <div className="mb-4">
       <TypedMessage
         content={data.result}
         showAnimation={showAnimation}
