@@ -6,123 +6,111 @@
  * OpenAPI spec version: 1.0.0
  */
 import {
-  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  BadRequestResponse,
-  GetApplications200,
-  GetApplications401,
-  GetApplications500,
-  IMongoModelApplication,
-  PostApplicationsApplicationIdRestart200,
-  PostApplicationsApplicationIdRestart400,
-  PostApplicationsApplicationIdRestart404,
-  PostApplicationsApplicationIdRestart500,
-  PostApplicationsBody,
-  ServerErrorResponse
+  GetApplicationsId404,
+  GetApplicationsId500,
+  MongoModelApplication
 } from './types';
 
-import postApplicationsApplicationIdRestartMutator from '../axios';
-import type { ErrorType as PostApplicationsApplicationIdRestartErrorType } from '../axios';
-import getApplicationsMutator from '../axios';
-import type { ErrorType as GetApplicationsErrorType } from '../axios';
-import postApplicationsMutator from '../axios';
-import type { ErrorType as PostApplicationsErrorType } from '../axios';
+import getApplicationsIdMutator from '../axios';
+import type { ErrorType as GetApplicationsIdErrorType } from '../axios';
 
 
 
 
 
 /**
- * Возвращает список всех приложений, к которым имеет доступ аутентифицированный пользователь (req.user).
- * @summary Получить список приложений
+ * Возвращает приложение с указанным идентификатором.
+ * @summary Получение приложения по ID
  */
-export const getApplications = (
+export const getApplicationsId = (
+    id: string,
  signal?: AbortSignal
 ) => {
       
       
-      return getApplicationsMutator<GetApplications200>(
-      {url: `/applications`, method: 'GET', signal
+      return getApplicationsIdMutator<MongoModelApplication>(
+      {url: `/applications/${id}`, method: 'GET', signal
     },
       );
     }
   
 
-export const getGetApplicationsQueryKey = () => {
-    return [`/applications`] as const;
+export const getGetApplicationsIdQueryKey = (id: string,) => {
+    return [`/applications/${id}`] as const;
     }
 
     
-export const getGetApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getApplications>>, TError = GetApplicationsErrorType<GetApplications401 | GetApplications500>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData>>, }
+export const getGetApplicationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getApplicationsId>>, TError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApplicationsQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApplicationsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplications>>> = ({ signal }) => getApplications(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApplicationsId>>> = ({ signal }) => getApplicationsId(id, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
 }
 
-export type GetApplicationsQueryResult = NonNullable<Awaited<ReturnType<typeof getApplications>>>
-export type GetApplicationsQueryError = GetApplicationsErrorType<GetApplications401 | GetApplications500>
+export type GetApplicationsIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApplicationsId>>>
+export type GetApplicationsIdQueryError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>
 
 
-export function useGetApplications<TData = Awaited<ReturnType<typeof getApplications>>, TError = GetApplicationsErrorType<GetApplications401 | GetApplications500>>( options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData>> & Pick<
+export function useGetApplicationsId<TData = Awaited<ReturnType<typeof getApplicationsId>>, TError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplications>>,
+          Awaited<ReturnType<typeof getApplicationsId>>,
           TError,
-          Awaited<ReturnType<typeof getApplications>>
+          Awaited<ReturnType<typeof getApplicationsId>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useGetApplications<TData = Awaited<ReturnType<typeof getApplications>>, TError = GetApplicationsErrorType<GetApplications401 | GetApplications500>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData>> & Pick<
+export function useGetApplicationsId<TData = Awaited<ReturnType<typeof getApplicationsId>>, TError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApplications>>,
+          Awaited<ReturnType<typeof getApplicationsId>>,
           TError,
-          Awaited<ReturnType<typeof getApplications>>
+          Awaited<ReturnType<typeof getApplicationsId>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useGetApplications<TData = Awaited<ReturnType<typeof getApplications>>, TError = GetApplicationsErrorType<GetApplications401 | GetApplications500>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData>>, }
+export function useGetApplicationsId<TData = Awaited<ReturnType<typeof getApplicationsId>>, TError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
 /**
- * @summary Получить список приложений
+ * @summary Получение приложения по ID
  */
 
-export function useGetApplications<TData = Awaited<ReturnType<typeof getApplications>>, TError = GetApplicationsErrorType<GetApplications401 | GetApplications500>>(
- options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplications>>, TError, TData>>, }
- , queryClient?: QueryClient
+export function useGetApplicationsId<TData = Awaited<ReturnType<typeof getApplicationsId>>, TError = GetApplicationsIdErrorType<GetApplicationsId404 | GetApplicationsId500>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApplicationsId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
 
-  const queryOptions = getGetApplicationsQueryOptions(options)
+  const queryOptions = getGetApplicationsIdQueryOptions(id,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
 
@@ -133,91 +121,3 @@ export function useGetApplications<TData = Awaited<ReturnType<typeof getApplicat
 
 
 
-/**
- * Перезапускает указанное приложение.
- * @summary Перезапуск приложения
- */
-export const postApplicationsApplicationIdRestart = (
-    applicationId: string,
- signal?: AbortSignal
-) => {
-      
-      
-      return postApplicationsApplicationIdRestartMutator<PostApplicationsApplicationIdRestart200>(
-      {url: `/applications/${applicationId}/restart`, method: 'POST', signal
-    },
-      );
-    }
-  
-
-export const getPostApplicationsApplicationIdRestartMutationOptions = <TError = PostApplicationsApplicationIdRestartErrorType<BadRequestResponse | PostApplicationsApplicationIdRestart400 | PostApplicationsApplicationIdRestart404 | PostApplicationsApplicationIdRestart500 | ServerErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApplicationsApplicationIdRestart>>, TError, {applicationId: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApplicationsApplicationIdRestart>>, TError, {applicationId: string}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      
-
-
-   return  { mutationFn: (data) => postApplicationsApplicationIdRestart(data.applicationId, ), ...mutationOptions} as UseMutationOptions<Awaited<ReturnType<typeof postApplicationsApplicationIdRestart>>, TError, {applicationId: string}, TContext>
-}
-
-export type PostApplicationsApplicationIdRestartMutationResult = NonNullable<Awaited<ReturnType<typeof postApplicationsApplicationIdRestart>>>
-export type PostApplicationsApplicationIdRestartMutationError = PostApplicationsApplicationIdRestartErrorType<BadRequestResponse | PostApplicationsApplicationIdRestart400 | PostApplicationsApplicationIdRestart404 | PostApplicationsApplicationIdRestart500 | ServerErrorResponse>
-
-/**
- * @summary Перезапуск приложения
- */
-export const usePostApplicationsApplicationIdRestart = <TError = PostApplicationsApplicationIdRestartErrorType<BadRequestResponse | PostApplicationsApplicationIdRestart400 | PostApplicationsApplicationIdRestart404 | PostApplicationsApplicationIdRestart500 | ServerErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApplicationsApplicationIdRestart>>, TError, {applicationId: string}, TContext>, }
-) => {
-
-  const mutationOptions = getPostApplicationsApplicationIdRestartMutationOptions<TError, TContext>(options);
-
- return useMutation(mutationOptions);
-}
-
-
-
-/**
- * Создает новое приложение для аутентифицированного пользователя (req.user) на основе переданного описания.
- * @summary Создание приложения
- */
-export const postApplications = (
-    postApplicationsBody: PostApplicationsBody,
- signal?: AbortSignal
-) => {
-      
-      
-      return postApplicationsMutator<IMongoModelApplication>(
-      {url: `/applications`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: postApplicationsBody, signal
-    },
-      );
-    }
-
-export const getPostApplicationsMutationOptions = <TError = PostApplicationsErrorType<BadRequestResponse | ServerErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApplications>>, TError,{data: PostApplicationsBody}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApplications>>, TError,{data: PostApplicationsBody}, TContext> => {
- const {mutation: mutationOptions} = options ?? {};
-
-      
-
-
-   return  { mutationFn: (data) => postApplications(data.data, ), ...mutationOptions} as UseMutationOptions<Awaited<ReturnType<typeof postApplications>>, TError,{data: PostApplicationsBody}, TContext>
-}
-
-export type PostApplicationsMutationResult = NonNullable<Awaited<ReturnType<typeof postApplications>>>
-export type PostApplicationsMutationError = PostApplicationsErrorType<BadRequestResponse | ServerErrorResponse>
-
-/**
- * @summary Создание приложения
- */
-export const usePostApplications = <TError = PostApplicationsErrorType<BadRequestResponse | ServerErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApplications>>, TError,{data: PostApplicationsBody}, TContext>, }
-) => {
-
-  const mutationOptions = getPostApplicationsMutationOptions<TError, TContext>(options);
-
- return useMutation(mutationOptions);
-}
