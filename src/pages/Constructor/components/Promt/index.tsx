@@ -27,11 +27,13 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
         className="mb-4"
       />
       <Button onClick={onClickToggleChanges}>Показать изменения</Button>
-      {isOpenedChanges && data._id && (
+      {data._id && (
         <Change
           promtId={data._id}
           messageId={messageId}
           applicationId={applicationId}
+          onClickToggleChanges={onClickToggleChanges}
+          isOpenedChanges={isOpenedChanges}
         />
       )}
     </div>

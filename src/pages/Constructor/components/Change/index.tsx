@@ -7,28 +7,33 @@ interface ChangeProps {
   promtId: string;
   messageId: string;
   applicationId: string;
+
+  isOpenedChanges: boolean;
+
+  onClickToggleChanges: VoidFunction;
 }
 
-const Change: React.FC<ChangeProps> = ({ promtId, messageId, applicationId }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  
+const Change: React.FC<ChangeProps> = ({ promtId, messageId, applicationId, isOpenedChanges, onClickToggleChanges }) => {
+
   const { data } = useGetApplicationsApplicationIdMessagesMessageIdPromtsPromtIdChanges(
     applicationId,
     messageId,
     promtId,
-  );
-  
-  useEffect(() => {
-    if (data) {
-      console.log("Changes fetched:", data);
-      setIsModalOpen(true);
+    {
+      query: {
+        enabled: Boolean(isOpenedChanges),
+      }
     }
-  }, [data]);
+  );
+
+  if (!isOpenedChanges) {
+    return null
+  }
 
   return (
     <ChangesModal 
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
+      isOpen
+      onClose={onClickToggleChanges}
       data={data}
     />
   );
