@@ -62,7 +62,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             src={parsedDir}
             className="w-full h-full rounded-lg bg-white"
             title="Превью"
-            sandbox="allow-scripts allow-forms"
+            sandbox="allow-scripts allow-forms allow-same-origin"
           />
         )}
       </div>
