@@ -14,6 +14,8 @@ export interface UserApp {
   aiModel: string;
   tokensUsed: number;
   tokensTotal: number;
+  usedTokensOutput: number;
+  usedTokensInput: number;
   url: string;
 }
 

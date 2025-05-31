@@ -30,7 +30,9 @@ export const mapApplicationsData = (applications: IMongoModelApplication[]): Use
       status: app.pending ? 'В процессе' : 'Активно',
       aiModel: app.modelAi || 'GPT-3.5',
       tokensUsed: (app.usedTokensInput || 0) + (app.usedTokensOutput || 0),
-      tokensTotal: 1000, // Значение по умолчанию
+      tokensTotal: 1000, // Значение по умолчанию,
+      usedTokensInput: app.usedTokensInput,
+      usedTokensOutput: app.usedTokensOutput,
       url: `https://${domain}`
     };
   });
