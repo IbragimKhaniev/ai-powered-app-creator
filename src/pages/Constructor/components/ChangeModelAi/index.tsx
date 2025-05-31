@@ -7,9 +7,11 @@ import { Check, Loader2 } from "lucide-react";
 
 interface IChangeModelAiProps {
   application: ExtendedApplicationData;
+
+  disabled?: boolean;
 }
 
-export const ChangeModelAi = ({ application }: IChangeModelAiProps) => {
+export const ChangeModelAi = ({ application, disabled }: IChangeModelAiProps) => {
   // Получаем конфигурацию с моделями
   const { data: config } = useGetConfig();
   
@@ -26,7 +28,7 @@ export const ChangeModelAi = ({ application }: IChangeModelAiProps) => {
     <div className="px-4 pb-2 border-b">
       <div className="flex items-center gap-3">
         <div className="min-w-[150px]">
-          <Select value={selectedModel} onValueChange={handleModelChange}>
+          <Select value={selectedModel} onValueChange={handleModelChange} disabled={disabled}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Выберите модель" />
             </SelectTrigger>

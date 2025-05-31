@@ -86,7 +86,11 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       
       <div className="border-t p-2 bg-white">    
         {application && (
-          <ChangeModelAi application={application} />
+          <ChangeModelAi
+            application={application}
+
+            disabled={isDeploying || isLoading}
+          />
         )} 
         <div className="p-4">
           <ChatInput
