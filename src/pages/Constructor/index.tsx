@@ -135,6 +135,7 @@ const Constructor: React.FC = () => {
               onToggleLogs={handleToggleLogs} 
               onTryFixLog={handleTryFixLog} 
               isLoading={isLoadingLogs}
+              isRunning={!appData?.deploying && !appData?.deployingError}
               isDeploying={Boolean(appData?.deploying)}
               isSendingFixMessage={isSendingFixMessage}
             />

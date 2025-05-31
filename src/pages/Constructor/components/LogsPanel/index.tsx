@@ -15,6 +15,7 @@ interface LogsPanelProps {
   onTryFixLog: (content: string) => void;
   isLoading?: boolean;
   isDeploying?: boolean;
+  isRunning?: boolean;
   isSendingFixMessage?: boolean;
 }
 
@@ -25,6 +26,7 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
   isLoading = false,
   isSendingFixMessage = false,
   isDeploying = false,
+  isRunning = false,
 }) => {
   return (
     <div className="flex h-full flex-col">
@@ -57,6 +59,11 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
             {isDeploying && (
               <div className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm animate-pulse">
                 Деплоится ...
+              </div>
+            )}
+            {isRunning && (
+              <div className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm animate-pulse">
+                Сервер работает ...
               </div>
             )}
             {logs.map((log) => (
