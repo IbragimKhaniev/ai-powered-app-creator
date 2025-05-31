@@ -110,7 +110,6 @@ const Constructor: React.FC = () => {
         direction="horizontal"
         className="h-screen"
       >
-        {/* Chat Panel */}
         <ResizablePanel defaultSize={30} minSize={30}>
           <ChatPanel 
             application={appData}
