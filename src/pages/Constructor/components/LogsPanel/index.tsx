@@ -55,7 +55,7 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
         ) : (
           <div className="space-y-2">
             {isDeploying && (
-              <div className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+              <div className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm animate-pulse">
                 Деплоится ...
               </div>
             )}
