@@ -137,7 +137,7 @@ const Constructor: React.FC = () => {
               isLoading={isLoadingLogs}
               isRunning={!appData?.deploying && !appData?.deployingError}
               isDeploying={Boolean(appData?.deploying)}
-              isSendingFixMessage={isSendingFixMessage}
+              isSendingFixMessage={isSendingFixMessage || appData.pending}
             />
           ) : (
             <PreviewPanel 
