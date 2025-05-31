@@ -56,7 +56,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   return (
     <div className="flex h-full flex-col">
       <div className="border-b flex justify-between items-center bg-white p-4">
-        <Header title={CONSTRUCTOR_TEXT.CHAT_WITH_AI} description={CONSTRUCTOR_TEXT.DESCRIBE_APP} showBackButton={true} />
+        <Header title={application?.name} description={CONSTRUCTOR_TEXT.DESCRIBE_APP} showBackButton={true} />
       </div>
       
       <ScrollArea className="flex-1 p-4 bg-background">
