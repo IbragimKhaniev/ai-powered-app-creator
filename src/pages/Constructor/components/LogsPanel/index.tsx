@@ -14,6 +14,7 @@ interface LogsPanelProps {
   onToggleLogs: () => void;
   onTryFixLog: (content: string) => void;
   isLoading?: boolean;
+  isDeploying?: boolean;
   isSendingFixMessage?: boolean;
 }
 
@@ -22,7 +23,8 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
   onToggleLogs, 
   onTryFixLog,
   isLoading = false,
-  isSendingFixMessage = false
+  isSendingFixMessage = false,
+  isDeploying = false,
 }) => {
   return (
     <div className="flex h-full flex-col">
@@ -52,6 +54,11 @@ const LogsPanel: React.FC<LogsPanelProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
+            {isDeploying && (
+              <div className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                Деплоится ...
+              </div>
+            )}
             {logs.map((log) => (
               <div key={log._id} className="font-mono text-sm bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
                 <div className="flex flex-col space-y-2">
