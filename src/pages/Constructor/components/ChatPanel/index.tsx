@@ -1,15 +1,14 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Microchip } from "lucide-react";
 import Header from '../Header';
 import ChatInput from '../ChatInput';
 import ChatMessage from '../ChatMessage';
 import ChatErrorMessage from '@/components/ui/chat-error-message';
 import { CONSTRUCTOR_TEXT } from '../../constants';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GetApplicationsApplicationIdMessages200Item, usePostApplicationsApplicationIdMessagesMessageIdRetry } from '@/api/core';
+import { GetApplicationsApplicationIdMessages200Item, usePostApplicationsApplicationIdMessagesMessageIdRetry, useGetConfig } from '@/api/core';
 import { ExtendedApplicationData } from '../../types';
+import { ChangeModelAi } from '../ChangeModelAi';
 
 interface ChatPanelProps {
   messages: GetApplicationsApplicationIdMessages200Item[];
@@ -77,7 +76,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
               <ChatErrorMessage 
                 message={`Ошибка развертывания: ${deployingError.substring(0, 100)}...`} 
                 onTryFix={onTryFixDeployError}
-
                 disabled={isDeploying || isLoading}
               />
             </div>
@@ -86,8 +84,10 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         </div>
       </ScrollArea>
       
-      <div className="border-t p-2 bg-white">
-        
+      <div className="border-t p-2 bg-white">    
+        {application && (
+          <ChangeModelAi application={application} />
+        )} 
         <div className="p-4">
           <ChatInput
             onSendMessage={onSendMessage}

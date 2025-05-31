@@ -35,9 +35,15 @@ import type {
   PostApplicationsApplicationIdRestart404,
   PostApplicationsApplicationIdRestart500,
   PostApplicationsBody,
+  PutApplicationsApplicationId400,
+  PutApplicationsApplicationId404,
+  PutApplicationsApplicationId500,
+  PutApplicationsApplicationIdBody,
   ServerErrorResponse
 } from './types';
 
+import putApplicationsApplicationIdMutator from '../axios';
+import type { ErrorType as PutApplicationsApplicationIdErrorType } from '../axios';
 import postApplicationsApplicationIdRestartMutator from '../axios';
 import type { ErrorType as PostApplicationsApplicationIdRestartErrorType } from '../axios';
 import getApplicationsMutator from '../axios';
@@ -50,6 +56,71 @@ import type { ErrorType as PostApplicationsErrorType } from '../axios';
 
 
 /**
+ * Принимает изменяемые свойства приложения и обновляет запись в базе данных.
+ * @summary Изменить свойства приложения
+ */
+export const putApplicationsApplicationId = (
+    applicationId: string,
+    putApplicationsApplicationIdBody: PutApplicationsApplicationIdBody,
+ ) => {
+      
+      
+      return putApplicationsApplicationIdMutator<IMongoModelApplication>(
+      {url: `/applications/${applicationId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putApplicationsApplicationIdBody
+    },
+      );
+    }
+  
+
+
+export const getPutApplicationsApplicationIdMutationOptions = <TError = PutApplicationsApplicationIdErrorType<PutApplicationsApplicationId400 | PutApplicationsApplicationId404 | PutApplicationsApplicationId500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApplicationsApplicationId>>, TError,{applicationId: string;data: PutApplicationsApplicationIdBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApplicationsApplicationId>>, TError,{applicationId: string;data: PutApplicationsApplicationIdBody}, TContext> => {
+
+const mutationKey = ['putApplicationsApplicationId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApplicationsApplicationId>>, {applicationId: string;data: PutApplicationsApplicationIdBody}> = (props) => {
+          const {applicationId,data} = props ?? {};
+
+          return  putApplicationsApplicationId(applicationId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApplicationsApplicationIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApplicationsApplicationId>>>
+    export type PutApplicationsApplicationIdMutationBody = PutApplicationsApplicationIdBody
+    export type PutApplicationsApplicationIdMutationError = PutApplicationsApplicationIdErrorType<PutApplicationsApplicationId400 | PutApplicationsApplicationId404 | PutApplicationsApplicationId500>
+
+    /**
+ * @summary Изменить свойства приложения
+ */
+export const usePutApplicationsApplicationId = <TError = PutApplicationsApplicationIdErrorType<PutApplicationsApplicationId400 | PutApplicationsApplicationId404 | PutApplicationsApplicationId500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApplicationsApplicationId>>, TError,{applicationId: string;data: PutApplicationsApplicationIdBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApplicationsApplicationId>>,
+        TError,
+        {applicationId: string;data: PutApplicationsApplicationIdBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApplicationsApplicationIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Очищает поле deployingError у указанного приложения, сигнализируя о том, что ошибка деплоя устранена.
  * @summary Перезагрузить приложение
  */

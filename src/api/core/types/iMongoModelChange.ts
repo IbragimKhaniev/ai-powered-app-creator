@@ -17,6 +17,8 @@ export interface IMongoModelChange {
   changeType?: string;
   /** Содержимое изменения. */
   content?: string;
+  /** Предыдущее содержимое изменения. */
+  prevContent?: string;
   /** Дата и время создания изменения. */
   createdAt?: string;
 }

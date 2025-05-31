@@ -1,5 +1,5 @@
-
 export * from './application-files';
+export * from './applications';
 export * from './логи-приложения';
 export * from './application-messages';
 export * from './promt-changes';
@@ -10,13 +10,3 @@ export * from './config';
 export * from './user';
 export * from './promts';
 export * from './types';
-
-// Explicitly re-export from applications to resolve ambiguity
-export {
-  getApplicationsId,
-  useGetApplicationsId,
-  getGetApplicationsIdQueryKey,
-  getGetApplicationsIdQueryOptions,
-  type GetApplicationsIdQueryResult,
-  type GetApplicationsIdQueryError
-} from './applications';
