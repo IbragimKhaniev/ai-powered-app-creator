@@ -4,6 +4,7 @@ import TypedMessage from "../TypedMessage";
 import { useCallback, useState } from "react";
 import Button from "@/components/Button";
 import Change from "../Change";
+import PromtDetailsModal from "../PromtDetailsModal";
 
 interface PromtProps {
   data: GetApplicationsApplicationIdMessages200ItemPromtsItem & { _id?: string };
@@ -14,9 +15,14 @@ interface PromtProps {
 
 const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnimation }) => {
   const [isOpenedChanges, setIsOpenedChanges] = useState(false);
+  const [isOpenedDetails, setIsOpenedDetails] = useState(false);
 
   const onClickToggleChanges = useCallback(() => {
     setIsOpenedChanges((prev) => !prev);
+  }, []);
+
+  const onClickToggleDetails = useCallback(() => {
+    setIsOpenedDetails((prev) => !prev);
   }, []);
 
   return (
@@ -26,7 +32,15 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
         showAnimation={showAnimation}
         className="mb-4"
       />
-      <Button onClick={onClickToggleChanges}>Показать изменения</Button>
+      <div className="flex flex-col gap-2 mb-2">
+        <div className="flex gap-2">
+          <Button onClick={onClickToggleChanges}>Показать изменения</Button>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={onClickToggleDetails} variant="outline">Показать детали</Button>
+        </div>
+      </div>
+      
       {data._id && (
         <Change
           promtId={data._id}
@@ -36,6 +50,12 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
           isOpenedChanges={isOpenedChanges}
         />
       )}
+      
+      <PromtDetailsModal
+        isOpen={isOpenedDetails}
+        onClose={() => setIsOpenedDetails(false)}
+        data={data}
+      />
     </div>
   );
 };

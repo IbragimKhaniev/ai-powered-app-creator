@@ -12,10 +12,10 @@ export interface UserApp {
   createdAt: string;
   status: string;
   aiModel: string;
-  tokensUsed: number;
   tokensTotal: number;
   usedTokensOutput: number;
   usedTokensInput: number;
+  cachedTokens: number;
   url: string;
 }
 

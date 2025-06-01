@@ -44,7 +44,12 @@ const AppCard: React.FC<AppCardProps> = React.memo(({ app }) => {
 
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">{PROFILE_STRINGS.APPS.TOKENS_USED}</h3>
-              <p>input: {app.usedTokensInput}, output: {app.usedTokensOutput}</p>
+              <p>
+                <p>input: {app.usedTokensInput}</p>
+                <p>output: {app.usedTokensOutput}</p>
+                <p>cached: {app.cachedTokens}</p>
+                <p>total: {app.tokensTotal}</p>
+              </p>
             </div>
 
             <div>

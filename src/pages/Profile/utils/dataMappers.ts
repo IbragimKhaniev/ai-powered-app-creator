@@ -29,11 +29,11 @@ export const mapApplicationsData = (applications: IMongoModelApplication[]): Use
       createdAt: app.createdAt || new Date().toISOString(),
       status: app.pending ? 'В процессе' : 'Активно',
       aiModel: app.modelAi || 'GPT-3.5',
-      tokensUsed: (app.usedTokensInput || 0) + (app.usedTokensOutput || 0),
-      tokensTotal: 1000, // Значение по умолчанию,
+      tokensTotal: app.usedTokensInput + app.usedTokensOutput - app.cachedTokens, // Значение по умолчанию,
       usedTokensInput: app.usedTokensInput,
       usedTokensOutput: app.usedTokensOutput,
-      url: `https://${domain}`
+      cachedTokens: app.cachedTokens,
+      url: `https://${domain}.easyappz.ru`,
     };
   });
 };
