@@ -13,4 +13,8 @@ export type GetApplicationsApplicationIdMessages200ItemPromtsItem = {
   result?: string;
   /** Статус промта. */
   status?: string;
+  usedTokensInput?: number;
+  usedTokensOutput?: number;
+  cachedTokens?: number;
+  history?: string;
 };

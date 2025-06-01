@@ -15,6 +15,8 @@ export interface IMongoModelApplication {
   usedTokensInput?: number;
   /** Количество использованных исходящих токенов. */
   usedTokensOutput?: number;
+  /** Количество закэшированных токенов. */
+  cachedTokens?: number;
   /** Порт, на котором запущено приложение. */
   port?: number;
   /** Директория приложения. */
