@@ -24,93 +24,13 @@ const PromtDetailsModal: React.FC<PromtDetailsModalProps> = ({
   const renderHistory = (history: string | undefined) => {
     if (!history) return <p className="text-gray-500">История отсутствует</p>;
 
-    try {
-      const parsed = JSON.parse(history);
+    const historyWithBreaks = history.replace(/\\n/g, '\n').replace(/\n/g, '\n');
 
-      console.log({parsed});
-
-      // Если это массив, пытаемся распарсить content в каждом объекте
-      if (Array.isArray(parsed)) {
-        const processedHistory = parsed.map((item, index) => {
-          if (item && typeof item === 'object' && item.content) {
-            try {
-              const parsedContent = JSON.parse(item.content);
-              console.log({parsedContent});
-              // Если content успешно распарсен, заменяем его
-              return {
-                ...item,
-                content: parsedContent
-              };
-            } catch {
-              // Если не удалось распарсить content, обрабатываем переносы строк
-              const contentWithBreaks = typeof item.content === 'string' 
-                ? item.content.replace(/\\n/g, '\n').replace(/\n/g, '\n')
-                : item.content;
-              return {
-                ...item,
-                content: contentWithBreaks
-              };
-            }
-          }
-          return item;
-        });
-
-        console.log({processedHistory});
-        
-        return (
-          <pre className="bg-gray-100 p-4 rounded-lg overflow-auto max-h-96 text-sm whitespace-pre-wrap">
-            {JSON.stringify(processedHistory, null, 2)}
-          </pre>
-        );
-      }
-
-      // Если это объект, пытаемся распарсить его content
-      if (parsed && typeof parsed === 'object' && parsed.content) {
-        try {
-          const parsedContent = JSON.parse(parsed.content);
-          const processedHistory = {
-            ...parsed,
-            content: parsedContent
-          };
-          
-          return (
-            <pre className="bg-gray-100 p-4 rounded-lg overflow-auto max-h-96 text-sm whitespace-pre-wrap">
-              {JSON.stringify(processedHistory, null, 2)}
-            </pre>
-          );
-        } catch {
-          // Если не удалось распарсить content, обрабатываем переносы строк
-          const contentWithBreaks = typeof parsed.content === 'string' 
-            ? parsed.content.replace(/\\n/g, '\n').replace(/\n/g, '\n')
-            : parsed.content;
-          const processedHistory = {
-            ...parsed,
-            content: contentWithBreaks
-          };
-          
-          return (
-            <pre className="bg-gray-100 p-4 rounded-lg overflow-auto max-h-96 text-sm whitespace-pre-wrap">
-              {JSON.stringify(processedHistory, null, 2)}
-            </pre>
-          );
-        }
-      }
-
-      // Обычный парсинг JSON
-      return (
-        <pre className="bg-gray-100 p-4 rounded-lg overflow-auto max-h-96 text-sm whitespace-pre-wrap">
-          {JSON.stringify(parsed, null, 2)}
-        </pre>
-      );
-    } catch (error) {
-      // Если не удалось распарсить как JSON, обрабатываем переносы строк
-      const historyWithBreaks = history.replace(/\\n/g, '\n').replace(/\n/g, '\n');
-      return (
-        <div className="bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-          <p className="text-sm whitespace-pre-wrap">{historyWithBreaks}</p>
-        </div>
-      );
-    }
+    return (
+      <div className="bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
+        <p className="text-sm whitespace-pre-wrap">{historyWithBreaks}</p>
+      </div>
+    );
   };
 
   return (
