@@ -24,7 +24,6 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const navigate = useNavigate();
 
-  // Проверка статуса авторизации при монтировании компонента
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
@@ -43,7 +42,6 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
       if (isAuthenticated && onSubmit) {
         onSubmit(prompt, isPublic);
       } else {
-        // Если пользователь не авторизован, показываем диалог
         setShowAuthDialog(true);
       }
     }
@@ -66,24 +64,21 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   }, []);
 
   return (
-    <div className="w-full bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-cyan-500/20 p-6 hover:border-cyan-400/40 hover:shadow-cyan-500/10 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
-      {/* Holographic border effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent -skew-x-12 animate-pulse"></div>
-      
+    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-6">
       <Input.TextArea
         value={prompt}
         onChange={handlePromptChange}
         onKeyDown={handleKeyDown}
         placeholder={SITE_CONSTANTS.PROMPT_PLACEHOLDER}
-        autoSize={{ minRows: 2, maxRows: 6 }}
-        className="resize-none border-0 focus:shadow-none text-gray-100 placeholder:text-gray-400 bg-transparent relative z-10"
+        autoSize={{ minRows: 3, maxRows: 6 }}
+        className="resize-none border-0 focus:shadow-none text-gray-900 placeholder:text-gray-400 bg-transparent"
       />
-      <div className="flex justify-between items-center mt-6 relative z-10">
-        <button className="text-cyan-400 flex items-center gap-2 text-sm hover:text-cyan-300 transition-colors font-medium">
+      <div className="flex justify-between items-center mt-4">
+        <button className="text-gray-500 flex items-center gap-2 text-sm hover:text-gray-700 transition-colors">
           Прикрепить файл
         </button>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-300 font-medium">Публичный</span>
+          <span className="text-sm text-gray-600">Публичный</span>
           <Switch
             size="small"
             checked={isPublic}
@@ -92,7 +87,6 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
         </div>
       </div>
 
-      {/* Диалоговое окно авторизации */}
       <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
