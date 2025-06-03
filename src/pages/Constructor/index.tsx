@@ -104,7 +104,7 @@ const Constructor: React.FC = () => {
         onClose={() => setShowSettingsDialog(false)}
         onConfirm={handleConfirmSettings}
         initialSettings={suggestedSettings}
-        isLoading={isAnalyzing}
+        isLoading={isAnalyzing || isCreatingApp}
       />
       <ResizablePanelGroup
         direction="horizontal"
