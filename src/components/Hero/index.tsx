@@ -17,15 +17,18 @@ const Hero: React.FC = React.memo(() => {
   };
 
   return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden bg-hero-gradient">
-      <div className="container mx-auto px-4 flex-1 flex flex-col justify-center">
-        <div className="max-w-3xl mx-auto text-center">
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.02)_1px,transparent_0)] bg-[length:20px_20px] opacity-50"></div>
+      
+      <div className="container mx-auto px-4 flex-1 flex flex-col justify-center relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
           <HeroTitle />
-          <p className="text-lg text-center text-gray-700 mb-8">
+          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
             {SITE_CONSTANTS.HERO_SUBTITLE}
           </p>
 
-          <div className="mb-8">
+          <div className="mb-8 max-w-2xl mx-auto">
             <PromptInput onSubmit={handlePromptSubmit} />
           </div>
         </div>
@@ -35,7 +38,7 @@ const Hero: React.FC = React.memo(() => {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <button
           onClick={scrollToNextSection}
-          className="text-gray-600 hover:text-gray-900 transition-colors duration-300"
+          className="text-gray-400 hover:text-gray-600 transition-all duration-300 hover:scale-110"
           aria-label="Прокрутить вниз"
         >
           <ChevronDown className="h-10 w-10 animate-bounce" />
