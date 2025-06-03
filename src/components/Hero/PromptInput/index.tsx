@@ -66,21 +66,24 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   }, []);
 
   return (
-    <div className="w-full bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+    <div className="w-full bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-2xl border border-cyan-500/20 p-6 hover:border-cyan-400/40 hover:shadow-cyan-500/10 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+      {/* Holographic border effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent -skew-x-12 animate-pulse"></div>
+      
       <Input.TextArea
         value={prompt}
         onChange={handlePromptChange}
         onKeyDown={handleKeyDown}
         placeholder={SITE_CONSTANTS.PROMPT_PLACEHOLDER}
         autoSize={{ minRows: 2, maxRows: 6 }}
-        className="resize-none border-0 focus:shadow-none text-gray-700 placeholder:text-gray-400"
+        className="resize-none border-0 focus:shadow-none text-gray-100 placeholder:text-gray-400 bg-transparent relative z-10"
       />
-      <div className="flex justify-between items-center mt-6">
-        <button className="text-gray-400 flex items-center gap-2 text-sm hover:text-gray-600 transition-colors font-medium">
+      <div className="flex justify-between items-center mt-6 relative z-10">
+        <button className="text-cyan-400 flex items-center gap-2 text-sm hover:text-cyan-300 transition-colors font-medium">
           Прикрепить файл
         </button>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500 font-medium">Публичный</span>
+          <span className="text-sm text-gray-300 font-medium">Публичный</span>
           <Switch
             size="small"
             checked={isPublic}
