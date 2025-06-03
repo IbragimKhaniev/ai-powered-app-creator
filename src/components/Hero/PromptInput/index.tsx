@@ -64,9 +64,9 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   }, []);
 
   return (
-    <div className="w-full bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 relative overflow-hidden">
+    <div className="w-full bg-slate-800/50 backdrop-blur-sm border border-slate-600/30 rounded-2xl shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 p-6 relative overflow-hidden">
       {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 pointer-events-none"></div>
       
       <div className="relative z-10">
         <Input.TextArea
@@ -75,14 +75,14 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
           onKeyDown={handleKeyDown}
           placeholder={SITE_CONSTANTS.PROMPT_PLACEHOLDER}
           autoSize={{ minRows: 3, maxRows: 6 }}
-          className="resize-none border-0 focus:shadow-none text-slate-900 placeholder:text-slate-400 bg-transparent font-light"
+          className="resize-none border-0 focus:shadow-none text-white placeholder:text-slate-400 bg-transparent font-light"
         />
         <div className="flex justify-between items-center mt-4">
-          <button className="text-slate-500 flex items-center gap-2 text-sm hover:text-slate-700 transition-colors font-light">
+          <button className="text-slate-400 flex items-center gap-2 text-sm hover:text-blue-400 transition-colors font-light">
             Прикрепить файл
           </button>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600 font-light">Публичный</span>
+            <span className="text-sm text-slate-300 font-light">Публичный</span>
             <Switch
               size="small"
               checked={isPublic}
