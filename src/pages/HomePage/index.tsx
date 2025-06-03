@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useDocumentTitle } from '@/utils/hooks';
 import Header from '@/components/Layout/Header';
 import Hero from '@/components/Hero';
+import Advantages from '@/components/Advantages';
 import Community from '@/components/Community';
 import Footer from '@/components/Layout/Footer';
 import { HOME_PAGE_CONSTANTS } from './constants';
@@ -22,6 +23,7 @@ const HomePage: React.FC = React.memo(() => {
       <Header />
       <main className="flex-1">
         <Hero />
+        <Advantages />
         <Community />
       </main>
       <Footer />

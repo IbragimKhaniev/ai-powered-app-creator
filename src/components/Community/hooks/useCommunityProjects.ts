@@ -1,7 +1,8 @@
 
 import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// Mock data for community projects
+// Mock data for community projects - можно изменить на пустой массив для тестирования
 const MOCK_PROJECTS = [
   {
     id: '1',
@@ -48,7 +49,8 @@ const MOCK_PROJECTS = [
 ];
 
 export const useCommunityProjects = () => {
-  const projects = useMemo(() => MOCK_PROJECTS, []);
+  const navigate = useNavigate();
+  const projects = useMemo(() => [], []);
 
   const handleViewProject = useCallback((projectId: string) => {
     console.log('View project:', projectId);
@@ -65,10 +67,15 @@ export const useCommunityProjects = () => {
     // Handle show more logic here
   }, []);
 
+  const handleCreateApp = useCallback(() => {
+    navigate('/constructor');
+  }, [navigate]);
+
   return {
     projects,
     handleViewProject,
     handleViewAll,
-    handleShowMore
+    handleShowMore,
+    handleCreateApp
   };
 };

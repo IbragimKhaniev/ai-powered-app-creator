@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -82,14 +81,11 @@ const Profile: React.FC = () => {
 
   const handleConfirmSettings = useCallback((settings: any) => {
     console.log('New app settings:', settings);
-    // В реальном приложении, здесь было бы создание приложения
     setDialogOpen(false);
   }, []);
 
   const handleLogout = useCallback(() => {
-    // Удаляем признак авторизации из localStorage
     localStorage.removeItem('isAuthenticated');
-    // Перенаправляем на главную страницу
     window.location.href = '/';
   }, []);
 
@@ -121,28 +117,29 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 px-4 max-w-6xl">
       <ProfileHeader title={PROFILE_STRINGS.TITLE} />
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-        <div className="md:col-span-1">
-          {profileData && <ProfileInfo userData={profileData} />}
+      {/* Profile Info Card - Full Width on Top */}
+      <div className="mt-8 mb-8">
+        {profileData && <ProfileInfo userData={profileData} />}
+      </div>
+      
+      {/* Apps Section */}
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-900">Мои приложения</h2>
+          <Link to="/constructor">
+            <Button 
+              className="bg-primary text-white flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              {PROFILE_STRINGS.CREATE_APP_BUTTON}
+            </Button>
+          </Link>
         </div>
         
-        <div className="md:col-span-2">
-          <div className="flex justify-between items-center mb-6">
-            <Link to="/constructor">
-              <Button 
-                className="bg-primary text-white flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                {PROFILE_STRINGS.CREATE_APP_BUTTON}
-              </Button>
-            </Link>
-          </div>
-          
-          <AppsList apps={appsData} />
-        </div>
+        <AppsList apps={appsData} />
       </div>
 
       <AppSettingsDialog 
