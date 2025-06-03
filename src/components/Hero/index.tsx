@@ -18,11 +18,21 @@ const Hero: React.FC = React.memo(() => {
 
   return (
     <section className="min-h-screen flex flex-col justify-center relative bg-gradient-to-b from-slate-50 to-white overflow-hidden">
-      {/* Subtle geometric background elements */}
+      {/* Animated geometric background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-px h-32 bg-gradient-to-b from-transparent via-slate-200 to-transparent opacity-40"></div>
-        <div className="absolute top-1/3 right-1/3 w-px h-24 bg-gradient-to-b from-transparent via-slate-200 to-transparent opacity-30"></div>
-        <div className="absolute bottom-1/3 left-1/2 w-px h-20 bg-gradient-to-b from-transparent via-slate-200 to-transparent opacity-20"></div>
+        {/* Floating dots */}
+        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-slate-300 rounded-full animate-pulse opacity-60"></div>
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-slate-300 rounded-full animate-pulse opacity-40" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-1/3 left-1/2 w-1 h-1 bg-slate-300 rounded-full animate-pulse opacity-50" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-slate-300 rounded-full animate-pulse opacity-30" style={{ animationDelay: '3s' }}></div>
+        
+        {/* Moving lines */}
+        <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-40 animate-[slide-in-right_8s_ease-in-out_infinite]"></div>
+        <div className="absolute top-3/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent opacity-30 animate-[slide-in-right_12s_ease-in-out_infinite_reverse]" style={{ animationDelay: '4s' }}></div>
+        
+        {/* Vertical moving lines */}
+        <div className="absolute left-1/4 top-0 w-px h-full bg-gradient-to-b from-transparent via-slate-200 to-transparent opacity-20 animate-[slide-up_10s_ease-in-out_infinite]"></div>
+        <div className="absolute right-1/3 top-0 w-px h-full bg-gradient-to-b from-transparent via-slate-200 to-transparent opacity-25 animate-[slide-up_15s_ease-in-out_infinite_reverse]" style={{ animationDelay: '6s' }}></div>
       </div>
 
       <div className="container mx-auto px-4 flex-1 flex flex-col justify-center relative z-10">
