@@ -64,26 +64,31 @@ const PromptInput: React.FC<PromptInputProps> = React.memo(({ onSubmit }) => {
   }, []);
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-      <Input.TextArea
-        value={prompt}
-        onChange={handlePromptChange}
-        onKeyDown={handleKeyDown}
-        placeholder={SITE_CONSTANTS.PROMPT_PLACEHOLDER}
-        autoSize={{ minRows: 3, maxRows: 6 }}
-        className="resize-none border-0 focus:shadow-none text-gray-900 placeholder:text-gray-400 bg-transparent"
-      />
-      <div className="flex justify-between items-center mt-4">
-        <button className="text-gray-500 flex items-center gap-2 text-sm hover:text-gray-700 transition-colors">
-          Прикрепить файл
-        </button>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600">Публичный</span>
-          <Switch
-            size="small"
-            checked={isPublic}
-            onChange={handleSwitchChange}
-          />
+    <div className="w-full bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 relative overflow-hidden">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none"></div>
+      
+      <div className="relative z-10">
+        <Input.TextArea
+          value={prompt}
+          onChange={handlePromptChange}
+          onKeyDown={handleKeyDown}
+          placeholder={SITE_CONSTANTS.PROMPT_PLACEHOLDER}
+          autoSize={{ minRows: 3, maxRows: 6 }}
+          className="resize-none border-0 focus:shadow-none text-slate-900 placeholder:text-slate-400 bg-transparent font-light"
+        />
+        <div className="flex justify-between items-center mt-4">
+          <button className="text-slate-500 flex items-center gap-2 text-sm hover:text-slate-700 transition-colors font-light">
+            Прикрепить файл
+          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-600 font-light">Публичный</span>
+            <Switch
+              size="small"
+              checked={isPublic}
+              onChange={handleSwitchChange}
+            />
+          </div>
         </div>
       </div>
 
