@@ -18,14 +18,14 @@ interface ActionsDropdownProps {
   showLogs: boolean;
   onToggleLogs: () => void;
   applicationId?: string | null;
-  domain?: string;
+  domain: string;
 }
 
 const ActionsDropdown: React.FC<ActionsDropdownProps> = ({ 
   showLogs, 
   onToggleLogs,
   applicationId,
-  domain = ""
+  domain
 }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -53,7 +53,6 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   });
 
   const handleRestartServer = () => {
-    console.log('Restart server clicked, applicationId:', applicationId);
     if (!applicationId) {
       toast({
         title: 'Ошибка',
@@ -67,7 +66,6 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   };
 
   const handleOpenNewTab = () => {
-    console.log('Open new tab clicked, applicationId:', applicationId, 'domain:', domain);
     if (!applicationId) {
       toast({
         title: 'Ошибка',
@@ -77,11 +75,11 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
       return;
     }
     
+    // Open application in a new tab
     window.open(domain, '_blank');
   };
 
   const handleShowFiles = () => {
-    console.log('Show files clicked, applicationId:', applicationId);
     if (!applicationId) {
       toast({
         title: 'Ошибка',
@@ -108,11 +106,11 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="end" 
-          className="w-[220px] rounded-xl p-1 border-primary/10 shadow-lg bg-white backdrop-blur-sm z-50"
+          className="w-[220px] rounded-xl p-1 border-primary/10 shadow-lg bg-white/95 backdrop-blur-sm"
         >
           <DropdownMenuItem 
             onClick={handleRestartServer}
-            disabled={isRestarting}
+            disabled={isRestarting || !applicationId}
             className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
           >
             <RefreshCw className={`mr-3 h-4 w-4 ${isRestarting ? 'animate-spin' : 'text-primary'}`} />
@@ -121,6 +119,7 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
           
           <DropdownMenuItem 
             onClick={handleOpenNewTab}
+            disabled={!applicationId}
             className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
           >
             <ExternalLink className="mr-3 h-4 w-4 text-primary" />
@@ -129,6 +128,7 @@ const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
 
           <DropdownMenuItem 
             onClick={handleShowFiles}
+            disabled={!applicationId}
             className="rounded-lg py-2.5 px-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/5 transition-colors"
           >
             <FileText className="mr-3 h-4 w-4 text-primary" />
