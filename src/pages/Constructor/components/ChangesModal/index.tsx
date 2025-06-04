@@ -105,14 +105,14 @@ const ChangesModal: React.FC<ChangesModalProps> = ({ isOpen, onClose, data }) =>
         {changes.length > 0 ? (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col flex-1 min-h-0">
             <div className="flex-shrink-0 border-b">
-              <ScrollArea>
-                <div className="flex min-w-max">
+              <ScrollArea className="w-full">
+                <div className="flex min-w-max px-1">
                   <TabsList className="inline-flex h-auto w-max p-1">
                     {changes.map((change) => (
                       <TabsTrigger 
                         key={change.changeId}
                         value={change.changeId}
-                        className="text-sm px-4 py-2 flex-shrink-0 whitespace-nowrap"
+                        className="text-sm px-4 py-2 flex-shrink-0 whitespace-nowrap max-w-[200px] truncate"
                         title={change.filepath}
                       >
                         {change.filepath}
