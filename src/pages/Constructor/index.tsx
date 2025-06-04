@@ -140,7 +140,7 @@ const Constructor: React.FC = () => {
             />
           ) : (
             <PreviewPanel 
-              isLoading={appData?.deploying}
+              isDeploying={appData?.deploying}
               isAppCreated={Boolean(applicationId)}
               keyIframe="1"
               domain={appData?.domain}

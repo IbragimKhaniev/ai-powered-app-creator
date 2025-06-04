@@ -7,7 +7,7 @@ import AppPreviewCard from '../AppPreviewCard';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 
 interface PreviewPanelProps {
-  isLoading: boolean;
+  isDeploying: boolean;
   isAppCreated: boolean;
   showLogs: boolean;
   onToggleLogs: () => void;
@@ -18,7 +18,7 @@ interface PreviewPanelProps {
 }
 
 const PreviewPanel: React.FC<PreviewPanelProps> = ({
-  isLoading,
+  isDeploying,
   isAppCreated,
   showLogs,
   onToggleLogs,
@@ -38,9 +38,8 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             description={CONSTRUCTOR_TEXT.PREVIEW_DESCRIPTION}
             showBackButton={false}
           />
-          
           {/* Display deploying message when app is created but not fully loaded */}
-          {isAppCreated && isLoading && (
+          {isDeploying && (
             <div className="ml-4 bg-primary/10 text-primary font-medium text-sm px-4 py-1.5 rounded-full animate-pulse">
               {CONSTRUCTOR_TEXT.APP_DEPLOYING}...
             </div>
@@ -55,7 +54,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
       </div>
 
       <div className="flex-1 overflow-auto p-6 bg-gray-50">
-        {isLoading ? <AppPreviewCard /> : !isAppCreated ? <AppCreationCard onStartCreation={onStartCreation} /> : (
+        {isDeploying ? <AppPreviewCard /> : !isAppCreated ? <AppCreationCard onStartCreation={onStartCreation} /> : (
           <iframe
             key={keyIframe}
             id="preview-iframe"
