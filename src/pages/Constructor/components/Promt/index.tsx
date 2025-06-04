@@ -5,16 +5,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { GetApplicationsApplicationIdMessages200ItemPromtsItem } from '@/api/core';
-import { formatMessageTime } from '../../utils/formatUtils';
 import Change from '../Change';
 import PromtDetailsModal from '../PromtDetailsModal';
 
 interface PromtProps {
   promt: GetApplicationsApplicationIdMessages200ItemPromtsItem;
   applicationId: string;
+  messageId?: string;
+  showAnimation?: boolean;
 }
 
-const Promt: React.FC<PromtProps> = ({ promt, applicationId }) => {
+const Promt: React.FC<PromtProps> = ({ promt, applicationId, messageId, showAnimation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
@@ -44,8 +45,8 @@ const Promt: React.FC<PromtProps> = ({ promt, applicationId }) => {
     setShowDetailsModal(true);
   };
 
-  // Safely access changes array
-  const changes = Array.isArray(promt.changes) ? promt.changes : [];
+  // Safely access changes array - assuming it might be in a different property
+  const changes = Array.isArray((promt as any).changes) ? (promt as any).changes : [];
   const hasChanges = changes.length > 0;
 
   return (
@@ -57,9 +58,9 @@ const Promt: React.FC<PromtProps> = ({ promt, applicationId }) => {
               <Badge className={getStatusColor(promt.status || 'unknown')}>
                 {getStatusText(promt.status || 'unknown')}
               </Badge>
-              {promt.createdAt && (
+              {(promt as any).createdAt && (
                 <span className="text-xs text-gray-500">
-                  {formatMessageTime(promt.createdAt)}
+                  {new Date((promt as any).createdAt).toLocaleString()}
                 </span>
               )}
             </div>
@@ -105,10 +106,10 @@ const Promt: React.FC<PromtProps> = ({ promt, applicationId }) => {
               {changes.map((change, index) => (
                 <Change 
                   key={change._id || `change-${index}`}
-                  change={change}
+                  data={change}
                   applicationId={applicationId}
-                  messageId={promt.messageId || ''}
-                  promtId={promt._id || ''}
+                  messageId={messageId || ''}
+                  promtId={(promt as any)._id || ''}
                 />
               ))}
             </div>
@@ -119,7 +120,7 @@ const Promt: React.FC<PromtProps> = ({ promt, applicationId }) => {
       <PromtDetailsModal
         isOpen={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
-        promt={promt}
+        data={promt}
         applicationId={applicationId}
       />
     </>

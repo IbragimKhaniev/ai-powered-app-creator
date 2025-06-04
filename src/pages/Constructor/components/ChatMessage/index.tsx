@@ -15,7 +15,7 @@ interface ChatMessageProps {
   message: GetApplicationsApplicationIdMessages200Item;
   applicationId: string;
   onTryFix?: (id: string) => void;
-  additionalContent?: string; // New prop for additional collapsible content
+  additionalContent?: string;
   isNewMessage?: boolean;
 }
 
@@ -115,7 +115,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         {message.promts?.map((currentPromt, index) => (
           <Promt
             key={index}
-            data={currentPromt}
+            promt={currentPromt}
             messageId={message.id}
             applicationId={applicationId}
             showAnimation={isOnlineRender && isNewMessage && index === message.promts.length - 1}
