@@ -1,11 +1,10 @@
 
-import React, { useEffect, useRef, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Header from '../Header';
 import ChatInput from '../ChatInput';
 import ChatMessage from '../ChatMessage';
 import ChatErrorMessage from '@/components/ui/chat-error-message';
-import ScrollToBottomButton from '../ScrollToBottomButton';
 import { CONSTRUCTOR_TEXT } from '../../constants';
 import { GetApplicationsApplicationIdMessages200Item, usePostApplicationsApplicationIdMessagesMessageIdRetry, useGetConfig } from '@/api/core';
 import { ExtendedApplicationData } from '../../types';
@@ -35,8 +34,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   onTryFixDeployError
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const { mutate: retryMessage } = usePostApplicationsApplicationIdMessagesMessageIdRetry();
 
@@ -48,27 +45,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       messageId: id,
     });
   }, [application?._id, retryMessage]);
-
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  const handleScroll = useCallback((event: Event) => {
-    const target = event.target as HTMLElement;
-    if (!target) return;
-
-    const { scrollTop, scrollHeight, clientHeight } = target;
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
-    setShowScrollButton(!isAtBottom);
-  }, []);
-
-  useEffect(() => {
-    const scrollElement = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    if (!scrollElement) return;
-
-    scrollElement.addEventListener('scroll', handleScroll);
-    return () => scrollElement.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
 
   useEffect(() => {
     if (messages) {
@@ -82,43 +58,37 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         <Header title={application?.name} description={CONSTRUCTOR_TEXT.DESCRIBE_APP} showBackButton={true} />
       </div>
       
-      <div className="flex-1 relative">
-        <ScrollArea ref={scrollAreaRef} className="h-full p-4 bg-background">
-          <div className="space-y-4">
-            {messages?.map((message, index) => (
-              <ChatMessage 
-                key={message.id} 
-                message={message} 
-                applicationId={application?._id}
-                onTryFix={handleTryFixAIError}
-                additionalContent={message.additionalContent}
-                isNewMessage={index === messages.length - 1}
+      <ScrollArea className="flex-1 p-4 bg-background">
+        <div className="space-y-4">
+          {messages?.map((message, index) => (
+            <ChatMessage 
+              key={message.id} 
+              message={message} 
+              applicationId={application?._id}
+              onTryFix={handleTryFixAIError}
+              additionalContent={message.additionalContent}
+              isNewMessage={index === messages.length - 1}
+            />
+          ))}
+          {/* Display deployment error if exists */}
+          {deployingError && (
+            <div className="mb-4">
+              <ChatErrorMessage 
+                message={`Ошибка развертывания: ${deployingError.substring(0, 100)}...`} 
+                onTryFix={onTryFixDeployError}
+                disabled={isDeploying || isLoading}
               />
-            ))}
-            {/* Display deployment error if exists */}
-            {deployingError && (
-              <div className="mb-4">
-                <ChatErrorMessage 
-                  message={`Ошибка развертывания: ${deployingError.substring(0, 100)}...`} 
-                  onTryFix={onTryFixDeployError}
-                  disabled={isDeploying || isLoading}
-                />
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-        
-        <ScrollToBottomButton 
-          visible={showScrollButton}
-          onClick={scrollToBottom}
-        />
-      </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
       
       <div className="border-t p-2 bg-white">    
         {application && (
           <ChangeModelAi
             application={application}
+
             disabled={isDeploying || isLoading}
           />
         )} 

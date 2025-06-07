@@ -7,7 +7,7 @@ import Change from "../Change";
 import PromtDetailsModal from "../PromtDetailsModal";
 
 interface PromtProps {
-  data: GetApplicationsApplicationIdMessages200ItemPromtsItem;
+  data: GetApplicationsApplicationIdMessages200ItemPromtsItem & { _id?: string };
   messageId: string;
   applicationId: string;
   showAnimation?: boolean;
@@ -41,9 +41,9 @@ const Promt: React.FC<PromtProps> = ({ data, messageId, applicationId, showAnima
         </div>
       </div>
       
-      {data.id && (
+      {data._id && (
         <Change
-          promtId={data.id}
+          promtId={data._id}
           messageId={messageId}
           applicationId={applicationId}
           onClickToggleChanges={onClickToggleChanges}
